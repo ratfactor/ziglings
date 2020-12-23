@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Minimum viable working example!
+
+echo
+echo "         _       _ _ "
+echo "     ___(_) __ _| (_)_ __   __ _ ___ "
+echo "    |_  | |/ _' | | | '_ \ / _' / __| "
+echo "     / /| | (_| | | | | | | (_| \__ \ "
+echo "    /___|_|\__, |_|_|_| |_|\__, |___/ "
+echo "           |___/           |___/ "
+echo
+
+# Capture terminal escape sequences (ANSI) for formatting
+fmt_err=$( tput setaf 1 ) # red foreground
+fmt_yay=$( tput setaf 2 ) # green foreground
+fmt_off=$( tput sgr0 )    # reset colors/effects
+
+
+
+# TODO: most of this belongs in a generalized function
+if grep -q "I AM NOT DONE" 01_hello.zig
+then
+
+echo
+echo "* Exercise: Hello world *"
+
+result=$(zig run 01_hello.zig 2>&1)
+result_status=$?
+echo =========================================================================
+echo "$result"
+echo =========================================================================
+if [[ $result_status -eq 0 ]]
+then
+    printf "${fmt_yay}Zig was able to compile your submission.${fmt_off}\n"
+else
+    printf "${fmt_err}Uh oh! Looks like there was an error.${fmt_off}\n"
+    exit
+fi
+
+if [[ $result == *Hello*Goodbye* ]]
+then
+    printf "${fmt_yay}Excellent! I see that you're printing both Hello and Goodbye!${fmt_off}\n"
+else
+    printf "${fmt_err}It seems to compile, but...${fmt_off}\n"
+    exit
+fi
+
+echo "Now you're ready to move on!"
+echo "Delete the line I AM NOT DONE from the source file when you're ready"
+echo "to continue."
+
+exit
+
+else # end of exercise one - I AM NOT DONE is removed!
+    printf "${fmt_yay}DONE - Hello world${fmt_off}\n"
+fi
+
+
+echo
+echo "* Exercise: Hello test *"
+echo
+echo "TODO: this and other exercises :-)"
