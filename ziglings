@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Minimum viable working example!
-
 echo
 echo "         _       _ _ "
 echo "     ___(_) __ _| (_)_ __   __ _ ___ "
@@ -16,48 +14,55 @@ fmt_err=$( tput setaf 1 ) # red foreground
 fmt_yay=$( tput setaf 2 ) # green foreground
 fmt_off=$( tput sgr0 )    # reset colors/effects
 
+function check_it {
+    source_file=$1
+    correct_output=$2
+    hint=$3
+
+    # Compile/run the source and capture the result and exit value
+    cmd="zig run $source_file"
+    echo "$ $cmd"
+    result=$($cmd 2>&1)
+    result_status=$?
+
+    # Echo the result to the screen so user can see what their program does
+    echo "$result"
+    if [[ $result_status -ne 0 ]]
+    then
+        echo
+        printf "${fmt_err}Uh oh! Looks like there was an error.${fmt_off}\n"
+        if [[ ! -z "$hint" ]]
+        then
+            echo "$hint"
+        fi
+        echo
+        echo "Edit '$source_file' and run me again."
+        echo
+        exit 1
+    fi
+
+    # Wildcards to be lenient with anything AROUND the correct output
+    if [[ "$result" == *$correct_output* ]]
+    then
+        printf "${fmt_yay}** PASSED **${fmt_off}\n"
+    else
+        printf "${fmt_err}It seems to compile, but I wanted to see '$correct_output'.${fmt_off}\n"
+        echo
+        exit 1
+    fi
+}
 
 
-# TODO: most of this belongs in a generalized function
-if grep -q "I AM NOT DONE" 01_hello.zig
-then
+check_it 01_hello.zig "Hello world" "Note the error: the source file has a hint for fixing 'main'."
+check_it 02_std.zig "Standard Library"
 
 echo
-echo "* Exercise: Hello world *"
-
-result=$(zig run 01_hello.zig 2>&1)
-result_status=$?
-echo =========================================================================
-echo "$result"
-echo =========================================================================
-if [[ $result_status -eq 0 ]]
-then
-    printf "${fmt_yay}Zig was able to compile your submission.${fmt_off}\n"
-else
-    printf "${fmt_err}Uh oh! Looks like there was an error.${fmt_off}\n"
-    exit
-fi
-
-if [[ $result == *Hello*Goodbye* ]]
-then
-    printf "${fmt_yay}Excellent! I see that you're printing both Hello and Goodbye!${fmt_off}\n"
-else
-    printf "${fmt_err}It seems to compile, but...${fmt_off}\n"
-    exit
-fi
-
-echo "Now you're ready to move on!"
-echo "Delete the line I AM NOT DONE from the source file when you're ready"
-echo "to continue."
-
-exit
-
-else # end of exercise one - I AM NOT DONE is removed!
-    printf "${fmt_yay}DONE - Hello world${fmt_off}\n"
-fi
-
-
+echo "    __   __          _ "
+echo "    \ \ / __ _ _   _| | "
+echo "     \ V / _' | | | | | "
+echo "      | | (_| | |_| |_| "
+echo "      |_|\__,_|\__, (_) "
+echo "               |___/ "
 echo
-echo "* Exercise: Hello test *"
+echo "You've completed all of the Ziglings exercises!"
 echo
-echo "TODO: this and other exercises :-)"

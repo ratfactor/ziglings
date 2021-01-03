@@ -39,18 +39,10 @@ Then run the `ziglings` script and follow the instructions to begin!
 ## Manual Usage
 
 If you can't (or don't want to) use the script, you can manually verify each
-exercise with the Zig compiler.
-
-Some exercises need to be "run" (compiled and executed):
+exercise with the Zig compiler:
 
 ```bash
 zig run exercises/01_hello.zig
-```
-
-Some exercises need to be tested:
-
-```bash
-zig test exercises/02_hello_test.zig
 ```
 
 ## TODO
@@ -65,8 +57,8 @@ the learning resource I wished for. There will be tons of room for improvement:
 
 Planned exercises:
 
-* [x] Hello world
-* [ ] Hello tests
+* [x] Hello world (main needs to be public)
+* [x] Importing standard library
 * [ ] Assignment
 * [ ] Arrays
 * [ ] If
