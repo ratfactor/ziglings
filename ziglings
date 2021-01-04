@@ -67,7 +67,8 @@ function check_it {
 
 check_it 01_hello.zig "Hello world" "Note the error: the source file has a hint for fixing 'main'."
 check_it 02_std.zig "Standard Library"
-check_it 03_assignment.zig "55 314159 -11"
+check_it 03_assignment.zig "55 314159 -11" "There are three mistakes in this one!"
+check_it 04_arrays.zig "Fourth: 7, Length: 8" "There are two things to complete here."
 
 echo
 echo "    __   __          _ "

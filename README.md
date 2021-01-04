@@ -60,7 +60,7 @@ Planned exercises:
 * [x] Hello world (main needs to be public)
 * [x] Importing standard library
 * [x] Assignment
-* [ ] Arrays
+* [x] Arrays
 * [ ] If
 * [ ] While
 * [ ] For
