@@ -70,6 +70,8 @@ check_it 02_std.zig "Standard Library"
 check_it 03_assignment.zig "55 314159 -11" "There are three mistakes in this one!"
 check_it 04_arrays.zig "Fourth: 7, Length: 8" "There are two things to complete here."
 check_it 05_arrays2.zig "LEET: 1337, Bits: 100110011001" "Fill in the two arrays."
+check_it 06_strings.zig "d=d ha ha ha Major Tom" "Each '???' needs something filled in."
+check_it 07_strings2.zig "Ziggy" "Please fix the lyrics!"
 
 echo
 echo "    __   __          _ "

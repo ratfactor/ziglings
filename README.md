@@ -61,6 +61,7 @@ Planned exercises:
 * [x] Importing standard library
 * [x] Assignment
 * [x] Arrays
+* [x] Strings
 * [ ] If
 * [ ] While
 * [ ] For
