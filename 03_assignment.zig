@@ -24,7 +24,7 @@ pub fn main() void {
     // Perhaps you noticed before that the print function takes two
     // parameters. Now it will make more sense: the first parameter
     // is a string. The string may contain placeholders '{}', and the
-    // second parameter is an anonymous struct (data structure)
-    // with values to be printed in place of the placeholders.
+    // second parameter is an "anonymous list literal" (don't worry
+    // about this for now!) with the values to be printed.
     std.debug.print("{} {} {}\n", .{n, pi, negative_eleven});
 }
