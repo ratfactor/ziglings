@@ -62,7 +62,7 @@ Planned exercises:
 * [x] Assignment
 * [x] Arrays
 * [x] Strings
-* [ ] If
+* [x] If
 * [ ] While
 * [ ] For
 * [ ] Functions

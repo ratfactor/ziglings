@@ -73,6 +73,8 @@ check_it 05_arrays2.zig "LEET: 1337, Bits: 100110011001" "Fill in the two arrays
 check_it 06_strings.zig "d=d ha ha ha Major Tom" "Each '???' needs something filled in."
 check_it 07_strings2.zig "Ziggy" "Please fix the lyrics!"
 check_it 08_quiz.zig "Program in Zig" "See if you can fix the program!"
+check_it 09_if.zig "Foo is 1!"
+check_it 10_if2.zig "price is \$17"
 
 echo
 echo "    __   __          _ "
