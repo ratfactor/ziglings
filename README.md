@@ -63,7 +63,7 @@ Planned exercises:
 * [x] Arrays
 * [x] Strings
 * [x] If
-* [ ] While
+* [x] While
 * [ ] For
 * [ ] Functions
 * [ ] Defer

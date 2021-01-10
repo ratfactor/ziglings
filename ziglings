@@ -59,6 +59,10 @@ function check_it {
         printf "${fmt_yay}** PASSED **${fmt_off}\n"
     else
         printf "${fmt_err}It seems to compile, but I wanted to see '$correct_output'.${fmt_off}\n"
+        if [[ ! -z "$hint" ]]
+        then
+            echo "$hint"
+        fi
         echo
         exit 1
     fi
@@ -75,6 +79,10 @@ check_it 07_strings2.zig "Ziggy" "Please fix the lyrics!"
 check_it 08_quiz.zig "Program in Zig" "See if you can fix the program!"
 check_it 09_if.zig "Foo is 1!"
 check_it 10_if2.zig "price is \$17"
+check_it 11_while.zig "n=1024" "You probably want a 'less than' condition."
+check_it 12_while2.zig "n=1024" "It might help to look back at the previous exercise."
+check_it 13_while3.zig "1 2 4 7 8 11 13 14 16 17 19"
+check_it 14_while4.zig "n=4"
 
 echo
 echo "    __   __          _ "
