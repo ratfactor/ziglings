@@ -18,7 +18,7 @@ pub fn main() void {
     // the value of the place as a power of two for each bit. See if
     // you can figure out the missing piece:
     //
-    for (bits) |bit, i| {
+    for (bits) |bit, ???| {
         var place_value = std.math.pow(u32, 2, @intCast(u32, i));
         value += place_value * bit;
     }
