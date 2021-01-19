@@ -64,7 +64,7 @@ Planned exercises:
 * [x] Strings
 * [x] If
 * [x] While
-* [ ] For
+* [x] For
 * [ ] Functions
 * [ ] Defer
 * [ ] Errors
