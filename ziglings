@@ -86,6 +86,7 @@ check_it 14_while4.zig "n=4"
 check_it 15_for.zig "A Dramatic Story: :-)  :-)  :-(  :-|  :-)  The End."
 check_it 16_for2.zig "13"
 check_it 17_quiz2.zig "8, Fizz, Buzz, 11, Fizz, 13, 14, FizzBuzz, 16" "This is a famous game!"
+check_it 18_functions.zig "Question: 42" "Can you help write the function?"
 
 echo
 echo "    __   __          _ "
