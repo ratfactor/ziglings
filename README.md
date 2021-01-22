@@ -65,9 +65,9 @@ Planned exercises:
 * [x] If
 * [x] While
 * [x] For
-* [ ] Functions
-* [ ] Defer
+* [x] Functions
 * [ ] Errors
+* [ ] Defer
 * [ ] Switch
 * [ ] Runtime safety
 * [ ] Unreachable
