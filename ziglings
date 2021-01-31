@@ -88,6 +88,12 @@ check_it 17_quiz2.zig "8, Fizz, Buzz, 11, Fizz, 13, 14, FizzBuzz, 16" "This is a
 check_it 18_functions.zig "Question: 42" "Can you help write the function?"
 check_it 19_functions2.zig "2 4 8 16"
 check_it 20_quiz3.zig "32 64 128 256" "Unexpected pop quiz! Help!"
+check_it 21_errors.zig "2<4. 3<4. 4=4. 5>4. 6>4." "What's the deal with fours?"
+check_it 22_errors2.zig "I compiled" "Get the error union type right to allow this to compile."
+check_it 23_errors3.zig "a=64, b=22"
+check_it 24_errors4.zig "a=20, b=14, c=10"
+check_it 25_errors5.zig "a=0, b=19, c=0"
+check_it 26_hello2.zig "Hello world" "Try using a try!"
 
 echo
 echo "    __   __          _ "
