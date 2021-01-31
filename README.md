@@ -66,10 +66,9 @@ Planned exercises:
 * [x] While
 * [x] For
 * [x] Functions
-* [ ] Errors
-* [ ] Defer
-* [ ] Switch
-* [ ] Runtime safety
+* [x] Errors
+* [x] Defer
+* [x] Switch
 * [ ] Unreachable
 * [ ] Pointers
 * [ ] Pointer sized integers

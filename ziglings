@@ -54,7 +54,7 @@ function check_it {
     fi
 
     # Wildcards to be lenient with anything AROUND the correct output
-    if [[ "$result" == *$correct_output* ]]
+    if [[ "$result" == *"$correct_output"* ]]
     then
         printf "${fmt_yay}** PASSED **${fmt_off}\n"
     else
@@ -94,6 +94,13 @@ check_it 23_errors3.zig "a=64, b=22"
 check_it 24_errors4.zig "a=20, b=14, c=10"
 check_it 25_errors5.zig "a=0, b=19, c=0"
 check_it 26_hello2.zig "Hello world" "Try using a try!"
+check_it 27_defer.zig "One Two"
+check_it 28_defer2.zig "(Goat) (Cat) (Dog) (Dog) (Goat) (Unknown) done."
+check_it 29_errdefer.zig "Getting number...got 5. Getting number...failed!"
+check_it 30_switch.zig "ZIG?"
+check_it 31_switch2.zig "ZIG!"
+check_it 32_iferror.zig "2<4. 3<4. 4=4. 5>4. 6>4." "Seriously, what's the deal with fours?"
+#check_it 33_quiz4.zig "foo" "Can you make this work?"
 
 echo
 echo "    __   __          _ "
