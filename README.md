@@ -42,7 +42,7 @@ If you can't (or don't want to) use the script, you can manually verify each
 exercise with the Zig compiler:
 
 ```bash
-zig run exercises/01_hello.zig
+zig run 01_hello.zig
 ```
 
 ## TODO
