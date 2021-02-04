@@ -99,8 +99,9 @@ check_it 28_defer2.zig "(Goat) (Cat) (Dog) (Dog) (Goat) (Unknown) done."
 check_it 29_errdefer.zig "Getting number...got 5. Getting number...failed!"
 check_it 30_switch.zig "ZIG?"
 check_it 31_switch2.zig "ZIG!"
-check_it 32_iferror.zig "2<4. 3<4. 4=4. 5>4. 6>4." "Seriously, what's the deal with fours?"
-#check_it 33_quiz4.zig "foo" "Can you make this work?"
+check_it 32_unreachable.zig "1 2 3 9 8 7"
+check_it 33_iferror.zig "2<4. 3<4. 4=4. 5>4. 6>4." "Seriously, what's the deal with fours?"
+check_it 34_quiz4.zig "my_num=42" "Can you make this work?"
 
 echo
 echo "    __   __          _ "
