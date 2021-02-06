@@ -11,9 +11,10 @@ project for the [Rust](https://www.rust-lang.org/) language.
 
 ## Intended Audience
 
-This will probably be quite difficult if you've _never_ programmed before.
-However, no specific programming experience is required. And in particular,
-you are _not_ expected to know C or other "systems programming" language.
+This will probably be difficult if you've _never_ programmed before.
+But no specific programming experience is required. And in particular,
+you are _not_ expected to have any prior experience with "systems programming"
+or a "systems" level language such as C.
 
 Each exercise is self-contained and self-explained. However, you're encouraged
 to also check out these Zig language resources for more detail:
