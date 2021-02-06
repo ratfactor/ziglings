@@ -9,6 +9,18 @@ This project was directly inspired by the brilliant and fun
 [rustlings](https://github.com/rust-lang/rustlings)
 project for the [Rust](https://www.rust-lang.org/) language.
 
+## Intended Audience
+
+This will probably be quite difficult if you've _never_ programmed before.
+However, no specific programming experience is required. And in particular,
+you are _not_ expected to know C or other "systems programming" language.
+
+Each exercise is self-contained and self-explained. However, you're encouraged
+to also check out these Zig language resources for more detail:
+
+* https://ziglearn.org/
+* https://ziglang.org/documentation/master/
+
 ## Getting Started
 
 _Note: This currently uses a shell (Bash) script to automate the "game". A
@@ -53,7 +65,7 @@ the learning resource I wished for. There will be tons of room for improvement:
 * Wording of explanations
 * Idiomatic usage of Zig
 * Additional exercises
-* Re-write the `ziglings` script using the Zig build system (???)
+* Re-write the `ziglings` script using the Zig build system (or just a Zig application)
 
 Planned exercises:
 
@@ -70,13 +82,13 @@ Planned exercises:
 * [x] Defer (and errdefer)
 * [x] Switch
 * [x] Unreachable
+* [x] Enums
+* [ ] Structs
+* [ ] Unions
 * [ ] Pointers
 * [ ] Pointer sized integers
 * [ ] Multi pointers
 * [ ] Slices
-* [ ] Enums
-* [ ] Structs
-* [ ] Unions
 * [ ] Integer rules
 * [ ] Floats
 * [ ] Labelled blocks
@@ -91,4 +103,6 @@ Planned exercises:
 * [ ] Imports
 
 The initial topics for these exercises were unabashedly cribbed from
-[ziglearn.org](https://ziglearn.org/).
+[ziglearn.org](https://ziglearn.org/). I've since moved things around
+in an order that I think best lets each topic build upon each other.
+
