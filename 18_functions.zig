@@ -1,5 +1,18 @@
 //
-// Functions! FUNctions! FUN!
+// Functions! We've already seen a lot of one called "main()". Now let's try
+// writing one of our own:
+//
+//     fn foo(n: u8) u8 {
+//         return n+1;
+//     }
+//
+// The foo() function above takes a number "n" and returns a number that is
+// larger by one.
+//
+// If your function doesn't take any parameters and doesn't return anything,
+// it would be defined like main():
+//
+//     fn foo() void { }
 //
 const std = @import("std");
 
@@ -11,12 +24,10 @@ pub fn main() void {
 }
 
 //
-// We're just missing a couple things here. One thing we're NOT missing is the
-// keyword "pub", which is not needed here. Can you guess why?
+// Please define the deepThought() function below.
 //
-// Functions need to specify the type of value they return. The main() function
-// above has a special return type "void", which means it returns nothing. This
-// function returns something. What might that be?
+// We're just missing a couple things. One thing we're NOT missing is the
+// keyword "pub", which is not needed here. Can you guess why?
 //
 ??? deepThought() ??? {
     return 42; // Number courtesy Douglas Adams

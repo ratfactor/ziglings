@@ -3,8 +3,14 @@
 // number starting with 0 that counts up with each iteration:
 //
 //     for (items) |item, index| {
+//
 //         // Do something with item and index
+//
 //     }
+//
+// You can name "item" and "index" anything you want. "i" is a popular
+// shortening of "index". The item name is often the singular form of
+// the items you're looping through.
 //
 const std = @import("std");
 
@@ -15,9 +21,9 @@ pub fn main() void {
     var value: u32 = 0;
 
     // Now we'll convert the binary bits to a number value by adding
-    // the value of the place as a power of two for each bit. See if
-    // you can figure out the missing piece:
+    // the value of the place as a power of two for each bit.
     //
+    // See if you can figure out the missing piece:
     for (bits) |bit, ???| {
         var place_value = std.math.pow(u32, 2, @intCast(u32, i));
         value += place_value * bit;

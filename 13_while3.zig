@@ -6,12 +6,13 @@
 // Example:
 //
 //     while (condition) : (continue expression){
+//
 //         if(other condition) continue;
-//         ...
+//
 //     }
 //
-// The continue expression executes even when 'other condition'
-// is true and the loop is restarted by the 'continue' statement.
+// The "continue expression" executes every time the loop restarts
+// whether the "continue" statement happens or not.
 //
 const std = @import("std");
 

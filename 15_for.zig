@@ -1,10 +1,11 @@
 //
 // Behold the 'for' loop! It lets you execute code for each
-// member of an array (and things called 'slices' which we'll
-// get to in a bit).
+// member of an array:
 //
 //     for (items) |item| {
+//
 //         // Do something with item
+//
 //     }
 //
 const std = @import("std");
@@ -22,3 +23,6 @@ pub fn main() void {
 
     std.debug.print("The End.\n", .{});
 }
+//
+// Note that "for" loops also work on things called "slices"
+// which we'll see later.

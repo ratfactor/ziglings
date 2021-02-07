@@ -1,6 +1,6 @@
 //
 // Zig 'while' statements create a loop that runs while the
-// condition is true:
+// condition is true. This runs once (at most):
 //
 //     while (condition) {
 //         condition = false;
@@ -10,16 +10,17 @@
 // that we can get a boolean value from conditional operators
 // such as:
 //
-//     a == b   a equals b
-//     a < b    a is less than b
-//     a > b    a is greater than b
-//     a !=b    a does not equal b
+//     a == b   means "a equals b"
+//     a < b    means "a is less than b"
+//     a > b    means "a is greater than b"
+//     a !=b    means "a does not equal b"
 //
 const std = @import("std");
 
 pub fn main() void {
     var n: u32 = 2;
 
+    // Please use a condition that is true UNTIL "n" reaches 1024:
     while ( ??? ){
         // Print the current number
         std.debug.print("{} ", .{n});
@@ -28,6 +29,6 @@ pub fn main() void {
         n *= 2;
     }
 
-    // Make this print n=1024
+    // Once the above is correct, this will print "n=1024"
     std.debug.print("n={}\n", .{n});
 }
