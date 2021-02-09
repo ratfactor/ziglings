@@ -20,7 +20,7 @@ fmt_off=$( tput sgr0 )    # reset colors/effects
 exercise_num=0
 
 function check_it {
-    source_file=$1
+    source_file="exercises/$1"
     correct_output=$2
     hint=$3
 

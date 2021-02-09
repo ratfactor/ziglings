@@ -1,6 +1,6 @@
 # ziglings
 
-Welcome to `ziglings`. This project contains a series of incomplete exercises.
+Welcome to `ziglings`! This project contains a series of incomplete exercises.
 By completing the exercises, you learn how to read and write
 [Zig](https://ziglang.org/)
 code.
@@ -55,7 +55,7 @@ If you can't (or don't want to) use the script, you can manually verify each
 exercise with the Zig compiler:
 
 ```bash
-zig run 01_hello.zig
+zig run exercises/01_hello.zig
 ```
 
 ## TODO
