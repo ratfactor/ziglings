@@ -70,7 +70,7 @@ function check_it {
 
 # I've chosen to explicitly number AND list each exercise rather than rely
 # on sorting. Though it does mean manually renaming things to remove/insert,
-# it's worked out well so far because its explicit and foolproof.
+# it's worked out well so far.
 
 check_it 01_hello.zig "Hello world" "Note the error: the source file has a hint for fixing 'main'."
 check_it 02_std.zig "Standard Library"
@@ -110,6 +110,11 @@ check_it 35_enums.zig "1 2 3 9 8 7" "This problem seems familiar..."
 check_it 36_enums2.zig "#0000ff" "I'm feeling blue about this."
 check_it 37_structs.zig "Your wizard has 90 health and 25 gold."
 check_it 38_structs2.zig "Character 2 - G:10 H:100 XP:20"
+check_it 39_pointers.zig "num1: 5, num2: 5" "Pointers aren't so bad."
+check_it 40_pointers2.zig "a: 12, b: 12"
+check_it 41_pointers3.zig "foo=6, bar=11"
+check_it 42_pointers4.zig "num: 5, more_nums: 1 1 5 1"
+check_it 43_pointers5.zig "Wizard (G:10 H:100 XP:20)"
 
 echo
 echo "    __   __          _ "

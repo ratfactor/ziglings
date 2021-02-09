@@ -48,6 +48,4 @@ pub fn main() void {
         std.debug.print("Character {} - G:{} H:{} XP:{}\n",
                         .{num+1, c.gold, c.health, c.experience});
     }
-
-    std.debug.print("\n", .{});
 }

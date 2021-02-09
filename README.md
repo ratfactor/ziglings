@@ -84,24 +84,40 @@ Planned exercises:
 * [x] Switch
 * [x] Unreachable
 * [x] Enums
-* [ ] Structs
-* [ ] Unions
-* [ ] Pointers
-* [ ] Pointer sized integers
+* [x] Structs
+* [x] Pointers
 * [ ] Multi pointers
 * [ ] Slices
-* [ ] Integer rules
-* [ ] Floats
-* [ ] Labelled blocks
-* [ ] Labelled loops
+* [ ] Unions
+* [ ] Numeric types (integers, floats)
+* [ ] Labelled blocks and loops
 * [ ] Loops as expressions
 * [ ] Optionals
 * [ ] Comptime
-* [ ] Inline loops
+* [ ] Inline loops (how to DEMO this?)
 * [ ] Anonymous structs
 * [ ] Sentinel termination
 * [ ] Vectors
 * [ ] Imports
+* [ ] Allocators
+* [ ] Arraylist
+* [ ] Filesystem
+* [ ] Readers and Writers
+* [ ] Formatting
+* [ ] JSON
+* [ ] Random Numbers
+* [ ] Crypto
+* [ ] Threads
+* [ ] Hash Maps
+* [ ] Stacks
+* [ ] Sorting
+* [ ] Iterators
+* [ ] Formatting specifiers
+* [ ] Advanced Formatting
+* [ ] Suspend / Resume
+* [ ] Async / Await
+* [ ] Nosuspend
+* [ ] Async Frames, Suspend Blocks
 
 The initial topics for these exercises were unabashedly cribbed from
 [ziglearn.org](https://ziglearn.org/). I've since moved things around
