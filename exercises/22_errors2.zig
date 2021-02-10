@@ -7,7 +7,7 @@
 // What happens if getText() can't find 'foo.txt'?  How do we express
 // this in Zig?
 //
-// Zig let's us make what's called an "error union" which is a value
+// Zig lets us make what's called an "error union" which is a value
 // which could either be a regular value OR an error from a set:
 //
 //     var text: MyErrorSet!Text =  getText('foo.txt');
