@@ -44,7 +44,7 @@ const Class = enum{
 const Character = struct{
     class: Class,
     gold: u32,
-    health: u8,
+    health: u8 = 100, // <--- You can also fields a default value!
     experience: u32,
 };
 
@@ -52,7 +52,6 @@ pub fn main() void {
     var glorp = Character{
         .class      = Class.wizard,
         .gold       = 10,
-        .health     = 100,
         .experience = 20,
     };
 
