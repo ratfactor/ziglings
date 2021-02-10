@@ -33,7 +33,7 @@ pub fn main() void {
     const major_tom = major ??? tom;
 
     // That's all the problems. Let's see our results:
-    std.debug.print("d={u} {}{}\n",.{d, laugh, major_tom});
+    std.debug.print("d={u} {s}{s}\n",.{d, laugh, major_tom});
     //
     // Keen eyes will notice that we've put a 'u' inside the '{}'
     // placeholder in the format string above. This tells the
