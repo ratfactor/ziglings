@@ -17,6 +17,19 @@ fmt_err=$( tput setaf 1 ) # red foreground
 fmt_yay=$( tput setaf 2 ) # green foreground
 fmt_off=$( tput sgr0 )    # reset colors/effects
 
+zig_cmd=zig
+zig_version_required=( 0 8 0 )
+zig_version=$($zig_cmd version)
+zig_version=(${zig_version//./ })
+
+if [[ ${zig_version[0]} -ne ${zig_version_required[0]} || ${zig_version[1]} -lt ${zig_version_required[1]} ]]
+then
+    echo "Your current zig version is $(IFS=$'.'; echo "${zig_version[*]}")."
+    echo "Please update your zig compiler to a version >=$(IFS=$'.'; echo "${zig_version_required[*]}") "`
+        `"or change zig_cmd in ./ziglings to the appropriate path."
+    exit 1
+fi
+
 exercise_num=0
 
 function check_it {
@@ -32,7 +45,7 @@ function check_it {
     fi
 
     # Compile/run the source and capture the result and exit value
-    cmd="zig run $source_file"
+    cmd="$zig_cmd run $source_file"
     echo "$ $cmd"
     result=$($cmd 2>&1)
     result_status=$?
