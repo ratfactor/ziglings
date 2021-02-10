@@ -17,8 +17,8 @@ pub fn main() void {
     std.debug.print("Standard Library.\n", .{});
 }
 
-// Going deeper: imports must be declared as "constants" (with the 'const'
-// keyword rather than "variables" (with the 'var' keyword) is that they
-// can only be used at "compile time" rather than "run time". Zig evaluates
-// const values at compile time. Don't worry if none of this makes sense
-// yet! See also this answer: https://stackoverflow.com/a/62567550/695615
+// For the curious: Imports must be declared as constants because they
+// can only be used at compile time rather than run time. Zig evaluates
+// constant values at compile time. Don't worry, we'll cover imports
+// in detail later.
+// See also this answer: https://stackoverflow.com/a/62567550/695615
