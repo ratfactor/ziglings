@@ -116,6 +116,11 @@ check_it 41_pointers3.zig "foo=6, bar=11"
 check_it 42_pointers4.zig "num: 5, more_nums: 1 1 5 1"
 check_it 43_pointers5.zig "Wizard (G:10 H:100 XP:20)"
 check_it 44_quiz5.zig "Elephant A. Elephant B. Elephant C." "Oh no! We forgot Elephant B!"
+# optional vals (simple scalar)
+# optional fields (elephant tail - no longer need circular)
+# super-simple struct method
+# use struct method for elephant tails
+# quiz: add elephant trunk (like tail)!
 
 echo
 echo "    __   __          _ "

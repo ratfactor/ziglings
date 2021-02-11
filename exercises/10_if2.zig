@@ -3,14 +3,6 @@
 //
 //     var foo: u8 = if (a) 2 else 3;
 //
-// Note: You'll need to declare a variable type when assigning a value
-// from a statement like this because the compiler isn't smart enough
-// to infer the type for you.
-//
-// This WON'T work:
-//
-//     var foo = if (a) 2 else 3; // error!
-//
 const std = @import("std");
 
 pub fn main() void {
