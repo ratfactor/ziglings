@@ -18,19 +18,31 @@ fmt_yay=$( tput setaf 2 ) # green foreground
 fmt_off=$( tput sgr0 )    # reset colors/effects
 
 zig_cmd=zig
-# zig compiler version ( major minor patch commits_since_last_release )
-zig_version_required=( 0 8 0 1065 )
-zig_version=$($zig_cmd version)
-zig_version=(${zig_version//./ })
-zig_version_commit=(${zig_version[3]//+/ })
+zig_minimum_version="0 8 0 1065"
+zig_version=$($zig_cmd version 2>/dev/null)
 
-if [[ ${zig_version[0]} -ne ${zig_version_required[0]} ||
-      ${zig_version[1]} -lt ${zig_version_required[1]} ||
-      $zig_version_commit -lt ${zig_version_required[3]} ]]
+if [[ "$zig_version" =~ ([0-9]+)\.([0-9]+)\.([0-9]+)-dev\.([0-9]+) ]]
 then
-    echo "Your current zig version is $(IFS=$'.'; echo "${zig_version[*]}")."
-    echo "Please update your zig compiler to a version >=$(IFS=$'.'; echo "${zig_version_required[*]}") "`
-        `"or change zig_cmd in ./ziglings to the appropriate path."
+    match_idx=1 # regex matches start at index 1
+
+    for v in $zig_minimum_version
+    do
+        if [[ ${BASH_REMATCH[$match_idx]} -lt $v ]]
+        then
+            echo "Your current Zig version is $zig_version."
+            echo "Please update your zig compiler to a version >=$(echo "${zig_minimum_version// /.}") "`
+                `"or change \$zig_cmd in ./ziglings to the appropriate path."
+            exit 1
+        fi
+        match_idx=$((match_idx+1))
+    done
+elif [[ -z $zig_version ]]
+then
+    echo "Ziglings failed to determine your Zig version."
+    echo "Please check if \$zig_cmd in ./ziglings matches the zig executable in your PATH."
+    exit 1
+else
+    echo "Sorry, Zig version number '${zig_version}' is not in the expected format for a current development build."
     exit 1
 fi
 
