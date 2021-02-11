@@ -18,11 +18,15 @@ fmt_yay=$( tput setaf 2 ) # green foreground
 fmt_off=$( tput sgr0 )    # reset colors/effects
 
 zig_cmd=zig
-zig_version_required=( 0 8 0 )
+# zig compiler version ( major minor patch commits_since_last_release )
+zig_version_required=( 0 8 0 1065 )
 zig_version=$($zig_cmd version)
 zig_version=(${zig_version//./ })
+zig_version_commit=(${zig_version[3]//+/ })
 
-if [[ ${zig_version[0]} -ne ${zig_version_required[0]} || ${zig_version[1]} -lt ${zig_version_required[1]} ]]
+if [[ ${zig_version[0]} -ne ${zig_version_required[0]} ||
+      ${zig_version[1]} -lt ${zig_version_required[1]} ||
+      $zig_version_commit -lt ${zig_version_required[3]} ]]
 then
     echo "Your current zig version is $(IFS=$'.'; echo "${zig_version[*]}")."
     echo "Please update your zig compiler to a version >=$(IFS=$'.'; echo "${zig_version_required[*]}") "`
