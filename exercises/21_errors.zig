@@ -1,5 +1,5 @@
 //
-// Believe it or not, sometimes things to wrong in programs.
+// Believe it or not, sometimes things go wrong in programs.
 //
 // In Zig, an error is a value. Errors are named so we can identify
 // things that can go wrong. Errors are created in "error sets", which
