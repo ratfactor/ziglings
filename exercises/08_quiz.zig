@@ -30,5 +30,5 @@ pub fn main() void {
     lang[2] = letters[???];
 
     // We want to "Program in Zig!" of course:
-    std.debug.print("Program in {}!\n", .{lang});
+    std.debug.print("Program in {s}!\n", .{lang});
 }

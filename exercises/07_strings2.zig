@@ -20,5 +20,5 @@ pub fn main() void {
         And the Spiders from Mars
     ;
 
-    std.debug.print("{}\n",.{lyrics});
+    std.debug.print("{s}\n",.{lyrics});
 }
