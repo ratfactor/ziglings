@@ -43,19 +43,34 @@ git clone https://github.com/ratfactor/ziglings
 cd ziglings
 ```
 
-Then run the `ziglings` script and follow the instructions to begin!
+Then run `zig build` and follow the instructions to begin!
 
 ```bash
-./ziglings
+zig build
 ```
 
 ## Manual Usage
 
-If you can't (or don't want to) use the script, you can manually verify each
-exercise with the Zig compiler:
+If you want to run a single file for testing, you can do so with this command:
 
 ```bash
 zig run exercises/01_hello.zig
+```
+or, alternatively
+```bash
+zig build 01_test
+```
+
+To verify a single file, use
+
+```bash
+zig build 01_only
+```
+
+To prepare an executable for debugging, install it to zig-cache/bin with
+
+```bash
+zig build 01_install
 ```
 
 ## TODO
@@ -66,7 +81,6 @@ the learning resource I wished for. There will be tons of room for improvement:
 * Wording of explanations
 * Idiomatic usage of Zig
 * Additional exercises
-* Re-write the `ziglings` script using the Zig build system (or just a Zig application)
 
 Planned exercises:
 
