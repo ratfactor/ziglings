@@ -8,6 +8,8 @@ code!
 This project was directly inspired by the brilliant and fun
 [rustlings](https://github.com/rust-lang/rustlings)
 project for the [Rust](https://www.rust-lang.org/) language.
+Indirect inspiration comes from [Ruby Koans]( http://rubykoans.com/)
+and the Little LISPer/Little Schemer series of books.
 
 ## Intended Audience
 
