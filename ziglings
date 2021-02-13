@@ -17,6 +17,35 @@ fmt_err=$( tput setaf 1 ) # red foreground
 fmt_yay=$( tput setaf 2 ) # green foreground
 fmt_off=$( tput sgr0 )    # reset colors/effects
 
+zig_cmd=zig
+zig_minimum_version="0 8 0 1065"
+zig_version=$($zig_cmd version 2>/dev/null)
+
+if [[ "$zig_version" =~ ([0-9]+)\.([0-9]+)\.([0-9]+)-dev\.([0-9]+) ]]
+then
+    match_idx=1 # regex matches start at index 1
+
+    for v in $zig_minimum_version
+    do
+        if [[ ${BASH_REMATCH[$match_idx]} -lt $v ]]
+        then
+            echo "Your current Zig version is $zig_version."
+            echo "Please update your zig compiler to a version >=$(echo "${zig_minimum_version// /.}") "`
+                `"or change \$zig_cmd in ./ziglings to the appropriate path."
+            exit 1
+        fi
+        match_idx=$((match_idx+1))
+    done
+elif [[ -z $zig_version ]]
+then
+    echo "Ziglings failed to determine your Zig version."
+    echo "Please check if \$zig_cmd in ./ziglings matches the zig executable in your PATH."
+    exit 1
+else
+    echo "Sorry, Zig version number '${zig_version}' is not in the expected format for a current development build."
+    exit 1
+fi
+
 exercise_num=0
 
 function check_it {
@@ -32,7 +61,7 @@ function check_it {
     fi
 
     # Compile/run the source and capture the result and exit value
-    cmd="zig run $source_file"
+    cmd="$zig_cmd run $source_file"
     echo "$ $cmd"
     result=$($cmd 2>&1)
     result_status=$?
