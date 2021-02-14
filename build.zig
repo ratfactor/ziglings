@@ -324,7 +324,7 @@ pub fn build(b: *Builder) void {
         \\
     , .{});
 
-    const verify_all = b.step("ziglings", "Verify all ziglings");
+    const verify_all = b.step("ziglings", "Check all ziglings");
     verify_all.dependOn(&header_step.step);
     b.default_step = verify_all;
 
@@ -342,21 +342,21 @@ pub fn build(b: *Builder) void {
 
         const key = ex.key();
 
-        const named_test = b.step(b.fmt("{s}_test", .{key}), b.fmt("Run {s} without verifying output", .{ex.main_file}));
+        const named_test = b.step(b.fmt("{s}_test", .{key}), b.fmt("Run {s} without checking output", .{ex.main_file}));
         const run_step = build_step.run();
         named_test.dependOn(&run_step.step);
 
         const named_install = b.step(b.fmt("{s}_install", .{key}), b.fmt("Install {s} to zig-cache/bin", .{ex.main_file}));
         named_install.dependOn(&build_step.install_step.?.step);
 
-        const named_verify = b.step(b.fmt("{s}_only", .{key}), b.fmt("Verify {s} only", .{ex.main_file}));
+        const named_verify = b.step(key, b.fmt("Check {s} only", .{ex.main_file}));
         named_verify.dependOn(&verify_step.step);
 
         const chain_verify = b.allocator.create(Step) catch unreachable;
         chain_verify.* = Step.initNoOp(.Custom, b.fmt("chain {s}", .{key}), b.allocator);
         chain_verify.dependOn(&verify_step.step);
 
-        const named_chain = b.step(key, b.fmt("Verify all solutions starting at {s}", .{ex.main_file}));
+        const named_chain = b.step(b.fmt("{s}_start", .{key}), b.fmt("Check all solutions starting at {s}", .{ex.main_file}));
         named_chain.dependOn(&header_step.step);
         named_chain.dependOn(chain_verify);
 
@@ -390,7 +390,7 @@ const ZiglingStep = struct {
         const self = @fieldParentPtr(@This(), "step", step);
         self.makeInternal() catch {
             if (self.exercise.hint.len > 0) {
-                print("\n{s}hint: {s}{s}", .{ bold_text, self.exercise.hint, reset_text });
+                print("\n{s}HINT: {s}{s}", .{ bold_text, self.exercise.hint, reset_text });
             }
 
             print("\n{s}Edit exercises/{s} and run this again.{s}", .{ red_text, self.exercise.main_file, reset_text });
@@ -404,7 +404,7 @@ const ZiglingStep = struct {
 
         const exe_file = try self.doCompile();
 
-        print("Verifying {s}...\n", .{self.exercise.main_file});
+        print("Checking {s}...\n", .{self.exercise.main_file});
 
         const cwd = self.builder.build_root;
 
@@ -471,7 +471,7 @@ const ZiglingStep = struct {
             return error.InvalidOutput;
         }
 
-        print("{s}{s}{s}\n", .{ green_text, output, reset_text });
+        print("{s}PASSED: {s}{s}\n", .{ green_text, output, reset_text });
     }
 
     // The normal compile step calls os.exit, so we can't use it as a library :(

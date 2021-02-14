@@ -38,17 +38,17 @@ $ zig version
 Clone this repository with Git:
 
 ```bash
-git clone https://github.com/ratfactor/ziglings
-cd ziglings
+$ git clone https://github.com/ratfactor/ziglings
+$ cd ziglings
 ```
 
 Then run `zig build` and follow the instructions to begin!
 
 ```bash
-zig build
+$ zig build
 ```
 
-## A Note About Compiler Versions
+## A Note About Versions
 
 The Zig language is under very active development. Ziglings will attempt to
 be current, but not bleeding-edge. However, sometimes fundamental changes
@@ -61,25 +61,31 @@ Once you have a version of the Zig compiler that works with your copy of
 Ziglings, they'll continue to work together forever. But if you update one,
 keep in mind that you may need to also update the other.
 
-## Manual Usage
+## Advanced Usage
 
-If you want to run a single file for testing, you can do so with this command:
+It can be handy to check just a single exercise or _start_ from a single
+exercise:
 
 ```bash
-zig run exercises/01_hello.zig
+zig build 19
+zig build 19_start
 ```
-or, alternatively
+
+You can also run without checking for correctness:
+
 ```bash
 zig build 01_test
 ```
 
-To verify a single file, use
+Or skip the build system entirely and interact directly with the compiler
+if you're into that sort of thing:
 
 ```bash
-zig build 01_only
+zig run exercises/01_hello.zig
 ```
 
-To prepare an executable for debugging, install it to zig-cache/bin with
+Calling all wizards: To prepare an executable for debugging, install it
+to zig-cache/bin with:
 
 ```bash
 zig build 01_install
