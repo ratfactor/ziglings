@@ -236,6 +236,14 @@ const exercises = [_]Exercise{
         .output = "Elephant A. Elephant B. Elephant C.",
         .hint = "Oh no! We forgot Elephant B!",
     },
+    .{
+        .main_file = "45_optionals.zig",
+        .output = "The Ultimate Answer: 42.",
+    },
+    // optional fields (elephant tail - no longer need circular)
+    // super-simple struct method
+    // use struct method for elephant tails
+    // quiz: add elephant trunk (like tail)!
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
