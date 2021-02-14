@@ -15,7 +15,7 @@
 //          bar CAN be negative and can hold −128 to 127
 //
 //     const foo: u8 = 20;
-//     var bar: i8 = -20;
+//     const bar: i8 = -20;
 //
 // Example: foo can hold 8 bits (0 to 255)
 //          bar can hold 16 bits (0 to 65,535)
