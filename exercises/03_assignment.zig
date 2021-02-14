@@ -21,7 +21,7 @@
 //          bar can hold 16 bits (0 to 65,535)
 //
 //     const foo: u8 = 20;
-//     var bar: u16 = 2000;
+//     const bar: u16 = 2000;
 //
 // You can do just about any combination of these that you can think of:
 // 
