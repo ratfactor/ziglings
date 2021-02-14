@@ -10,7 +10,7 @@
 // Zig lets us make what's called an "error union" which is a value
 // which could either be a regular value OR an error from a set:
 //
-//     var text: MyErrorSet!Text =  getText('foo.txt');
+//     var text: MyErrorSet!Text = getText('foo.txt');
 //
 // For now, let's just see if we can try making an error union!
 //
