@@ -463,7 +463,7 @@ const ZiglingStep = struct {
             return error.InvalidOutput;
         }
 
-        print("{s}** PASSED **{s}\n", .{ green_text, reset_text });
+        print("{s}{s}{s}\n", .{ green_text, output, reset_text });
     }
 
     // The normal compile step calls os.exit, so we can't use it as a library :(
