@@ -11,11 +11,11 @@
 //
 // Get values of an array using array[index] notation:
 //
-//     const bar = foo[3]; // 5423
+//     const bar = foo[2]; // 5423
 //
 // Set values of an array using array[index] notation:
 //
-//     foo[3] = 16;
+//     foo[2] = 16;
 //
 // Get the length of an array using the len property:
 //
