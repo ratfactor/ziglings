@@ -112,13 +112,13 @@ Planned exercises:
 * [x] Enums
 * [x] Structs
 * [x] Pointers
-* [ ] Multi pointers
+* [ ] Optionals
 * [ ] Slices
+* [ ] Multi pointers
 * [ ] Unions
 * [ ] Numeric types (integers, floats)
 * [ ] Labelled blocks and loops
 * [ ] Loops as expressions
-* [ ] Optionals
 * [ ] Comptime
 * [ ] Inline loops (how to DEMO this?)
 * [ ] Anonymous structs
