@@ -20,6 +20,9 @@
 // Example: foo can hold 8 bits (0 to 255)
 //          bar can hold 16 bits (0 to 65,535)
 //
+//     const foo: u8 = 20;
+//     const bar: u16 = 2000;
+//
 // You can do just about any combination of these that you can think of:
 // 
 //     u32 can hold 0 to 4,294,967,295
