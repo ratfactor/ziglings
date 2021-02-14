@@ -2,3 +2,4 @@
 *.swp
 zig-cache/
 answers/
+patches/healed/

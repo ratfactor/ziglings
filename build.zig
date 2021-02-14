@@ -330,15 +330,17 @@ pub fn build(b: *Builder) void {
 
     var prev_chain_verify = verify_all;
 
+    const use_healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse false;
+
     for (exercises) |ex| {
         const base_name = ex.baseName();
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
-            "exercises", ex.main_file,
+            if (use_healed) "patches/healed" else "exercises", ex.main_file,
         }) catch unreachable;
         const build_step = b.addExecutable(base_name, file_path);
         build_step.install();
 
-        const verify_step = ZiglingStep.create(b, ex);
+        const verify_step = ZiglingStep.create(b, ex, use_healed);
 
         const key = ex.key();
 
@@ -375,13 +377,15 @@ const ZiglingStep = struct {
     step: Step,
     exercise: Exercise,
     builder: *Builder,
+    use_healed: bool,
 
-    pub fn create(builder: *Builder, exercise: Exercise) *@This() {
+    pub fn create(builder: *Builder, exercise: Exercise, use_healed: bool) *@This() {
         const self = builder.allocator.create(@This()) catch unreachable;
         self.* = .{
             .step = Step.init(.Custom, exercise.main_file, builder.allocator, make),
             .exercise = exercise,
             .builder = builder,
+            .use_healed = use_healed,
         };
         return self;
     }
@@ -490,7 +494,8 @@ const ZiglingStep = struct {
             zig_args.append(@tagName(builder.color)) catch unreachable;
         }
 
-        const zig_file = std.fs.path.join(builder.allocator, &[_][]const u8{ "exercises", self.exercise.main_file }) catch unreachable;
+        const zig_file = std.fs.path.join(builder.allocator, &[_][]const u8{ 
+            if (self.use_healed) "patches/healed" else "exercises", self.exercise.main_file }) catch unreachable;
         zig_args.append(builder.pathFromRoot(zig_file)) catch unreachable;
 
         zig_args.append("--cache-dir") catch unreachable;
