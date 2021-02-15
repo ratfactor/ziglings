@@ -1,7 +1,7 @@
 //
 // Now let's create a function that takes a parameter. Here's an
 // example that takes two parameters. As you can see, parameters
-// are declared just like an other types ("name": "type"):
+// are declared just like any other types ("name": "type"):
 //
 //     fn myFunction( number: u8, is_lucky: bool ) {
 //         ...
