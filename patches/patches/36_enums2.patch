@@ -1,1 +1,12 @@
-
+32c32
+<     blue = ???,
+---
+>     blue = 0x0000ff,
+54c54
+<         \\  <span style="color: #{}">Blue</span>
+---
+>         \\  <span style="color: #{x:0>6}">Blue</span>
+59c59
+<         @enumToInt(???), // Oops! We're missing something!
+---
+>         @enumToInt(Color.blue), // Oops! We're missing something!

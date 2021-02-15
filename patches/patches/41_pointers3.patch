@@ -1,1 +1,4 @@
-
+34c34
+<     ??? p: ??? = undefined;
+---
+>     var p: *u8 = undefined;

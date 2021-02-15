@@ -1,1 +1,8 @@
-
+12c12
+<     ???,
+---
+>     TooSmall,
+29c29
+<         if (???) {
+---
+>         if (number_error == MyNumberError.TooSmall) {

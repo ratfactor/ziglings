@@ -1,1 +1,4 @@
-
+35c34
+<     std.debug.print("failed!\n", .{});
+---
+>     errdefer std.debug.print("failed!\n", .{});

@@ -1,1 +1,18 @@
-
+24,25c24,25
+< fn printPowersOfTwo(numbers: [4]u16) ??? {
+<     loop (numbers) |n| {
+---
+> fn printPowersOfTwo(numbers: [4]u16) void {
+>     for (numbers) |n| {
+34c34
+< fn twoToThe(number: u16) ??? {
+---
+> fn twoToThe(number: u16) u16 {
+38c38
+<     loop (n < number) : (n += 1) {
+---
+>     while (n < number) : (n += 1) {
+42c42
+<     return ???;
+---
+>     return total;

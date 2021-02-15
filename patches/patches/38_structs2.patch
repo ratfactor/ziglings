@@ -1,1 +1,7 @@
-
+44a45,50
+>     chars[1] = Character{
+>         .class = Class.bard,
+>         .gold = 10,
+>         .health = 100,
+>         .experience = 20,
+>     };

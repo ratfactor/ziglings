@@ -1,1 +1,4 @@
-
+23c23
+< const Ops = enum { ??? };
+---
+> const Ops = enum { dec, inc, pow };
