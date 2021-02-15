@@ -8,7 +8,7 @@ answers are here, so no peeking!
 ## Éowyn
 
 A Bash shell script named `eowyn.sh` dwells here. She heals the little broken
-programs and places them in a `healed` directory, which is not committed to the
+programs and places them in a `healed` directory, which is NOT committed to the
 repo.
 
 ```bash

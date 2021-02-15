@@ -1,4 +1,0 @@
-32c32
-<     var answer: u8 = result;
----
->     var answer: u8 = result orelse 42;

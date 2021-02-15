@@ -10,7 +10,7 @@ cd $(dirname $(which $0))
 f=$(basename ../exercises/$1*.zig .zig 2> /dev/null)
 b=../exercises/$f.zig
 a=../answers/$f.zig
-p=$f.patch
+p=patches/$f.patch
 
 printf "\tf: '$f'\n\tb: '$b'\n\ta: '$a'\n"
 

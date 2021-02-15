@@ -25,16 +25,18 @@ for broken in ../exercises/*.zig
 do
     # Remove the dir and extension, rendering the True Name.
     true_name=$(basename $broken .zig)
+    patch_name="patches/$true_name.patch"
 
-    if [[ -f $true_name.patch ]]
+
+    if [[ -f $patch_name ]]
     then
         # Apply the bandages to the wounds, grow new limbs, let
         # new life spring into the broken bodies of the fallen.
         echo Healing $true_name...
-        patch --output=healed/$true_name.zig $broken $true_name.patch
+        patch --output=healed/$true_name.zig $broken $patch_name
     else
         echo Cannot heal $true_name. Making empty patch.
-        echo > $true_name.patch
+        echo > $patch_name
     fi
 done
 
