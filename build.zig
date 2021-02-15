@@ -271,7 +271,11 @@ pub fn build(b: *Builder) void {
         // very old versions of Zig used warn instead of print.
         const stderrPrintFn = if (@hasDecl(std.debug, "print")) std.debug.print else std.debug.warn;
         stderrPrintFn(
-            \\Error: Your version of zig is too old.  Please download a master build from
+            \\ERROR: Sorry, it looks like your version of zig is too old. :-(
+            \\
+            \\The README lists the minimum version and build number.
+            \\
+            \\Please download a master build from
             \\https://ziglang.org/download/
             \\
         , .{});

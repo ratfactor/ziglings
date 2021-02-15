@@ -32,7 +32,7 @@ Verify the installation and version of `zig` like so:
 
 ```bash
 $ zig version
-0.8.0-dev.1065+<some hexadecimal string>
+0.8.0-dev.1065+xxxxxxxxx
 ```
 
 Clone this repository with Git:
@@ -52,14 +52,15 @@ $ zig build
 
 The Zig language is under very active development. Ziglings will attempt to
 be current, but not bleeding-edge. However, sometimes fundamental changes
-will happen. Ziglings will check for a minimum version and build number
-(which is this one: `0.x.x-dev.<build number>`) and exit if your version of
-Zig is too old. It is likely that you'll download a build which is greater
-than the number in the example shown above in this README.  That's okay!
+will happen. Ziglings will check for a minimum version and build number.
+
+(See Getting Started above for the current minimum.)
+
+It is likely that you'll download a build which is _greater_ than the minimum.
 
 Once you have a version of the Zig compiler that works with your copy of
-Ziglings, they'll continue to work together forever. But if you update one,
-keep in mind that you may need to also update the other.
+Ziglings, they'll continue to work together. But if you update one, you may
+need to also update the other.
 
 ## Advanced Usage
 
