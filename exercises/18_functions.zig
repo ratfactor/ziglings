@@ -3,7 +3,7 @@
 // writing one of our own:
 //
 //     fn foo(n: u8) u8 {
-//         return n+1;
+//         return n + 1;
 //     }
 //
 // The foo() function above takes a number "n" and returns a number that is

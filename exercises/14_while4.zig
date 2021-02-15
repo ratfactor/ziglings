@@ -1,9 +1,9 @@
 //
 // You can force a loop to exit immediately with a "break" statement:
 //
-//     while (condition) : (continue expression){
+//     while (condition) : (continue expression) {
 //
-//         if(other condition) break;
+//         if (other condition) break;
 //
 //     }
 //

@@ -22,8 +22,6 @@
 //         return GameError.TooManyPlayers;
 //     }
 //     
-//
-//
 const std = @import("std");
 
 pub fn main() void {

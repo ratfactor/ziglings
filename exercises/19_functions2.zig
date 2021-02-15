@@ -3,7 +3,7 @@
 // example that takes two parameters. As you can see, parameters
 // are declared just like any other types ("name": "type"):
 //
-//     fn myFunction( number: u8, is_lucky: bool ) {
+//     fn myFunction(number: u8, is_lucky: bool) {
 //         ...
 //     }
 //

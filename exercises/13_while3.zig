@@ -5,9 +5,9 @@
 //
 // Example:
 //
-//     while (condition) : (continue expression){
+//     while (condition) : (continue expression) {
 //
-//         if(other condition) continue;
+//         if (other condition) continue;
 //
 //     }
 //
