@@ -16,7 +16,7 @@
 //
 const std = @import("std");
 
-const MyNumberError = error{ TooSmall };
+const MyNumberError = error{TooSmall};
 
 pub fn main() void {
     var my_number: ??? = 5;
@@ -27,4 +27,3 @@ pub fn main() void {
 
     std.debug.print("I compiled!", .{});
 }
-

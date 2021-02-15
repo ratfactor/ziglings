@@ -2,20 +2,20 @@
 // Grouping values in structs is not merely convenient. It also allows
 // us to treat the values as a single item when storing them, passing
 // them to functions, etc.
-// 
+//
 // This exercise demonstrates how we can store structs in an array and
 // how doing so lets us print them all (both) using a loop.
 //
 const std = @import("std");
 
-const Class = enum{
+const Class = enum {
     wizard,
     thief,
     bard,
     warrior,
 };
 
-const Character = struct{
+const Character = struct {
     class: Class,
     gold: u32,
     health: u8,
@@ -27,9 +27,9 @@ pub fn main() void {
 
     // Glorp the Wise
     chars[0] = Character{
-        .class      = Class.wizard,
-        .gold       = 20,
-        .health     = 100,
+        .class = Class.wizard,
+        .gold = 20,
+        .health = 100,
         .experience = 10,
     };
 
@@ -45,7 +45,8 @@ pub fn main() void {
 
     // Printing all RPG characters in a loop:
     for (chars) |c, num| {
-        std.debug.print("Character {} - G:{} H:{} XP:{}\n",
-                        .{num+1, c.gold, c.health, c.experience});
+        std.debug.print("Character {} - G:{} H:{} XP:{}\n", .{
+            num + 1, c.gold, c.health, c.experience,
+        });
     }
 }

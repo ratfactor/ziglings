@@ -23,7 +23,7 @@
 const std = @import("std");
 
 // We'll use an enum to specify the character class.
-const Class = enum{
+const Class = enum {
     wizard,
     thief,
     bard,
@@ -32,7 +32,7 @@ const Class = enum{
 
 // Please add a new property to this struct called "health" and make
 // it a u8 integer type.
-const Character = struct{
+const Character = struct {
     class: Class,
     gold: u32,
     experience: u32,
@@ -41,8 +41,8 @@ const Character = struct{
 pub fn main() void {
     // Please initialize Glorp with 100 health.
     var glorp_the_wise = Character{
-        .class      = Class.wizard,
-        .gold       = 20,
+        .class = Class.wizard,
+        .gold = 20,
         .experience = 10,
     };
 
@@ -54,6 +54,6 @@ pub fn main() void {
 
     std.debug.print("Your wizard has {} health and {} gold.", .{
         glorp_the_wise.health,
-        glorp_the_wise.gold
+        glorp_the_wise.gold,
     });
 }

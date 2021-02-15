@@ -19,10 +19,10 @@ function main() void {
     ??? (i <= stop_at) : (i += 1) {
         if (i % 3 == 0) std.debug.print("Fizz", .{});
         if (i % 5 == 0) std.debug.print("Buzz", .{});
-        if ( !(i % 3 == 0) and !(i % 5 == 0) ) {
+        if (!(i % 3 == 0) and !(i % 5 == 0)) {
             std.debug.print("{}", .{???});
         }
         std.debug.print(", ", .{});
     }
-    std.debug.print("\n",.{});
+    std.debug.print("\n", .{});
 }

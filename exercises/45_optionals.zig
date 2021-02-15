@@ -31,7 +31,7 @@ pub fn main() void {
     // integer value from deepThought() OR the number 42:
     var answer: u8 = result;
 
-    std.debug.print("The Ultimate Answer: {}.\n",.{answer});
+    std.debug.print("The Ultimate Answer: {}.\n", .{answer});
 }
 
 fn deepThought() ?u8 {
@@ -39,7 +39,6 @@ fn deepThought() ?u8 {
     // But we'll leave this as-is. Sorry Deep Thought.
     return null;
 }
-//
 // Blast from the past:
 //
 // Optionals are a lot like error union types which can either

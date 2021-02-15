@@ -16,13 +16,12 @@ pub fn main() void {
     std.debug.print("A Dramatic Story: ", .{});
 
     for (???) |???| {
-        if(scene == 'h') std.debug.print(":-)  ", .{});
-        if(scene == 's') std.debug.print(":-(  ", .{});
-        if(scene == 'n') std.debug.print(":-|  ", .{});
+        if (scene == 'h') std.debug.print(":-)  ", .{});
+        if (scene == 's') std.debug.print(":-(  ", .{});
+        if (scene == 'n') std.debug.print(":-|  ", .{});
     }
 
     std.debug.print("The End.\n", .{});
 }
-//
 // Note that "for" loops also work on things called "slices"
 // which we'll see later.

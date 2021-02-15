@@ -23,7 +23,7 @@ const MyNumberError = error{
 const std = @import("std");
 
 pub fn main() void {
-    var nums = [_]u8{2,3,4,5,6};
+    var nums = [_]u8{ 2, 3, 4, 5, 6 };
 
     for (nums) |num| {
         std.debug.print("{}", .{num});
@@ -32,7 +32,7 @@ pub fn main() void {
         if (n) |value| {
             std.debug.print("=4. ", .{});
         } else |err| switch (err) {
-            MyNumberError.TooBig   => std.debug.print(">4. ", .{}),
+            MyNumberError.TooBig => std.debug.print(">4. ", .{}),
             // Please add a match for TooSmall here and have it print: "<4. "
         }
     }
@@ -43,7 +43,7 @@ pub fn main() void {
 // This time we'll have numberMaybeFail() return an error union rather
 // than a straight error.
 fn numberMaybeFail(n: u8) MyNumberError!u8 {
-    if(n > 4) return MyNumberError.TooBig;
-    if(n < 4) return MyNumberError.TooSmall;
+    if (n > 4) return MyNumberError.TooBig;
+    if (n < 4) return MyNumberError.TooSmall;
     return n;
 }

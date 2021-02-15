@@ -7,7 +7,7 @@
 //         ...
 //     }
 //
-const std = @import( "std" );
+const std = @import("std");
 
 pub fn main() void {
     std.debug.print("Powers of two: {} {} {} {}\n", .{
@@ -18,7 +18,6 @@ pub fn main() void {
     });
 }
 
-//
 // Please give this function the correct input parameter(s).
 // You'll need to figure out the parameter name and type that we're
 // expecting. The output type has already been specified for you.

@@ -4,13 +4,13 @@
 //
 //     Are holding hands
 //     By holding tails."
-//     
+//
 //     from Holding Hands
 //       by Lenore M. Link
-// 
+//
 const std = @import("std"); // single quotes
 
-const Elephant = struct{
+const Elephant = struct {
     letter: u8,
     tail: *Elephant = undefined,
     visited: bool = false,

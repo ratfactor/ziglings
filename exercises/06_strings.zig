@@ -1,6 +1,6 @@
 //
 // Now that we've learned about arrays, we can talk about strings.
-// 
+//
 // We've already seen Zig string literals: "Hello world.\n"
 //
 // Zig stores strings as arrays of bytes.
@@ -33,8 +33,7 @@ pub fn main() void {
     const major_tom = major ??? tom;
 
     // That's all the problems. Let's see our results:
-    std.debug.print("d={u} {s}{s}\n",.{d, laugh, major_tom});
-    //
+    std.debug.print("d={u} {s}{s}\n", .{ d, laugh, major_tom });
     // Keen eyes will notice that we've put 'u' and 's' inside the '{}'
     // placeholders in the format string above. This tells the
     // print() function to format the values as a UTF-8 character and

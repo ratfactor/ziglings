@@ -16,7 +16,7 @@ const std = @import("std");
 
 // Zig lets us write integers in hexadecimal format:
 //
-//     0xf (is the value 15 in hex) 
+//     0xf (is the value 15 in hex)
 //
 // Web browsers let us specify colors using a hexadecimal
 // number where each byte represents the brightness of the
@@ -26,10 +26,10 @@ const std = @import("std");
 //     #RRGGBB
 //
 // Please define and use a pure blue value Color:
-const Color = enum(u32){
-    red   = 0xff0000,
+const Color = enum(u32) {
+    red = 0xff0000,
     green = 0x00ff00,
-    blue  = ???,
+    blue = ???,
 };
 
 pub fn main() void {
@@ -53,9 +53,9 @@ pub fn main() void {
         \\  <span style="color: #{x:0>6}">Green</span>
         \\  <span style="color: #{}">Blue</span>
         \\</p>
-        , .{
-             @enumToInt(Color.red),
-             @enumToInt(Color.green),
-             @enumToInt(???),         // Oops! We're missing something!
-           });
+    , .{
+        @enumToInt(Color.red),
+        @enumToInt(Color.green),
+        @enumToInt(???), // Oops! We're missing something!
+    });
 }
