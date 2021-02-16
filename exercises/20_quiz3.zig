@@ -5,16 +5,15 @@
 //
 // Both of these are simply labeled "loop" below.
 //
-const std = @import( "std" );
+const std = @import("std");
 
 pub fn main() void {
-    const my_numbers = [4]u16{ 5,6,7,8 };
+    const my_numbers = [4]u16{ 5, 6, 7, 8 };
 
     printPowersOfTwo(my_numbers);
     std.debug.print("\n", .{});
 }
 
-//
 // You won't see this every day: a function that takes an array with
 // exactly four u16 numbers. This is not how you would normally pass
 // an array to a function. We'll learn about slices and pointers in
@@ -28,7 +27,6 @@ fn printPowersOfTwo(numbers: [4]u16) ??? {
     }
 }
 
-//
 // This function bears a striking resemblance to twoToThe() in the last
 // exercise. But don't be fooled! This one does the math without the aid
 // of the standard library!

@@ -23,9 +23,9 @@ pub fn main() void {
     // that makeJustRight() returns a error union (for now).
     var a: u32 = makeJustRight(44) catch 0;
     var b: u32 = makeJustRight(14) catch 0;
-    var c: u32 = makeJustRight(4)  catch 0;
+    var c: u32 = makeJustRight(4) catch 0;
 
-    std.debug.print("a={}, b={}, c={}", .{a,b,c});
+    std.debug.print("a={}, b={}, c={}", .{ a, b, c });
 }
 
 // In this silly example we've split the responsibility of making
@@ -37,7 +37,9 @@ pub fn main() void {
 //     detectProblems()  Returns the number or an error.
 //
 fn makeJustRight(n: u32) MyNumberError!u32 {
-    return fixTooBig(n) catch |err| { return err; };
+    return fixTooBig(n) catch |err| {
+        return err;
+    };
 }
 
 fn fixTooBig(n: u32) MyNumberError!u32 {
@@ -45,14 +47,14 @@ fn fixTooBig(n: u32) MyNumberError!u32 {
         if (err == MyNumberError.TooBig) {
             return 20;
         }
-        
+
         return err;
     };
 }
 
 fn fixTooSmall(n: u32) MyNumberError!u32 {
     // Oh dear, this is missing a lot! But don't worry, it's nearly
-    // identical to fixTooBig() above. 
+    // identical to fixTooBig() above.
     //
     // If we get a TooSmall error, we should return 10.
     // If we get any other error, we should return that error.
@@ -65,4 +67,3 @@ fn detectProblems(n: u32) MyNumberError!u32 {
     if (n > 20) return MyNumberError.TooBig;
     return n;
 }
-

@@ -3,7 +3,7 @@
 // writing one of our own:
 //
 //     fn foo(n: u8) u8 {
-//         return n+1;
+//         return n + 1;
 //     }
 //
 // The foo() function above takes a number "n" and returns a number that is
@@ -19,11 +19,10 @@ const std = @import("std");
 pub fn main() void {
     // The new function deepThought() should return the number 42. See below.
     const answer: u8 = deepThought();
-    
+
     std.debug.print("Answer to the Ultimate Question: {}\n", .{answer});
 }
 
-//
 // Please define the deepThought() function below.
 //
 // We're just missing a couple things. One thing we're NOT missing is the

@@ -1,1 +1,4 @@
-
+22c22
+<     stdout.print("Hello world!\n", .{});
+---
+>     try stdout.print("Hello world!\n", .{});

@@ -1,1 +1,8 @@
-
+15c15
+<     var b: u32 = addTwenty(4) ??? 22;
+---
+>     var b: u32 = addTwenty(4) catch 22;
+22c22
+< fn addTwenty(n: u32) ??? {
+---
+> fn addTwenty(n: u32) MyNumberError!u32 {

@@ -13,7 +13,7 @@
 //     a == b   means "a equals b"
 //     a < b    means "a is less than b"
 //     a > b    means "a is greater than b"
-//     a !=b    means "a does not equal b"
+//     a != b   means "a does not equal b"
 //
 const std = @import("std");
 
@@ -21,7 +21,7 @@ pub fn main() void {
     var n: u32 = 2;
 
     // Please use a condition that is true UNTIL "n" reaches 1024:
-    while ( ??? ){
+    while (???) {
         // Print the current number
         std.debug.print("{} ", .{n});
 

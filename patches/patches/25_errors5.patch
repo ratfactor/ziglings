@@ -1,1 +1,4 @@
-
+29c29
+<     var x = detect(n);
+---
+>     var x = try detect(n);

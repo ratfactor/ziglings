@@ -1,1 +1,12 @@
-
+37c37
+<     const n: u8 = 50;
+---
+>     var n: u8 = 50;
+40c40
+<     const pi: u8 = 314159;
+---
+>     const pi: u32 = 314159;
+42c42
+<     const negative_eleven: u8 = -11;
+---
+>     const negative_eleven: i8 = -11;

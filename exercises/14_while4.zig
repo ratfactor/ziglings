@@ -1,9 +1,9 @@
 //
 // You can force a loop to exit immediately with a "break" statement:
 //
-//     while (condition) : (continue expression){
+//     while (condition) : (continue expression) {
 //
-//         if(other condition) break;
+//         if (other condition) break;
 //
 //     }
 //
@@ -17,8 +17,8 @@ pub fn main() void {
 
     // Oh dear! This while loop will go forever!?
     // Please fix this so the print statement below gives the desired output.
-    while (true) : (n+=1) {
-        if(???) ???;
+    while (true) : (n += 1) {
+        if (???) ???;
     }
 
     // Result: we want n=4

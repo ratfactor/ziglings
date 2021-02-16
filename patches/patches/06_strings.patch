@@ -1,1 +1,12 @@
-
+22c22
+<     const d: u8 = ziggy[???];
+---
+>     const d: u8 = ziggy[4];
+26c26
+<     const laugh = "ha " ???;
+---
+>     const laugh = "ha " ** 3;
+33c33
+<     const major_tom = major ??? tom;
+---
+>     const major_tom = major ++ " " ++ tom;

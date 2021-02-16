@@ -16,7 +16,7 @@
 //
 // WE know there are only three operations but Zig doesn't. Use the
 // unreachable statement to make the switch complete. Or ELSE. :-)
-// 
+//
 const std = @import("std");
 
 pub fn main() void {
@@ -26,9 +26,15 @@ pub fn main() void {
 
     for (operations) |op| {
         switch (op) {
-            1  => { current_value += 1; },
-            2  => { current_value -= 1; },
-            3  => { current_value *= current_value; },
+            1 => {
+                current_value += 1;
+            },
+            2 => {
+                current_value -= 1;
+            },
+            3 => {
+                current_value *= current_value;
+            },
         }
 
         std.debug.print("{} ", .{current_value});

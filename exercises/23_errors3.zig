@@ -8,13 +8,13 @@
 //
 const std = @import("std");
 
-const MyNumberError = error{ TooSmall };
+const MyNumberError = error{TooSmall};
 
 pub fn main() void {
     var a: u32 = addTwenty(44) catch 22;
-    var b: u32 = addTwenty(4)  ???   22;
+    var b: u32 = addTwenty(4) ??? 22;
 
-    std.debug.print("a={}, b={}", .{a,b});
+    std.debug.print("a={}, b={}", .{ a, b });
 }
 
 // Please provide the return type from this function.

@@ -34,32 +34,31 @@
 //
 const std = @import("std");
 
-const Class = enum{
+const Class = enum {
     wizard,
     thief,
     bard,
     warrior,
 };
 
-const Character = struct{
+const Character = struct {
     class: Class,
     gold: u32,
-    health: u8 = 100, // <--- You can also fields a default value!
+    health: u8 = 100, // <--- You can also provide fields a default value!
     experience: u32,
 };
 
 pub fn main() void {
     var glorp = Character{
-        .class      = Class.wizard,
-        .gold       = 10,
+        .class = Class.wizard,
+        .gold = 10,
         .experience = 20,
     };
 
     // FIX ME!
     // Please pass our Character "glorp" to printCharacter():
-    printCharacter( ??? );
+    printCharacter(???);
 }
-
 
 // Note how this function's "c" parameter is a pointer to a Character struct.
 fn printCharacter(c: *Character) void {
@@ -68,9 +67,9 @@ fn printCharacter(c: *Character) void {
     // don't have to write the full enum name. Zig understands that ".wizard"
     // means "Class.wizard" when we switch on a Class enum value:
     const class_name = switch (c.class) {
-        .wizard  => "Wizard",
-        .thief   => "Thief",
-        .bard    => "Bard",
+        .wizard => "Wizard",
+        .thief => "Thief",
+        .bard => "Bard",
         .warrior => "Warrior",
     };
 

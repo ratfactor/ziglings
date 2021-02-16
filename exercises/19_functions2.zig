@@ -3,11 +3,11 @@
 // example that takes two parameters. As you can see, parameters
 // are declared just like any other types ("name": "type"):
 //
-//     fn myFunction( number: u8, is_lucky: bool ) {
+//     fn myFunction(number: u8, is_lucky: bool) {
 //         ...
 //     }
 //
-const std = @import( "std" );
+const std = @import("std");
 
 pub fn main() void {
     std.debug.print("Powers of two: {} {} {} {}\n", .{
@@ -18,7 +18,6 @@ pub fn main() void {
     });
 }
 
-//
 // Please give this function the correct input parameter(s).
 // You'll need to figure out the parameter name and type that we're
 // expecting. The output type has already been specified for you.

@@ -15,7 +15,6 @@
 //
 const std = @import("std");
 
-//
 var counter: u32 = 0;
 
 const MyErr = error{ GetFail, IncFail };
@@ -25,8 +24,8 @@ pub fn main() void {
     var a: u32 = makeNumber() catch return;
     var b: u32 = makeNumber() catch return;
 
-    std.debug.print("Numbers: {}, {}\n", .{a,b});
-}    
+    std.debug.print("Numbers: {}, {}\n", .{ a, b });
+}
 
 fn makeNumber() MyErr!u32 {
     std.debug.print("Getting number...", .{});
@@ -35,7 +34,7 @@ fn makeNumber() MyErr!u32 {
     // function exits with an error:
     std.debug.print("failed!\n", .{});
 
-    var num = try getNumber();     // <-- This could fail!
+    var num = try getNumber(); // <-- This could fail!
 
     num = try increaseNumber(num); // <-- This could ALSO fail!
 
@@ -52,7 +51,7 @@ fn getNumber() MyErr!u32 {
 fn increaseNumber(n: u32) MyErr!u32 {
     // I fail after the first time you run me!
     if (counter > 0) return MyErr.IncFail;
-    
+
     // Sneaky, weird global stuff.
     counter += 1;
 

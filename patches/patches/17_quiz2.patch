@@ -1,1 +1,16 @@
-
+12c12
+< const std = import standard library;
+---
+> const std = @import("std");
+14c14
+< function main() void {
+---
+> pub fn main() void {
+19c19
+<     ??? (i <= stop_at) : (i += 1) {
+---
+>     while (i <= stop_at) : (i += 1) {
+23c23
+<             std.debug.print("{}", .{???});
+---
+>             std.debug.print("{}", .{i});

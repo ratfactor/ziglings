@@ -1,1 +1,4 @@
-
+23c23
+<     std.debug.print("Two\n", .{});
+---
+>     defer std.debug.print("Two\n", .{});

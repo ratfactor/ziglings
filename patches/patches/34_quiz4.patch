@@ -1,1 +1,8 @@
-
+12c12
+< pub fn main() void {
+---
+> pub fn main() !void {
+15c15
+<     const my_num: u32 = getNumber();
+---
+>     const my_num: u32 = try getNumber();

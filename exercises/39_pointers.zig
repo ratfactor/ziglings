@@ -3,7 +3,7 @@
 //
 //     var foo: u8 = 5;      // foo is 5
 //     var bar: *u8 = &foo;  // bar is a pointer
-// 
+//
 // What is a pointer? It's a reference to a value. In this example
 // bar is a reference to the memory space that current contains the
 // value 5.
@@ -16,7 +16,7 @@
 //     &foo       a reference to foo
 //     bar        a pointer to the value at foo
 //     bar.*      the value 5 (the dereferenced value "at" bar)
-//     
+//
 // We'll see why pointers are useful in a moment. For now, see if you
 // can make this example work!
 //
@@ -32,5 +32,5 @@ pub fn main() void {
     // (See the "cheatsheet" above for ideas.)
     num2 = ???;
 
-    std.debug.print("num1: {}, num2: {}\n", .{num1, num2});
+    std.debug.print("num1: {}, num2: {}\n", .{ num1, num2 });
 }

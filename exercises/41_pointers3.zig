@@ -16,7 +16,7 @@
 //     var   p4: *u8 = &unlocked;
 //     const p5: *const u8 = &unlocked;
 //     var   p6: *const u8 = &unlocked;
-//      
+//
 // Here p3 and p4 can both be used to change the value they point to but
 // p3 cannot point at anything else.
 // What's interesting is that p5 and p6 act like p1 and p2, but point to
@@ -32,10 +32,10 @@ pub fn main() void {
     // Please define pointer "p" so that it can point to EITHER foo or
     // bar AND change the value it points to!
     ??? p: ??? = undefined;
-    
+
     p = &foo;
     p.* += 1;
     p = &bar;
     p.* += 1;
-    std.debug.print("foo={}, bar={}\n", .{foo, bar});
+    std.debug.print("foo={}, bar={}\n", .{ foo, bar });
 }

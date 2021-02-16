@@ -1,1 +1,4 @@
-
+25c25
+< fn twoToThe(???) u32 {
+---
+> fn twoToThe(my_number: u32) u32 {

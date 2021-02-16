@@ -1,1 +1,14 @@
-
+16c16
+<     const x: u8 = 1;
+---
+>     var x: u8 = 1;
+27c27
+<     lang[???] = letters[x];
+---
+>     lang[1] = letters[x];
+29,30c29,30
+<     x = ???;
+<     lang[2] = letters[???];
+---
+>     x = 5;
+>     lang[2] = letters[x];
