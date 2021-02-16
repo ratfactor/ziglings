@@ -281,7 +281,7 @@ pub fn build(b: *Builder) void {
             \\https://ziglang.org/download/
             \\
         , .{});
-        return;
+        std.os.exit(0);
     }
 
     use_color_escapes = false;
