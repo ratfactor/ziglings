@@ -3,7 +3,10 @@
 Welcome to `ziglings`! This project contains a series of tiny broken programs.
 By fixing them, you'll learn how to read and write
 [Zig](https://ziglang.org/)
-code!
+code.
+
+Those tiny broken programs need your help! (You'll also help some friendly
+elephants stick together, which is very sweet of you.)
 
 This project was directly inspired by the brilliant and fun
 [rustlings](https://github.com/rust-lang/rustlings)
@@ -26,9 +29,10 @@ to also check out these Zig language resources for more detail:
 
 ## Getting Started
 
-Install a [master build](https://ziglang.org/download/) of the Zig compiler.
+Install a [development build](https://ziglang.org/download/) of the Zig compiler.
+(See the "master" section of the downloads page.)
 
-Verify the installation and version of `zig` like so:
+Verify the installation and build version of `zig` like so:
 
 ```bash
 $ zig version
@@ -50,16 +54,16 @@ $ zig build
 
 ## A Note About Versions
 
-The Zig language is under very active development. Ziglings will attempt to
-be current, but not bleeding-edge. However, sometimes fundamental changes
-will happen. Ziglings will check for a minimum version and build number.
-
-(See Getting Started above for the current minimum.)
+The Zig language is under very active development. In order to be current,
+Ziglings tracks development builds of the Zig compiler rather than versioned
+releases. The last stable release was `0.7.1`, but Ziglings needs a dev build
+with pre-release version "0.8.0" and a build number at least as high as that
+shown in the example version check above.
 
 It is likely that you'll download a build which is _greater_ than the minimum.
 
-Once you have a version of the Zig compiler that works with your copy of
-Ziglings, they'll continue to work together. But if you update one, you may
+Once you have a build of the Zig compiler that works with Ziglings, they'll
+continue to work together. But keep in mind that if you update one, you may
 need to also update the other.
 
 ## Advanced Usage

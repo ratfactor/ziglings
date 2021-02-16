@@ -273,9 +273,11 @@ pub fn build(b: *Builder) void {
         stderrPrintFn(
             \\ERROR: Sorry, it looks like your version of zig is too old. :-(
             \\
-            \\The README lists the minimum version and build number.
+            \\Ziglings requires a development ("master") build
             \\
-            \\Please download a master build from
+            \\    0.8.0-dev.1065
+            \\
+            \\or higher. Please download a development build from
             \\https://ziglang.org/download/
             \\
         , .{});
