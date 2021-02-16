@@ -32,7 +32,7 @@ to also check out these Zig language resources for more detail:
 Install a [development build](https://ziglang.org/download/) of the Zig compiler.
 (See the "master" section of the downloads page.)
 
-Verify the installation and build version of `zig` like so:
+Verify the installation and build number of `zig` like so:
 
 ```bash
 $ zig version
@@ -55,10 +55,10 @@ $ zig build
 ## A Note About Versions
 
 The Zig language is under very active development. In order to be current,
-Ziglings tracks development builds of the Zig compiler rather than versioned
-releases. The last stable release was `0.7.1`, but Ziglings needs a dev build
-with pre-release version "0.8.0" and a build number at least as high as that
-shown in the example version check above.
+Ziglings tracks **development** builds of the Zig compiler rather than
+versioned **release** builds. The last stable release was `0.7.1`, but Ziglings
+needs a dev build with pre-release version "0.8.0" and a build number at least
+as high as that shown in the example version check above.
 
 It is likely that you'll download a build which is _greater_ than the minimum.
 
