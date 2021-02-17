@@ -28,6 +28,8 @@ pub fn main() void {
     elephantC.tail = &elephantA;
 
     visitElephants(&elephantA);
+
+    std.debug.print("\n", .{});
 }
 
 // This function visits all elephants once, starting with the

@@ -1,0 +1,11 @@
+12c12
+<     tail: *Elephant = undefined, // <---- make this optional!
+---
+>     tail: ?*Elephant = undefined,
+39,42c39
+<         // We should stop once we encounter a tail that
+<         // does NOT point to another element. What can
+<         // we put here to make that happen?
+<         if (e.tail == null) ???;
+---
+>         if (e.tail == null) break;

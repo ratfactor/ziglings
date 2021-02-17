@@ -240,7 +240,11 @@ const exercises = [_]Exercise{
         .main_file = "45_optionals.zig",
         .output = "The Ultimate Answer: 42.",
     },
-    // optional fields (elephant tail - no longer need circular)
+    .{
+        .main_file = "46_optionals2.zig",
+        .output = "Elephant A. Elephant B. Elephant C.",
+        .hint = "Elephants!",
+    },
     // super-simple struct method
     // use struct method for elephant tails
     // quiz: add elephant trunk (like tail)!
