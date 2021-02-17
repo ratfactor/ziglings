@@ -123,7 +123,8 @@ Planned exercises:
 * [x] Enums
 * [x] Structs
 * [x] Pointers
-* [ ] Optionals
+* [x] Optionals
+* [ ] Struct methods
 * [ ] Slices
 * [ ] Multi pointers
 * [ ] Unions
