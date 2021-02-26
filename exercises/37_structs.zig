@@ -10,8 +10,8 @@
 //
 // into this:
 //
-//     point1 = Point{ .x=3, .y=16, .y=27 };
-//     point2 = Point{ .x=7, .y=13, .y=34 };
+//     point1 = Point{ .x=3, .y=16, .z=27 };
+//     point2 = Point{ .x=7, .y=13, .z=34 };
 //
 // The Point above is an example of a "struct" (short for "structure").
 // Here's how it could have been defined:
