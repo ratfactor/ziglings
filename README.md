@@ -1,12 +1,15 @@
-# ziglings
+# Ziglings
 
-Welcome to `ziglings`! This project contains a series of tiny broken programs.
+Welcome to Ziglings! This project contains a series of tiny broken programs.
 By fixing them, you'll learn how to read and write
 [Zig](https://ziglang.org/)
 code.
 
-Those tiny broken programs need your help! (You'll also help some friendly
-elephants stick together, which is very sweet of you.)
+![ziglings](https://user-images.githubusercontent.com/1458409/109398392-c1069500-790a-11eb-8ed4-7d7d74d32666.jpg)
+
+Those tiny broken programs need your help! (You'll also save the planet from
+evil aliens and help some friendly elephants stick together, which is very
+sweet of you.)
 
 This project was directly inspired by the brilliant and fun
 [rustlings](https://github.com/rust-lang/rustlings)
