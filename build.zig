@@ -40,7 +40,7 @@ const exercises = [_]Exercise{
     .{
         .main_file = "01_hello.zig",
         .output = "Hello world",
-        .hint = "Note the error: the source file has a hint for fixing 'main'.",
+        .hint = "DON'T PANIC!\nRead the error above.\nSee how it has something to do with 'main'?\nOpen up the source file as noted and read the comments.\nYou can do this!",
     },
     .{
         .main_file = "02_std.zig",
@@ -243,9 +243,13 @@ const exercises = [_]Exercise{
     .{
         .main_file = "46_optionals2.zig",
         .output = "Elephant A. Elephant B. Elephant C.",
-        .hint = "Elephants!",
+        .hint = "Elephants again!",
     },
-    // super-simple struct method
+    .{
+        .main_file = "47_methods.zig",
+        .output = "5 aliens. 4 aliens. 1 aliens. 0 aliens. Earth is saved!",
+        .hint = "Use the heat ray. And the method!",
+    },
     // use struct method for elephant tails
     // quiz: add elephant trunk (like tail)!
 };
