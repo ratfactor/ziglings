@@ -33,7 +33,7 @@ const Color = enum(u32) {
 };
 
 pub fn main() void {
-    // Remeber Zig's multi-line strings? Here they are again.
+    // Remember Zig's multi-line strings? Here they are again.
     // Also, check out this cool format string:
     //
     //     {x:0>6}
