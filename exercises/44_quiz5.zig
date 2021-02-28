@@ -8,7 +8,7 @@
 //     from Holding Hands
 //       by Lenore M. Link
 //
-const std = @import("std"); // single quotes
+const std = @import("std");
 
 const Elephant = struct {
     letter: u8,
