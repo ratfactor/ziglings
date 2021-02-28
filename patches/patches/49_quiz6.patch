@@ -1,0 +1,11 @@
+28a29,31
+>     pub fn getTrunk(self: *Elephant) *Elephant {
+>         return self.trunk.?;
+>     }
+30,31c33,35
+<     ???
+< 
+---
+>     pub fn hasTrunk(self: *Elephant) bool {
+>         return (self.trunk != null);
+>     }

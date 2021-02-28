@@ -1,15 +1,21 @@
 //
-// Now that we've seen how methods work, let's see if we can help
-// our elephants out a bit more with some Elephant methods.
+//    "Trunks and tails
+//     Are handy things"
+
+//     from Holding Hands
+//       by Lenore M. Link
+//
+// Now that we have tails all figured out, can you implement trunks?
 //
 const std = @import("std");
 
 const Elephant = struct {
     letter: u8,
     tail: ?*Elephant = null,
+    trunk: ?*Elephant = null,
     visited: bool = false,
 
-    // New Elephant methods!
+    // Elephant tail methods!
     pub fn getTail(self: *Elephant) *Elephant {
         return self.tail.?; // Remember, this is means "orelse unreachable"
     }
@@ -17,6 +23,13 @@ const Elephant = struct {
     pub fn hasTail(self: *Elephant) bool {
         return (self.tail != null);
     }
+
+    // Your Elephant trunk methods go here!
+    // ---------------------------------------------------
+
+    ???
+
+    // ---------------------------------------------------
 
     pub fn visit(self: *Elephant) void {
         self.visited = true;
@@ -38,31 +51,41 @@ pub fn main() void {
     elephantA.tail = &elephantB;
     elephantB.tail = &elephantC;
 
+    // And link the elephants so that each trunk "points" to the previous.
+    elephantB.trunk = &elephantA;
+    elephantC.trunk = &elephantB;
+
     visitElephants(&elephantA);
 
     std.debug.print("\n", .{});
 }
 
-// This function visits all elephants once, starting with the
-// first elephant and following the tails to the next elephant.
+// This function visits all elephants twice, tails to trunks.
 fn visitElephants(first_elephant: *Elephant) void {
     var e = first_elephant;
 
+    // Follow the tails!
     while (true) {
         e.print();
         e.visit();
 
         // Get the next elephant or stop.
         if (e.hasTail()) {
-            e = e.???; // Which method do we want here?
+            e = e.getTail();
+        } else {
+            break;
+        }
+    }
+
+    // Follow the trunks!
+    while (true) {
+        e.print();
+
+        // Get the previous elephant or stop.
+        if (e.hasTrunk()) {
+            e = e.getTrunk();
         } else {
             break;
         }
     }
 }
-
-// Bonus: Zig's enums can also have methods! Can you find
-// one in the wild? If you can, mention it along with your
-// name or alias in a comment below this one and make a
-// pull request on GitHub for a piece of eternal Ziglings
-// glory. The first five (5) PRs will be accepted!

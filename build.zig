@@ -252,11 +252,14 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "48_methods2.zig",
-        .output = "Elephant A (U). Elephant B (U). Elephant C (U).",
-        .hint = "This just needs one little fix."
+        .output = "A  B  C",
+        .hint = "This just needs one little fix.",
     },
-    // 48 use struct method for elephant tails
-    // 49 quiz: add elephant trunk (like tail)!
+    .{
+        .main_file = "49_quiz6.zig",
+        .output = "A  B  C  Cv Bv Av",
+        .hint = "Now you're writting Zig!",
+    },
     // 50 null vs undefined
     // 51 pass-by-value and const fn params
     // 52 slices!
