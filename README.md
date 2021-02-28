@@ -127,7 +127,7 @@ Planned exercises:
 * [x] Structs
 * [x] Pointers
 * [x] Optionals
-* [ ] Struct methods
+* [x] Struct methods
 * [ ] Slices
 * [ ] Multi pointers
 * [ ] Unions

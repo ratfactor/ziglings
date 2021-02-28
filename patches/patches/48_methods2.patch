@@ -1,0 +1,4 @@
+57c57
+<             e = e.???; // Which method do we want here?
+---
+>             e = e.getTail(); // Which method do we want here?

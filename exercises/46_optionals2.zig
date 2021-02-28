@@ -5,11 +5,23 @@
 // linked to the first elephant. This is because we had NO CONCEPT
 // of a tail that didn't point to another elephant!
 //
+// We also introduce the handy ".?" shortcut:
+//
+//     const foo = bar.?;
+//
+// is the same as
+//
+//     const foo = bar orelse unreachable;
+//
+// See if you can find where we use this shortcut below.
+//
+// Now let's make those elephant tails optional!
+//
 const std = @import("std");
 
 const Elephant = struct {
     letter: u8,
-    tail: *Elephant = null, // <---- make this optional!
+    tail: *Elephant = null, // Hmm... tail needs something...
     visited: bool = false,
 };
 

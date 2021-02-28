@@ -250,8 +250,16 @@ const exercises = [_]Exercise{
         .output = "5 aliens. 4 aliens. 1 aliens. 0 aliens. Earth is saved!",
         .hint = "Use the heat ray. And the method!",
     },
-    // use struct method for elephant tails
-    // quiz: add elephant trunk (like tail)!
+    .{
+        .main_file = "48_methods2.zig",
+        .output = "Elephant A (U). Elephant B (U). Elephant C (U).",
+        .hint = "This just needs one little fix."
+    },
+    // 48 use struct method for elephant tails
+    // 49 quiz: add elephant trunk (like tail)!
+    // 50 null vs undefined
+    // 51 pass-by-value and const fn params
+    // 52 slices!
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
