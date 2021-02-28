@@ -9,7 +9,7 @@ const std = @import("std"); // single quotes
 
 const Elephant = struct {
     letter: u8,
-    tail: *Elephant = undefined, // <---- make this optional!
+    tail: *Elephant = null, // <---- make this optional!
     visited: bool = false,
 };
 
