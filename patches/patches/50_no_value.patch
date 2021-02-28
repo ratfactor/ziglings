@@ -1,0 +1,14 @@
+68c68
+<     var first_line1: *const [16]u8 = ???;
+---
+>     var first_line1: *const [16]u8 = undefined;
+71c71
+<     var first_line2: Err!*const [21]u8 = ???;
+---
+>     var first_line2: Err!*const [21]u8 = Err.Cthulhu;
+79,80c79,80
+< fn printSecondLine() ??? {
+<     var second_line2: ?*const [18]u8 = ???;
+---
+> fn printSecondLine() void {
+>     var second_line2: ?*const [18]u8 = null;

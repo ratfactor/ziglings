@@ -260,7 +260,10 @@ const exercises = [_]Exercise{
         .output = "A  B  C  Cv Bv Av",
         .hint = "Now you're writting Zig!",
     },
-    // 50 null vs undefined
+    .{
+        .main_file = "50_no_value.zig",
+        .output = "That is not dead which can eternal lie / And with strange aeons even death may die.",
+    },
     // 51 pass-by-value and const fn params
     // 52 slices!
 };
