@@ -5,7 +5,7 @@
 // linked to the first elephant. This is because we had NO CONCEPT
 // of a tail that didn't point to another elephant!
 //
-const std = @import("std"); // single quotes
+const std = @import("std");
 
 const Elephant = struct {
     letter: u8,
