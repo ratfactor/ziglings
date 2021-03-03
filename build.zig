@@ -345,7 +345,7 @@ pub fn build(b: *Builder) void {
         \\         _       _ _
         \\     ___(_) __ _| (_)_ __   __ _ ___
         \\    |_  | |/ _' | | | '_ \ / _' / __|
-        \\     / /| | (_| | | | | | | (_| \__ \ 
+        \\     / /| | (_| | | | | | | (_| \__ \
         \\    /___|_|\__, |_|_|_| |_|\__, |___/
         \\           |___/           |___/
         \\
@@ -522,7 +522,7 @@ const ZiglingStep = struct {
             zig_args.append(@tagName(builder.color)) catch unreachable;
         }
 
-        const zig_file = std.fs.path.join(builder.allocator, &[_][]const u8{ 
+        const zig_file = std.fs.path.join(builder.allocator, &[_][]const u8{
             if (self.use_healed) "patches/healed" else "exercises", self.exercise.main_file }) catch unreachable;
         zig_args.append(builder.pathFromRoot(zig_file)) catch unreachable;
 
