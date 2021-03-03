@@ -163,4 +163,3 @@ Planned exercises:
 The initial topics for these exercises were unabashedly cribbed from
 [ziglearn.org](https://ziglearn.org/). I've since moved things around
 in an order that I think best lets each topic build upon each other.
-
