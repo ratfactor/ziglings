@@ -1,12 +1,12 @@
-#!/bin/bash
+#!/bin/sh
 #
 #     "It isn't fair, my precious, is it,
 #      to ask us what it's got in it's
 #      nassty little pocketsess?"
-#             Gollum, The Hobbit, or There and Back Again 
+#             Gollum, The Hobbit, or There and Back Again
 #
 
-cd $(dirname $(which $0))
+cd $(dirname $(realpath $0))
 f=$(basename ../exercises/$1*.zig .zig 2> /dev/null)
 b=../exercises/$f.zig
 a=../answers/$f.zig
