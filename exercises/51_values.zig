@@ -10,10 +10,10 @@
 //
 // Ah, that's better. Now we can look at some familiar Zig code.
 //
-// @import() adds the imported code to your own. In this case,
-// compiled code from the standard library is added to your program.
-// It is loaded into RAM with the code you write when it runs. And
-// that thing we give a const name?  That's a struct!
+// @import() adds the imported code to your own. In this case, code
+// from the standard library is added to your program and compiled
+// with it. All of this will be loaded into RAM when it runs. Oh, and
+// that thing we name "const std"?  That's a struct!
 
 const std = @import("std");
 
