@@ -14,4 +14,3 @@
 # Text files to always have LF (unix) line endings on checkout.
 *.sh text eol=lf
 *.zig text eol=lf
-

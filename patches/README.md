@@ -32,4 +32,3 @@ $ zig build -Dhealed [step]
 Another Bash shell script named `gollum.sh` may also be found. He snatches the
 original answers and stows them in his secret answers stash. If you leave him
 alone, he'll leave you alone.
-
