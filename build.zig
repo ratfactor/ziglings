@@ -264,7 +264,10 @@ const exercises = [_]Exercise{
         .main_file = "50_no_value.zig",
         .output = "That is not dead which can eternal lie / And with strange aeons even death may die.",
     },
-    // 51 pass-by-value and const fn params
+    .{
+        .main_file = "51_values.zig",
+        .output = "1:false!. 2:true!. 3:true!. XP before:0, after:200.",
+    },
     // 52 slices!
 };
 
