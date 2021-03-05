@@ -66,6 +66,6 @@ fn visitElephants(first_elephant: *Elephant) void {
 // name or alias in a comment below this one and make a
 // pull request on GitHub for a piece of eternal Ziglings
 // glory. The first five (5) PRs will be accepted!
-
-drforester - I found one in the Zig source. See link below:
-https://github.com/ziglang/zig/blob/041212a41cfaf029dc3eb9740467b721c76f406c/src/Compilation.zig#L2495
+//
+// 1) drforester - I found one in the Zig source:
+// https://github.com/ziglang/zig/blob/041212a41cfaf029dc3eb9740467b721c76f406c/src/Compilation.zig#L2495
