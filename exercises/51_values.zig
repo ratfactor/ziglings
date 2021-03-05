@@ -141,8 +141,8 @@ pub fn main() void {
     // NOTE:
     //
     //     If we tried to do this with a *const Character pointer,
-    //     that would NOT work because that makes the data we would
-    //     get a compiler error because the VALUE becomes immutable!
+    //     that would NOT work and we would get a compiler error
+    //     because the VALUE becomes immutable!
     //
     // Moving along...
     //
