@@ -8,13 +8,12 @@
 // ALL OF THIS RELATE TO THE DATA IN OUR ZIG PROGRAMS? LET'S HEAD
 // BACK UP TO THE TEXT EDITOR AND FIND OUT.
 //
-// (Conversational) Ah, that's better. Now we can look at some
-// familiar Zig code!
+// Ah, that's better. Now we can look at some familiar Zig code.
 //
 // @import() adds the imported code to your own. In this case,
-// compiled code from the standard library is compiled in with your
-// program. It is loaded into RAM with the code you write when it
-// runs. And that thing we give a const name? That's a struct!
+// compiled code from the standard library is added to your program.
+// It is loaded into RAM with the code you write when it runs. And
+// that thing we give a const name?  That's a struct!
 
 const std = @import("std");
 
