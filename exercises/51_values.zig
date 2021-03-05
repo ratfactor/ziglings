@@ -13,7 +13,7 @@
 // @import() adds the imported code to your own. In this case, code
 // from the standard library is added to your program and compiled
 // with it. All of this will be loaded into RAM when it runs. Oh, and
-// that thing we name "const std"?  That's a struct!
+// that thing we name "const std"? That's a struct!
 
 const std = @import("std");
 
