@@ -85,9 +85,9 @@ pub fn main() void {
 
     // Now let's circle back around to that "std" struct we imported
     // at the top. Since it's just a regular Zig value once it's
-    // imported, we can also assign new names for its fields. The
-    // "debug" field refers to another struct. And "print" is a public
-    // function namespaced within THAT struct.
+    // imported, we can also assign new names for its fields and
+    // declarations. "debug" refers to another struct and "print" is a
+    // public function namespaced within THAT struct.
     //
     // Let's assign the std.debug.print function to a const named
     // "print" so that we can use this new name later!
@@ -131,13 +131,21 @@ pub fn main() void {
     // "glorp_access3" is interesting. It's also a pointer, but it's a
     // const. Won't that disallow changing the gold value? No! As you
     // may recall from our earlier pointer experiments, a constant
-    // pointer can't change what it's pointing AT, but the value at
+    // pointer can't change what it's POINTING AT, but the value at
     // the address it points to is still mutable! So we CAN change it.
 
     const glorp_access3: *Character = &glorp;
     glorp_access3.gold = 333;
     print("3:{}!. ", .{glorp.gold == glorp_access3.gold});
 
+    // NOTE:
+    //
+    //     If we tried to do this with a *const Character pointer,
+    //     that would NOT work because that makes the data we would
+    //     get a compiler error because the VALUE becomes immutable!
+    //
+    // Moving along...
+    //
     // Passing arguments to functions is pretty much exactly like
     // making an assignment to a const (since Zig enforces that ALL
     // function parameters are const).
