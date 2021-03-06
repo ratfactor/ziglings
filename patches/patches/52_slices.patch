@@ -1,0 +1,10 @@
+34,35c34,35
+<     const hand1: []u8 = cards[???];
+<     const hand2: []u8 = cards[???];
+---
+>     const hand1: []u8 = cards[0..4];
+>     const hand2: []u8 = cards[4..];
+45c45
+< fn printHand(hand: ???) void {
+---
+> fn printHand(hand: []u8) void {

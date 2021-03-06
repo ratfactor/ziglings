@@ -268,7 +268,10 @@ const exercises = [_]Exercise{
         .main_file = "51_values.zig",
         .output = "1:false!. 2:true!. 3:true!. XP before:0, after:200.",
     },
-    // 52 slices!
+    .{
+        .main_file = "52_slices.zig",
+        .output = "Hand1: A 4 K 8 Hand2: 5 2 Q J",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
