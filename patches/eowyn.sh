@@ -14,7 +14,7 @@
 #
 
 # We run from the patches dir. Go there now if not already.
-cd $(dirname $(realpath $0))
+cd $(dirname $0)
 pwd # Show it upon the screen so all shall be made apparent.
 
 # Create healed/ directory here if it doesn't already exist.
