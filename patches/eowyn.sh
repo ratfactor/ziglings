@@ -13,6 +13,8 @@
 # to convalesce in the healed directory.
 #
 
+set -e
+
 # We run from the patches dir. Go there now if not already.
 cd $(dirname $(realpath $0))
 pwd # Show it upon the screen so all shall be made apparent.
