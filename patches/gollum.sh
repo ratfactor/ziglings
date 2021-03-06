@@ -14,8 +14,8 @@ p=patches/$f.patch
 
 printf "\tf: '$f'\n\tb: '$b'\n\ta: '$a'\n"
 
-if [[ ! -f $b ]]; then echo "We hates it!"; exit 1; fi
-if [[ ! -a $a ]]; then echo "Where is it? Where is the answer, precious?"; exit; fi
+if [ ! -f $b ]; then echo "We hates it!"; exit 1; fi
+if [ ! -f $a ]; then echo "Where is it? Where is the answer, precious?"; exit; fi
 
 echo Hisssss!
 

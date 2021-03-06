@@ -28,15 +28,14 @@ do
     patch_name="patches/$true_name.patch"
 
 
-    if [[ -f $patch_name ]]
+    if [ -f $patch_name ]
     then
         # Apply the bandages to the wounds, grow new limbs, let
         # new life spring into the broken bodies of the fallen.
         echo Healing $true_name...
         patch --output=healed/$true_name.zig $broken $patch_name
     else
-        echo Cannot heal $true_name. Making empty patch.
-        echo > $patch_name
+        echo Cannot heal $true_name. No patch found.
     fi
 done
 
