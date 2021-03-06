@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 #     "I will be a shieldmaiden no longer,
 #      nor vie with the great Riders, nor
@@ -12,8 +12,6 @@
 # using the patches in this directory and convey them
 # to convalesce in the healed directory.
 #
-
-set -e
 
 # We run from the patches dir. Go there now if not already.
 cd $(dirname $(realpath $0))
