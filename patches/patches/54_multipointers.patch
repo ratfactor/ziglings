@@ -1,4 +1,0 @@
-33c33
-<     const zen12_string: []const u8 = zen_multiptr;
----
->     const zen12_string: []const u8 = zen_multiptr[0..21];

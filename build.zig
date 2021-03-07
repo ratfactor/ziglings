@@ -277,7 +277,7 @@ const exercises = [_]Exercise{
         .output = "'all your base are belong to us.' 'for great justice.'",
     },
     .{
-        .main_file = "54_multipointers.zig",
+        .main_file = "54_manypointers.zig",
         .output = "Memory is a resource.",
     },
 };

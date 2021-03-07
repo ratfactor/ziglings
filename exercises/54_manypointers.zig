@@ -18,19 +18,19 @@ pub fn main() void {
     //
     //     const zen12: []const u8 = "...";
     //
-    // Now let's turn this into a "multi pointer":
-    const zen_multiptr: [*]const u8 = zen12;
+    // Now let's turn this into a "many pointer":
+    const zen_manyptr: [*]const u8 = zen12;
 
-    // It's okay to access zen_multiptr just like an array or slice as
+    // It's okay to access zen_manyptr just like an array or slice as
     // long as you keep track of the length yourself!
     //
     // A "string" in Zig is a pointer to an array of const u8 values
     // or a slice of const u8 values, into one, as we saw above). So,
-    // we could treat a "multi pointer" of const u8 a string as long
+    // we could treat a "many pointer" of const u8 a string as long
     // as we can CONVERT IT TO A SLICE. (Hint: we do know the length!)
     //
     // Please fix this line so the print below statement can print it:
-    const zen12_string: []const u8 = zen_multiptr;
+    const zen12_string: []const u8 = zen_manyptr;
 
     // Here's the moment of truth!
     std.debug.print("{s}\n", .{zen12_string});
