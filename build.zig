@@ -272,6 +272,10 @@ const exercises = [_]Exercise{
         .main_file = "52_slices.zig",
         .output = "Hand1: A 4 K 8 Hand2: 5 2 Q J",
     },
+    .{
+        .main_file = "53_slices2.zig",
+        .output = "'all your base are belong to us.' 'for great justice.'",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
