@@ -276,6 +276,10 @@ const exercises = [_]Exercise{
         .main_file = "53_slices2.zig",
         .output = "'all your base are belong to us.' 'for great justice.'",
     },
+    .{
+        .main_file = "54_multipointers.zig",
+        .output = "Memory is a resource.",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
