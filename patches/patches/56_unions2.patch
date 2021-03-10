@@ -1,0 +1,10 @@
+47,48c47,48
+<     printInsect(???);
+<     printInsect(???);
+---
+>     printInsect(ant);
+>     printInsect(bee);
+54c54
+<     switch (???) {
+---
+>     switch (insect) {
