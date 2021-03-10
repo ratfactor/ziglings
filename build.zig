@@ -280,6 +280,10 @@ const exercises = [_]Exercise{
         .main_file = "54_manypointers.zig",
         .output = "Memory is a resource.",
     },
+    .{
+        .main_file = "55_unions.zig",
+        .output = "Insect report! Ant alive is: true. Bee visited 15 flowers.",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
