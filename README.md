@@ -14,7 +14,7 @@ sweet of you.)
 This project was directly inspired by the brilliant and fun
 [rustlings](https://github.com/rust-lang/rustlings)
 project for the [Rust](https://www.rust-lang.org/) language.
-Indirect inspiration comes from [Ruby Koans]( http://rubykoans.com/)
+Indirect inspiration comes from [Ruby Koans](http://rubykoans.com/)
 and the Little LISPer/Little Schemer series of books.
 
 ## Intended Audience
@@ -29,6 +29,8 @@ to also check out these Zig language resources for more detail:
 
 * https://ziglearn.org/
 * https://ziglang.org/documentation/master/
+
+Also, the [Zig community](https://github.com/ziglang/zig/wiki/Community) is incredibly friendly and helpful!
 
 ## Getting Started
 
