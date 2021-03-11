@@ -288,6 +288,10 @@ const exercises = [_]Exercise{
         .main_file = "56_unions2.zig",
         .output = "Insect report! Ant alive is: true. Bee visited 16 flowers.",
     },
+    .{
+        .main_file = "57_unions3.zig",
+        .output = "Insect report! Ant alive is: true. Bee visited 17 flowers.",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.

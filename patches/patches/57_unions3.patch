@@ -1,0 +1,4 @@
+18c18
+< const Insect = union(InsectStat) {
+---
+> const Insect = union(enum) {
