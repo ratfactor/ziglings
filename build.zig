@@ -27,269 +27,278 @@ const Exercise = struct {
         return self.main_file[0 .. self.main_file.len - 4];
     }
 
-    /// Returns the key of the main file, which is the text before the _.
-    /// For example, "01_hello.zig" has the key "01".
+    /// Returns the key of the main file, the string before the '_' with
+    /// "zero padding" removed.
+    /// For example, "001_hello.zig" has the key "1".
     pub fn key(self: Exercise) []const u8 {
         const end_index = std.mem.indexOfScalar(u8, self.main_file, '_');
         assert(end_index != null); // main file must be key_description.zig
-        return self.main_file[0..end_index.?];
+
+        // remove zero padding by advancing index past '0's
+        var start_index: usize = 0;
+        while (self.main_file[start_index] == '0') start_index += 1;
+        return self.main_file[start_index..end_index.?];
     }
 };
 
 const exercises = [_]Exercise{
     .{
-        .main_file = "01_hello.zig",
+        .main_file = "001_hello.zig",
         .output = "Hello world",
         .hint = "DON'T PANIC!\nRead the error above.\nSee how it has something to do with 'main'?\nOpen up the source file as noted and read the comments.\nYou can do this!",
     },
     .{
-        .main_file = "02_std.zig",
+        .main_file = "002_std.zig",
         .output = "Standard Library",
     },
     .{
-        .main_file = "03_assignment.zig",
+        .main_file = "003_assignment.zig",
         .output = "55 314159 -11",
         .hint = "There are three mistakes in this one!",
     },
     .{
-        .main_file = "04_arrays.zig",
+        .main_file = "004_arrays.zig",
         .output = "Fourth: 7, Length: 8",
         .hint = "There are two things to complete here.",
     },
     .{
-        .main_file = "05_arrays2.zig",
+        .main_file = "005_arrays2.zig",
         .output = "LEET: 1337, Bits: 100110011001",
         .hint = "Fill in the two arrays.",
     },
     .{
-        .main_file = "06_strings.zig",
+        .main_file = "006_strings.zig",
         .output = "d=d ha ha ha Major Tom",
         .hint = "Each '???' needs something filled in.",
     },
     .{
-        .main_file = "07_strings2.zig",
+        .main_file = "007_strings2.zig",
         .output = "Ziggy",
         .hint = "Please fix the lyrics!",
     },
     .{
-        .main_file = "08_quiz.zig",
+        .main_file = "008_quiz.zig",
         .output = "Program in Zig",
         .hint = "See if you can fix the program!",
     },
     .{
-        .main_file = "09_if.zig",
+        .main_file = "009_if.zig",
         .output = "Foo is 1!",
     },
     .{
-        .main_file = "10_if2.zig",
+        .main_file = "010_if2.zig",
         .output = "price is $17",
     },
     .{
-        .main_file = "11_while.zig",
+        .main_file = "011_while.zig",
         .output = "n=1024",
         .hint = "You probably want a 'less than' condition.",
     },
     .{
-        .main_file = "12_while2.zig",
+        .main_file = "012_while2.zig",
         .output = "n=1024",
         .hint = "It might help to look back at the previous exercise.",
     },
     .{
-        .main_file = "13_while3.zig",
+        .main_file = "013_while3.zig",
         .output = "1 2 4 7 8 11 13 14 16 17 19",
     },
     .{
-        .main_file = "14_while4.zig",
+        .main_file = "014_while4.zig",
         .output = "n=4",
     },
     .{
-        .main_file = "15_for.zig",
+        .main_file = "015_for.zig",
         .output = "A Dramatic Story: :-)  :-)  :-(  :-|  :-)  The End.",
     },
     .{
-        .main_file = "16_for2.zig",
+        .main_file = "016_for2.zig",
         .output = "13",
     },
     .{
-        .main_file = "17_quiz2.zig",
+        .main_file = "017_quiz2.zig",
         .output = "8, Fizz, Buzz, 11, Fizz, 13, 14, FizzBuzz, 16",
         .hint = "This is a famous game!",
     },
     .{
-        .main_file = "18_functions.zig",
+        .main_file = "018_functions.zig",
         .output = "Question: 42",
         .hint = "Can you help write the function?",
     },
     .{
-        .main_file = "19_functions2.zig",
+        .main_file = "019_functions2.zig",
         .output = "2 4 8 16",
     },
     .{
-        .main_file = "20_quiz3.zig",
+        .main_file = "020_quiz3.zig",
         .output = "32 64 128 256",
         .hint = "Unexpected pop quiz! Help!",
     },
     .{
-        .main_file = "21_errors.zig",
+        .main_file = "021_errors.zig",
         .output = "2<4. 3<4. 4=4. 5>4. 6>4.",
         .hint = "What's the deal with fours?",
     },
     .{
-        .main_file = "22_errors2.zig",
+        .main_file = "022_errors2.zig",
         .output = "I compiled",
         .hint = "Get the error union type right to allow this to compile.",
     },
     .{
-        .main_file = "23_errors3.zig",
+        .main_file = "023_errors3.zig",
         .output = "a=64, b=22",
     },
     .{
-        .main_file = "24_errors4.zig",
+        .main_file = "024_errors4.zig",
         .output = "a=20, b=14, c=10",
     },
     .{
-        .main_file = "25_errors5.zig",
+        .main_file = "025_errors5.zig",
         .output = "a=0, b=19, c=0",
     },
     .{
-        .main_file = "26_hello2.zig",
+        .main_file = "026_hello2.zig",
         .output = "Hello world",
         .hint = "Try using a try!",
         .check_stdout = true,
     },
     .{
-        .main_file = "27_defer.zig",
+        .main_file = "027_defer.zig",
         .output = "One Two",
     },
     .{
-        .main_file = "28_defer2.zig",
+        .main_file = "028_defer2.zig",
         .output = "(Goat) (Cat) (Dog) (Dog) (Goat) (Unknown) done.",
     },
     .{
-        .main_file = "29_errdefer.zig",
+        .main_file = "029_errdefer.zig",
         .output = "Getting number...got 5. Getting number...failed!",
     },
     .{
-        .main_file = "30_switch.zig",
+        .main_file = "030_switch.zig",
         .output = "ZIG?",
     },
     .{
-        .main_file = "31_switch2.zig",
+        .main_file = "031_switch2.zig",
         .output = "ZIG!",
     },
     .{
-        .main_file = "32_unreachable.zig",
+        .main_file = "032_unreachable.zig",
         .output = "1 2 3 9 8 7",
     },
     .{
-        .main_file = "33_iferror.zig",
+        .main_file = "033_iferror.zig",
         .output = "2<4. 3<4. 4=4. 5>4. 6>4.",
         .hint = "Seriously, what's the deal with fours?",
     },
     .{
-        .main_file = "34_quiz4.zig",
+        .main_file = "034_quiz4.zig",
         .output = "my_num=42",
         .hint = "Can you make this work?",
         .check_stdout = true,
     },
     .{
-        .main_file = "35_enums.zig",
+        .main_file = "035_enums.zig",
         .output = "1 2 3 9 8 7",
         .hint = "This problem seems familiar...",
     },
     .{
-        .main_file = "36_enums2.zig",
+        .main_file = "036_enums2.zig",
         .output = "#0000ff",
         .hint = "I'm feeling blue about this.",
     },
     .{
-        .main_file = "37_structs.zig",
+        .main_file = "037_structs.zig",
         .output = "Your wizard has 90 health and 25 gold.",
     },
     .{
-        .main_file = "38_structs2.zig",
+        .main_file = "038_structs2.zig",
         .output = "Character 2 - G:10 H:100 XP:20",
     },
     .{
-        .main_file = "39_pointers.zig",
+        .main_file = "039_pointers.zig",
         .output = "num1: 5, num2: 5",
         .hint = "Pointers aren't so bad.",
     },
     .{
-        .main_file = "40_pointers2.zig",
+        .main_file = "040_pointers2.zig",
         .output = "a: 12, b: 12",
     },
     .{
-        .main_file = "41_pointers3.zig",
+        .main_file = "041_pointers3.zig",
         .output = "foo=6, bar=11",
     },
     .{
-        .main_file = "42_pointers4.zig",
+        .main_file = "042_pointers4.zig",
         .output = "num: 5, more_nums: 1 1 5 1",
     },
     .{
-        .main_file = "43_pointers5.zig",
+        .main_file = "043_pointers5.zig",
         .output = "Wizard (G:10 H:100 XP:20)",
     },
     .{
-        .main_file = "44_quiz5.zig",
+        .main_file = "044_quiz5.zig",
         .output = "Elephant A. Elephant B. Elephant C.",
         .hint = "Oh no! We forgot Elephant B!",
     },
     .{
-        .main_file = "45_optionals.zig",
+        .main_file = "045_optionals.zig",
         .output = "The Ultimate Answer: 42.",
     },
     .{
-        .main_file = "46_optionals2.zig",
+        .main_file = "046_optionals2.zig",
         .output = "Elephant A. Elephant B. Elephant C.",
         .hint = "Elephants again!",
     },
     .{
-        .main_file = "47_methods.zig",
+        .main_file = "047_methods.zig",
         .output = "5 aliens. 4 aliens. 1 aliens. 0 aliens. Earth is saved!",
         .hint = "Use the heat ray. And the method!",
     },
     .{
-        .main_file = "48_methods2.zig",
+        .main_file = "048_methods2.zig",
         .output = "A  B  C",
         .hint = "This just needs one little fix.",
     },
     .{
-        .main_file = "49_quiz6.zig",
+        .main_file = "049_quiz6.zig",
         .output = "A  B  C  Cv Bv Av",
         .hint = "Now you're writting Zig!",
     },
     .{
-        .main_file = "50_no_value.zig",
+        .main_file = "050_no_value.zig",
         .output = "That is not dead which can eternal lie / And with strange aeons even death may die.",
     },
     .{
-        .main_file = "51_values.zig",
+        .main_file = "051_values.zig",
         .output = "1:false!. 2:true!. 3:true!. XP before:0, after:200.",
     },
     .{
-        .main_file = "52_slices.zig",
+        .main_file = "052_slices.zig",
         .output = "Hand1: A 4 K 8 Hand2: 5 2 Q J",
     },
     .{
-        .main_file = "53_slices2.zig",
+        .main_file = "053_slices2.zig",
         .output = "'all your base are belong to us.' 'for great justice.'",
     },
     .{
-        .main_file = "54_manypointers.zig",
+        .main_file = "054_manypointers.zig",
         .output = "Memory is a resource.",
     },
     .{
-        .main_file = "55_unions.zig",
+        .main_file = "055_unions.zig",
         .output = "Insect report! Ant alive is: true. Bee visited 15 flowers.",
     },
     .{
-        .main_file = "56_unions2.zig",
+        .main_file = "056_unions2.zig",
         .output = "Insect report! Ant alive is: true. Bee visited 16 flowers.",
     },
     .{
-        .main_file = "57_unions3.zig",
+        .main_file = "057_unions3.zig",
+        .output = "Insect report! Ant alive is: true. Bee visited 17 flowers.",
+    },
+    .{
+        .main_file = "057_unions3.zig",
         .output = "Insect report! Ant alive is: true. Bee visited 17 flowers.",
     },
 };
@@ -548,8 +557,7 @@ const ZiglingStep = struct {
             zig_args.append(@tagName(builder.color)) catch unreachable;
         }
 
-        const zig_file = std.fs.path.join(builder.allocator, &[_][]const u8{
-            if (self.use_healed) "patches/healed" else "exercises", self.exercise.main_file }) catch unreachable;
+        const zig_file = std.fs.path.join(builder.allocator, &[_][]const u8{ if (self.use_healed) "patches/healed" else "exercises", self.exercise.main_file }) catch unreachable;
         zig_args.append(builder.pathFromRoot(zig_file)) catch unreachable;
 
         zig_args.append("--cache-dir") catch unreachable;
