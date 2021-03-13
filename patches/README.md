@@ -12,7 +12,7 @@ programs and places them in a `healed` directory, which is NOT committed to the
 repo.
 
 ```bash
-$ ./eowyn.sh
+$ patches/eowyn.sh
 ```
 
 (If you invoke her from elsewhere, she'll come here to ply her trade.)
