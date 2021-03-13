@@ -131,7 +131,7 @@ Planned exercises:
 * [x] Optionals
 * [x] Struct methods
 * [x] Slices
-* [x] Many pointers
+* [x] Many-item pointers
 * [x] Unions
 * [ ] Numeric types (integers, floats)
 * [ ] Labelled blocks and loops
