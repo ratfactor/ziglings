@@ -73,3 +73,5 @@ fn visitElephants(first_elephant: *Elephant) void {
 // 2) bbuccianti - I found one!
 // https://github.com/ziglang/zig/blob/master/lib/std/debug.zig#L477
 //
+// 3) GoldsteinE - Found many, here's one
+// https://github.com/ziglang/zig/blob/ce14bc7176f9e441064ffdde2d85e35fd78977f2/lib/std/target.zig#L65
