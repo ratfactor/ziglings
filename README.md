@@ -84,21 +84,21 @@ zig build 19_start
 You can also run without checking for correctness:
 
 ```bash
-zig build 01_test
+zig build 19_test
 ```
 
 Or skip the build system entirely and interact directly with the compiler
 if you're into that sort of thing:
 
 ```bash
-zig run exercises/01_hello.zig
+zig run exercises/001_hello.zig
 ```
 
 Calling all wizards: To prepare an executable for debugging, install it
 to zig-cache/bin with:
 
 ```bash
-zig build 01_install
+zig build 19_install
 ```
 
 ## TODO
