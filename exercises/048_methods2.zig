@@ -75,3 +75,7 @@ fn visitElephants(first_elephant: *Elephant) void {
 //
 // 3) GoldsteinE - Found many, here's one
 // https://github.com/ziglang/zig/blob/ce14bc7176f9e441064ffdde2d85e35fd78977f2/lib/std/target.zig#L65
+//
+// 4) SpencerCDixon - Love this language so far :-)
+// https://github.com/ziglang/zig/blob/a502c160cd51ce3de80b3be945245b7a91967a85/src/zir.zig#L530
+
