@@ -8,7 +8,7 @@
 //     var foo: []u8 = "foobar"[0..3];
 //
 // to:
-//   
+//
 //     var foo: []const u8 = "foobar"[0..3];
 //
 // See if you can fix this Zero Wing-inspired phrase descrambler:
