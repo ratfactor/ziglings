@@ -78,4 +78,6 @@ fn visitElephants(first_elephant: *Elephant) void {
 //
 // 4) SpencerCDixon - Love this language so far :-)
 // https://github.com/ziglang/zig/blob/a502c160cd51ce3de80b3be945245b7a91967a85/src/zir.zig#L530
-
+//
+// 5) tomkun - here's another enum method
+// https://github.com/ziglang/zig/blob/4ca1f4ec2e3ae1a08295bc6ed03c235cb7700ab9/src/codegen/aarch64.zig#L24
