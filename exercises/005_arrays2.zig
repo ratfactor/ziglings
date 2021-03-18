@@ -23,7 +23,7 @@ pub fn main() void {
     const leet = ???;
 
     // (Problem 2)
-    // Please set this array to using repetition.
+    // Please set this array using repetition.
     // It should result in: 1 0 0 1 1 0 0 1 1 0 0 1
     const bit_pattern = [_]u8{ ??? } ** 3;
 
