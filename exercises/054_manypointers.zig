@@ -27,9 +27,9 @@ pub fn main() void {
     // long as you keep track of the length yourself!
     //
     // A "string" in Zig is a pointer to an array of const u8 values
-    // or a slice of const u8 values, into one, as we saw above). So,
-    // we could treat a "many-item pointer" of const u8 a string as long
-    // as we can CONVERT IT TO A SLICE. (Hint: we do know the length!)
+    // (or a slice of const u8 values, as we saw above). So, we could
+    // treat a "many-item pointer" of const u8 a string as long as we
+    // can CONVERT IT TO A SLICE. (Hint: we do know the length!)
     //
     // Please fix this line so the print below statement can print it:
     const zen12_string: []const u8 = zen_manyptr;
