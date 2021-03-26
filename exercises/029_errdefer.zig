@@ -1,6 +1,6 @@
 //
 // Another common problem is a block of code that could exit in multiple
-// places due to an error - but that needs to run do something before it
+// places due to an error - but that needs to do something before it
 // exits (typically to clean up after itself).
 //
 // An "errdefer" is a defer that only runs if the block exits with an error:
