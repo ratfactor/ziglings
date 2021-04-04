@@ -73,7 +73,7 @@ fn printCharacter(c: *Character) void {
         .warrior => "Warrior",
     };
 
-    std.debug.print("{s} (G:{} H:{} XP:{})", .{
+    std.debug.print("{s} (G:{} H:{} XP:{})\n", .{
         class_name,
         c.gold,
         c.health,

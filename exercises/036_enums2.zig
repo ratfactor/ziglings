@@ -53,6 +53,7 @@ pub fn main() void {
         \\  <span style="color: #{x:0>6}">Green</span>
         \\  <span style="color: #{}">Blue</span>
         \\</p>
+        \\
     , .{
         @enumToInt(Color.red),
         @enumToInt(Color.green),

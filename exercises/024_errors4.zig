@@ -25,7 +25,7 @@ pub fn main() void {
     var b: u32 = makeJustRight(14) catch 0;
     var c: u32 = makeJustRight(4) catch 0;
 
-    std.debug.print("a={}, b={}, c={}", .{ a, b, c });
+    std.debug.print("a={}, b={}, c={}\n", .{ a, b, c });
 }
 
 // In this silly example we've split the responsibility of making

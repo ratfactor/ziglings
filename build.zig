@@ -73,12 +73,12 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "007_strings2.zig",
-        .output = "Ziggy",
+        .output = "Ziggy played guitar\nJamming good with Andrew Kelley\nAnd the Spiders from Mars",
         .hint = "Please fix the lyrics!",
     },
     .{
         .main_file = "008_quiz.zig",
-        .output = "Program in Zig",
+        .output = "Program in Zig!",
         .hint = "See if you can fix the program!",
     },
     .{
@@ -87,16 +87,16 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "010_if2.zig",
-        .output = "price is $17",
+        .output = "With the discount, the price is $17.",
     },
     .{
         .main_file = "011_while.zig",
-        .output = "n=1024",
+        .output = "2 4 8 16 32 64 128 256 512 n=1024",
         .hint = "You probably want a 'less than' condition.",
     },
     .{
         .main_file = "012_while2.zig",
-        .output = "n=1024",
+        .output = "2 4 8 16 32 64 128 256 512 n=1024",
         .hint = "It might help to look back at the previous exercise.",
     },
     .{
@@ -117,12 +117,12 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "017_quiz2.zig",
-        .output = "8, Fizz, Buzz, 11, Fizz, 13, 14, FizzBuzz, 16",
+        .output = "1, 2, Fizz, 4, Buzz, Fizz, 7, 8, Fizz, Buzz, 11, Fizz, 13, 14, FizzBuzz, 16,",
         .hint = "This is a famous game!",
     },
     .{
         .main_file = "018_functions.zig",
-        .output = "Question: 42",
+        .output = "Answer to the Ultimate Question: 42",
         .hint = "Can you help write the function?",
     },
     .{
@@ -158,7 +158,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "026_hello2.zig",
-        .output = "Hello world",
+        .output = "Hello world!",
         .hint = "Try using a try!",
         .check_stdout = true,
     },
@@ -204,7 +204,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "036_enums2.zig",
-        .output = "#0000ff",
+        .output = "<p>\n  <span style=\"color: #ff0000\">Red</span>\n  <span style=\"color: #00ff00\">Green</span>\n  <span style=\"color: #0000ff\">Blue</span>\n</p>",
         .hint = "I'm feeling blue about this.",
     },
     .{
@@ -213,7 +213,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "038_structs2.zig",
-        .output = "Character 2 - G:10 H:100 XP:20",
+        .output = "Character 1 - G:20 H:100 XP:10\nCharacter 2 - G:10 H:100 XP:20",
     },
     .{
         .main_file = "039_pointers.zig",

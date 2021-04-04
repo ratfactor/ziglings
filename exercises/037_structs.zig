@@ -52,7 +52,7 @@ pub fn main() void {
     // Ouch! Glorp takes a punch!
     glorp_the_wise.health -= 10;
 
-    std.debug.print("Your wizard has {} health and {} gold.", .{
+    std.debug.print("Your wizard has {} health and {} gold.\n", .{
         glorp_the_wise.health,
         glorp_the_wise.gold,
     });

@@ -19,7 +19,7 @@ pub fn main() void {
     var b: u32 = addFive(14) catch 0;
     var c: u32 = addFive(4) catch 0;
 
-    std.debug.print("a={}, b={}, c={}", .{ a, b, c });
+    std.debug.print("a={}, b={}, c={}\n", .{ a, b, c });
 }
 
 fn addFive(n: u32) MyNumberError!u32 {

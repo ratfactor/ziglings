@@ -25,5 +25,5 @@ pub fn main() void {
     // an error. Can you set the type correctly above?
     my_number = MyNumberError.TooSmall;
 
-    std.debug.print("I compiled!", .{});
+    std.debug.print("I compiled!\n", .{});
 }
