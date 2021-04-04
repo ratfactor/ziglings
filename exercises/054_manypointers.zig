@@ -31,7 +31,7 @@ pub fn main() void {
     // treat a "many-item pointer" of const u8 as a string as long as
     // we can CONVERT IT TO A SLICE. (Hint: we do know the length!)
     //
-    // Please fix this line so the print below statement can print it:
+    // Please fix this line so the print statement below can print it:
     const zen12_string: []const u8 = zen_manyptr;
 
     // Here's the moment of truth!
