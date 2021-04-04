@@ -1,0 +1,14 @@
+188,189c188,189
+<             .place => print("{s}", .{p.name}),
+<             .path => print("--{}->", .{p.dist}),
+---
+>             .place => |p| print("{s}", .{p.name}),
+>             .path => |p| print("--{}->", .{p.dist}),
+251c251
+<             if (place == entry.*.?.place) return entry;
+---
+>             if (place == entry.*.?.place) return &entry.*.?;
+305c305
+<     fn getTripTo(self: *HermitsNotebook, trip: []?TripItem, dest: *Place) void {
+---
+>     fn getTripTo(self: *HermitsNotebook, trip: []?TripItem, dest: *Place) TripError!void {
