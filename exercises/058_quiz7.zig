@@ -336,6 +336,7 @@ const HermitsNotebook = struct {
             // Place, something has gone horribly wrong with our
             // program! (This really shouldn't ever happen. Have you
             // checked for grues?)
+            // Note: you do not need to fix anything here.
             const previous_entry = self.getEntry(current_entry.coming_from.?);
             if (previous_entry == null) return TripError.EatenByAGrue;
             current_entry = previous_entry.?;
