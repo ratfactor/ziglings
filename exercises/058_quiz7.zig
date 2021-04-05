@@ -446,8 +446,10 @@ fn printTrip(trip: []?TripItem) void {
 //
 // Since we examine all closest paths first before trying further ones
 // (thanks to the "todo" queue), we are performing a "Breadth-First
-// Search" (BFS). By tracking "lowest cost" paths, we can also say
-// that we're performing a "least-cost search".
+// Search" (BFS).
+//
+// By tracking "lowest cost" paths, we can also say that we're
+// performing a "least-cost search".
 //
 // Even more specifically, the Hermit's Notebook most closely
 // resembles the Shortest Path Faster Algorithm (SPFA), attributed to
