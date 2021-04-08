@@ -302,6 +302,10 @@ const exercises = [_]Exercise{
         .output = "Archer's Point--2->Bridge--1->Dogwood Grove--3->Cottage--2->East Pond--1->Fox Pond",
         .hint = "This is the biggest program we've seen yet. But you can do it!"
     },
+    .{
+        .main_file = "059_integers.zig",
+        .output = "Zig is cool.",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
