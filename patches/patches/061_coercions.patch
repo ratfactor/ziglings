@@ -1,0 +1,4 @@
+70c70
+<     const my_letter:   ???   = &letter;
+---
+>     const my_letter: ?*[1]u8 = &letter;
