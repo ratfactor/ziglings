@@ -314,6 +314,10 @@ const exercises = [_]Exercise{
         .main_file = "061_coercions.zig",
         .output = "Letter: A",
     },
+    .{
+        .main_file = "062_loop_expressions.zig",
+        .output = "Current language: Zig",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
