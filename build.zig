@@ -306,6 +306,10 @@ const exercises = [_]Exercise{
         .main_file = "059_integers.zig",
         .output = "Zig is cool.",
     },
+    .{
+        .main_file = "060_floats.zig",
+        .output = "Shuttle liftoff weight: 1995796kg",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
