@@ -133,11 +133,12 @@ Planned exercises:
 * [x] Slices
 * [x] Many-item pointers
 * [x] Unions
-* [ ] Numeric types (integers, floats)
-* [ ] Labelled blocks and loops
-* [ ] Loops as expressions
-* [ ] Comptime
-* [ ] Inline loops (how to DEMO this?)
+* [x] Numeric types (integers, floats)
+* [x] Labelled blocks and loops
+* [x] Loops as expressions
+* [ ] Builtins
+* [ ] Comptime (!)
+* [ ] Inline loops
 * [ ] Anonymous structs
 * [ ] Sentinel termination
 * [ ] Vectors

@@ -318,6 +318,10 @@ const exercises = [_]Exercise{
         .main_file = "062_loop_expressions.zig",
         .output = "Current language: Zig",
     },
+    .{
+        .main_file = "063_labels.zig",
+        .output = "Enjoy your Cheesy Chili!",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
