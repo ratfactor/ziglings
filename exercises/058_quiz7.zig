@@ -419,7 +419,10 @@ pub fn main() void {
 // we need to loop through the items in reverse, skipping nulls, until
 // we reach the destination at the front of the array.
 fn printTrip(trip: []?TripItem) void {
-    var i: u8 = @intCast(u8, trip.len); // convert usize length
+    // We convert the usize length to a u8 with @intCast(), a
+    // builtin function just like @import().  We'll learn about
+    // these properly in a later exercise.
+    var i: u8 = @intCast(u8, trip.len);
 
     while (i > 0) {
         i -= 1;

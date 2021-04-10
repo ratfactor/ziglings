@@ -25,6 +25,9 @@ pub fn main() void {
     //
     // See if you can figure out the missing piece:
     for (bits) |bit, ???| {
+        // Note that we convert the usize i to a u32 with
+        // @intCast(), a builtin function just like @import().
+        // We'll learn about these properly in a later exercise.
         var place_value = std.math.pow(u32, 2, @intCast(u32, i));
         value += place_value * bit;
     }
