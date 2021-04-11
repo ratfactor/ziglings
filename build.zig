@@ -322,6 +322,10 @@ const exercises = [_]Exercise{
         .main_file = "063_labels.zig",
         .output = "Enjoy your Cheesy Chili!",
     },
+    .{
+        .main_file = "064_builtins.zig",
+        .output = "1101 + 0101 = 0010 (true). Furthermore, 11110000 backwards is 00001111.",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.

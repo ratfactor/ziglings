@@ -1,0 +1,6 @@
+72,73c72,73
+<     const tupni: u8 = @bitReverse(input);
+<     print("{b:0>8} backwards is {b:0>8}.\n", .{input});
+---
+>     const tupni: u8 = @bitReverse(u8, input);
+>     print("{b:0>8} backwards is {b:0>8}.\n", .{input, tupni});
