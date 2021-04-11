@@ -136,7 +136,7 @@ Planned exercises:
 * [x] Numeric types (integers, floats)
 * [x] Labelled blocks and loops
 * [x] Loops as expressions
-* [ ] Builtins
+* [x] Builtins
 * [ ] Comptime (!)
 * [ ] Inline loops
 * [ ] Anonymous structs
