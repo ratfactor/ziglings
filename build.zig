@@ -317,6 +317,7 @@ const exercises = [_]Exercise{
     .{
         .main_file = "062_loop_expressions.zig",
         .output = "Current language: Zig",
+        .hint = "Surely the current language is 'Zig'!",
     },
     .{
         .main_file = "063_labels.zig",
@@ -325,6 +326,10 @@ const exercises = [_]Exercise{
     .{
         .main_file = "064_builtins.zig",
         .output = "1101 + 0101 = 0010 (true). Furthermore, 11110000 backwards is 00001111.",
+    },
+    .{
+        .main_file = "065_builtins2.zig",
+        .output = "A Narcissus loves all Narcissuses. He has room in his heart for: me myself.",
     },
 };
 

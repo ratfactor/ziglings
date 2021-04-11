@@ -1,0 +1,26 @@
+43c43
+< const print = import(std).debug.print; // Oops!
+---
+> const print = @import("std").debug.print;
+60,61c60,61
+<     ??? = &narcissus;
+<     ??? = &narcissus;
+---
+>     narcissus.me = &narcissus;
+>     narcissus.myself = &narcissus;
+71c71
+<     const T2 = narcissus.fetchTheMostBeautifulType();
+---
+>     const T2 = Narcissus.fetchTheMostBeautifulType();
+106c106
+<     if (fields[0].??? != void) {
+---
+>     if (fields[0].field_type != void) {
+110c110
+<     if (fields[1].??? != void) {
+---
+>     if (fields[1].field_type != void) {
+114c114
+<     if (fields[2].??? != void) {
+---
+>     if (fields[2].field_type != void) {
