@@ -331,6 +331,11 @@ const exercises = [_]Exercise{
         .main_file = "065_builtins2.zig",
         .output = "A Narcissus loves all Narcissuses. He has room in his heart for: me myself.",
     },
+    .{
+        .main_file = "066_comptime.zig",
+        .output = "const_int=12345, const_float=987.654, var_int=54321, var_float=456.789",
+        .hint = "It may help to read this one out loud to your favorite stuffed animal until it sinks in completely."
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
