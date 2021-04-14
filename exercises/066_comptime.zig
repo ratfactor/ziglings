@@ -47,7 +47,7 @@ pub fn main() void  {
     const const_int = 12345;
     const const_float = 987.654;
 
-    print("const_int={}, const_float={d:.3}, ", .{const_int, const_float});
+    print("Immutable: {}, {d:.3}; ", .{const_int, const_float});
 
     // But something changes when we assign the exact same values
     // to identifiers mutably with "var".
@@ -70,5 +70,15 @@ pub fn main() void  {
     var_int = 54321;
     var_float = 456.789;
 
-    print("var_int={}, var_float={d:.3}\n", .{var_int, var_float});
+    print("Mutable: {}, {d:.3}; ", .{var_int, var_float});
+
+    // Bonus: Now that we're familiar with Zig's builtins, we can
+    // also inspect the types to see what they are, no guessing
+    // needed!
+    print("Types: {}, {}, {}, {}\n", .{
+        @TypeOf(const_int),
+        @TypeOf(const_float),
+        @TypeOf(var_int),
+        @TypeOf(var_float),
+    });
 }

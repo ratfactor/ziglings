@@ -333,7 +333,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "066_comptime.zig",
-        .output = "const_int=12345, const_float=987.654, var_int=54321, var_float=456.789",
+        .output = "Immutable: 12345, 987.654; Mutable: 54321, 456.789; Types: comptime_int, comptime_float, u32, f32",
         .hint = "It may help to read this one out loud to your favorite stuffed animal until it sinks in completely."
     },
 };
