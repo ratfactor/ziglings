@@ -1,0 +1,4 @@
+54c54
+<     var count = 0;
+---
+>     comptime var count = 0;

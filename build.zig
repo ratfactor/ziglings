@@ -336,6 +336,10 @@ const exercises = [_]Exercise{
         .output = "Immutable: 12345, 987.654; Mutable: 54321, 456.789; Types: comptime_int, comptime_float, u32, f32",
         .hint = "It may help to read this one out loud to your favorite stuffed animal until it sinks in completely."
     },
+    .{
+        .main_file = "067_comptime2.zig",
+        .output = "A BB CCC DDDD",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
