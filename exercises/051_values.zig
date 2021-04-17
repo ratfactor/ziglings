@@ -14,7 +14,7 @@
 // from the standard library is added to your program and compiled
 // with it. All of this will be loaded into RAM when it runs. Oh, and
 // that thing we name "const std"? That's a struct!
-
+//
 const std = @import("std");
 
 // Remember our old RPG Character struct? A struct is really just a
@@ -150,17 +150,19 @@ pub fn main() void {
     // making an assignment to a const (since Zig enforces that ALL
     // function parameters are const).
     //
-    // Knowing that, see if you can make levelUp() work as expected -
+    // Knowing this, see if you can make levelUp() work as expected -
     // it should add the specified amount to the supplied character's
-    // experience points:
-
+    // experience points.
+    //
     print("XP before:{}, ", .{glorp.experience});
 
+    // Fix 1 of 2 goes here:
     levelUp(glorp, reward_xp);
 
     print("after:{}.\n", .{glorp.experience});
 }
 
+// Fix 2 of 2 goes here:
 fn levelUp(character_access: Character, xp: u32) void {
     character_access.experience += xp;
 }
