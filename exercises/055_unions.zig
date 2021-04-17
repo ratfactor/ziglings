@@ -5,7 +5,7 @@
 // to store.
 //
 // In this example, an instance of Foo always takes up u64 of
-// space memory even if you're currently storing a u8.
+// space in memory even if you're currently storing a u8.
 //
 //     const Foo = union {
 //         small: u8,
