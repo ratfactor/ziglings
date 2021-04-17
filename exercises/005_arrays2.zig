@@ -30,17 +30,23 @@ pub fn main() void {
     // Okay, that's all of the problems. Let's see the results.
     //
     // We could print these arrays with leet[0], leet[1],...but let's
-    // have a little preview of Zig "for" loops instead:
+    // have a little preview of Zig 'for' loops instead:
+    //
+    //    for (<item array>) |item| { <do something with item> }
+    // 
+    // Don't worry, we'll cover looping properly in upcoming
+    // lessons.
+    //
     std.debug.print("LEET: ", .{});
 
-    for (leet) |*n| {
-        std.debug.print("{}", .{n.*});
+    for (leet) |n| {
+        std.debug.print("{}", .{n});
     }
 
     std.debug.print(", Bits: ", .{});
 
-    for (bit_pattern) |*n| {
-        std.debug.print("{}", .{n.*});
+    for (bit_pattern) |n| {
+        std.debug.print("{}", .{n});
     }
 
     std.debug.print("\n", .{});
