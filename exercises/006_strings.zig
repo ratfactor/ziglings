@@ -11,6 +11,9 @@
 //
 //     const foo = [_]u8{ 'H', 'e', 'l', 'l', 'o' };
 //
+// Notice how individual characters use single quotes ('H') and
+// strings use double quotes ("H"). These are not interchangeable!
+//
 const std = @import("std");
 
 pub fn main() void {
