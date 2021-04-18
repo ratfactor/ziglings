@@ -1,0 +1,8 @@
+46c46
+<         if (my_scale == 0) @compileError("Scale 1:0 is not valid!");
+---
+>         if (my_scale == 0) my_scale = 1; //@compileError("Scale 1:0 is not valid!");
+72c72
+<     var scale: u32 = undefined;
+---
+>     comptime var scale: u32 = undefined;

@@ -340,6 +340,10 @@ const exercises = [_]Exercise{
         .main_file = "067_comptime2.zig",
         .output = "A BB CCC DDDD",
     },
+    .{
+        .main_file = "068_comptime3.zig",
+        .output = "Minnow (1:32, 4 x 2)\nShark (1:16, 8 x 5)\nWhale (1:1, 143 x 95)\n",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
