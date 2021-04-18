@@ -70,5 +70,5 @@ pub fn main() void {
     // this builtin to reverse the bits of a u8 integer.
     const input: u8 = 0b11110000;
     const tupni: u8 = @bitReverse(input);
-    print("{b:0>8} backwards is {b:0>8}.\n", .{input});
+    print("{b:0>8} backwards is {b:0>8}.\n", .{input, tupni});
 }

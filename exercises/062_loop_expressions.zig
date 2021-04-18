@@ -24,6 +24,10 @@
 // is probably not what you want. So consider the else clause
 // essential when using loops as expressions.
 //
+//     const four: u8 = while (true) {
+//         break 4;
+//     };               // <-- ERROR! Implicit 'else void' here!
+//
 // With that in mind, see if you can fix the problem with this
 // program.
 //
