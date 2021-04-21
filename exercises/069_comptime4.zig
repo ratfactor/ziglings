@@ -2,7 +2,7 @@
 // One of the more common uses of 'comptime' function parameters is
 // passing a type to a function:
 //
-//     fn foo(comptime MyType: type) { ... }
+//     fn foo(comptime MyType: type) void { ... }
 //
 // In fact, types are ONLY available at compile time, so the
 // 'comptime' keyword is required here.
