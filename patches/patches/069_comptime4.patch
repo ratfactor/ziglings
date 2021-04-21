@@ -1,0 +1,6 @@
+45,46c45,46
+< fn makeSequence(comptime T: type, ??? size: usize) [???]T {
+<     var sequence: [???]T = undefined;
+---
+> fn makeSequence(comptime T: type, comptime size: usize) [size]T {
+>     var sequence: [size]T = undefined;

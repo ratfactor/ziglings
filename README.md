@@ -41,7 +41,7 @@ Verify the installation and build number of `zig` like so:
 
 ```bash
 $ zig version
-0.8.0-dev.1065+xxxxxxxxx
+0.8.0-dev.1983+xxxxxxxxx
 ```
 
 Clone this repository with Git:
@@ -70,6 +70,11 @@ It is likely that you'll download a build which is _greater_ than the minimum.
 Once you have a build of the Zig compiler that works with Ziglings, they'll
 continue to work together. But keep in mind that if you update one, you may
 need to also update the other.
+
+### Version Changes
+
+* 2021-04-21 0.8.0-dev.1983 - std.fmt.format() 'any' format string
+* 2021-02-12 0.8.0-dev.1065 - std.fmt.format() 's' (string) format string
 
 ## Advanced Usage
 

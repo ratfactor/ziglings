@@ -344,6 +344,10 @@ const exercises = [_]Exercise{
         .main_file = "068_comptime3.zig",
         .output = "Minnow (1:32, 4 x 2)\nShark (1:16, 8 x 5)\nWhale (1:1, 143 x 95)\n",
     },
+    .{
+        .main_file = "069_comptime4.zig",
+        .output = "s1={ 1, 2, 3 }, s2={ 1, 2, 3, 4, 5 }, s3={ 1, 2, 3, 4, 5, 6, 7 }",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
@@ -353,7 +357,10 @@ fn checkVersion() bool {
         return false;
     }
 
-    const needed_version = std.SemanticVersion.parse("0.8.0-dev.1065") catch unreachable;
+    // When changing this version, be sure to also update README.md in two places:
+    //     1) Getting Started
+    //     2) Version Changes
+    const needed_version = std.SemanticVersion.parse("0.8.0-dev.1983") catch unreachable;
     const version = std.builtin.zig_version;
     const order = version.order(needed_version);
     return order != .lt;
