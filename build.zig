@@ -353,6 +353,10 @@ const exercises = [_]Exercise{
         .output = "\"Quack.\" ducky1: true, \"Squeek!\" ducky2: true, ducky3: false",
         .hint = "Have you kept the wizard hat on?",
     },
+    .{
+        .main_file = "071_comptime6.zig",
+        .output = "Narcissus has room in his heart for: me myself.",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.

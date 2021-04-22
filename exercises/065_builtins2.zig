@@ -90,7 +90,7 @@ pub fn main() void {
     // A StructFields array
     const fields = @typeInfo(Narcissus).Struct.fields;
 
-    // 'fields' is an array of StructFields. Here's the declaration:
+    // 'fields' is a slice of StructFields. Here's the declaration:
     //
     //     pub const StructField = struct {
     //         name: []const u8,
