@@ -52,6 +52,12 @@ const RubberDuck = struct {
     fn quack(self: RubberDuck) void {
         print("\"Squeek!\" ", .{});
     }
+
+    fn listen(self: RubberDuck, dev_talk: []const u8) void {
+        // Listen to developer talk about programming problem.
+        // Silently contemplate problem. Emit helpful sound.
+        self.quack();
+    }
 };
 
 const Duct = struct {
