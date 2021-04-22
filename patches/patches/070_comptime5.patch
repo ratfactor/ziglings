@@ -1,0 +1,6 @@
+116,117c116,117
+<     const walks_like_duck = ???;
+<     const quacks_like_duck = ???;
+---
+>     const walks_like_duck = @hasDecl(MyType, "waddle");
+>     const quacks_like_duck = @hasDecl(MyType, "quack");

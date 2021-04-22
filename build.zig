@@ -348,6 +348,11 @@ const exercises = [_]Exercise{
         .main_file = "069_comptime4.zig",
         .output = "s1={ 1, 2, 3 }, s2={ 1, 2, 3, 4, 5 }, s3={ 1, 2, 3, 4, 5, 6, 7 }",
     },
+    .{
+        .main_file = "070_comptime5.zig",
+        .output = "\"Quack.\" ducky1: true, \"Squeek!\" ducky2: true, ducky3: false",
+        .hint = "Have you kept the wizard hat on?",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
