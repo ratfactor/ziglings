@@ -41,9 +41,8 @@ pub fn main() void  {
     //
     // When we use these identifiers in our program, the VALUES
     // are inserted at compile time into the executable code. The
-    // identifiers "my_int" and "my_float" don't really exist in
-    // our compiled application and do not refer to any
-    // particular areas of memory!
+    // IDENTIFIERS "const_int" and "const_float" don't exist in
+    // our compiled application!
     const const_int = 12345;
     const const_float = 987.654;
 
