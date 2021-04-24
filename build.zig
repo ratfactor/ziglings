@@ -362,6 +362,10 @@ const exercises = [_]Exercise{
         .main_file = "071_comptime6.zig",
         .output = "Narcissus has room in his heart for: me myself.",
     },
+    .{
+        .main_file = "072_comptime7.zig",
+        .output = "26",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.

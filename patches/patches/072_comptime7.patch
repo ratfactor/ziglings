@@ -1,0 +1,4 @@
+38c38
+<     ??? (i < instructions.len) : (???) {
+---
+>     inline while (i < instructions.len) : (i += 3) {
