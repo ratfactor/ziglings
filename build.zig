@@ -268,7 +268,7 @@ const exercises = [_]Exercise{
     .{
         .main_file = "049_quiz6.zig",
         .output = "A  B  C  Cv Bv Av",
-        .hint = "Now you're writting Zig!",
+        .hint = "Now you're writing Zig!",
     },
     .{
         .main_file = "050_no_value.zig",
