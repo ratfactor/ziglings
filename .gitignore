@@ -3,3 +3,4 @@
 zig-cache/
 answers/
 patches/healed/
+.direnv/
