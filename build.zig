@@ -366,6 +366,10 @@ const exercises = [_]Exercise{
         .main_file = "072_comptime7.zig",
         .output = "26",
     },
+    .{
+        .main_file = "073_comptime8.zig",
+        .output = "My llama value is 25.",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
