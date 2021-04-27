@@ -24,7 +24,7 @@ pub fn main() void {
 //
 fn twoToThe(???) u32 {
     return std.math.pow(u32, 2, my_number);
-    // std.math.pow(type, a, b) takes a numeric type and two numbers
-    // of that type and returns "a to the power of b" as that same
-    // numeric type.
+    // std.math.pow(type, a, b) takes a numeric type and two
+    // numbers of that type (or that can coerce to that type) and
+    // returns "a to the power of b" as that same numeric type.
 }
