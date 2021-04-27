@@ -51,7 +51,7 @@ pub fn main() void {
         }
         // ...But it's quite a bit more exciting than it first appears. 
         // The 'inline while' no longer exists at runtime and neither
-        // does anything else not touched by directly by runtime
+        // does anything else not touched directly by runtime
         // code. The 'instructions' string, for example, does not
         // appear anywhere in the compiled program because it's
         // not used by it!
