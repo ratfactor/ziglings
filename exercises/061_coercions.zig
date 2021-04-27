@@ -11,7 +11,7 @@
 // 2. Numeric types can coerce to _larger_ types.
 //
 //    var n1: u8 = 5;
-//    var n2: u16 = n8; // integer "widening"
+//    var n2: u16 = n1; // integer "widening"
 //
 //    var n3: f16 = 42.0;
 //    var n4: f32 = n3; // float "widening"
