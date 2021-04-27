@@ -34,7 +34,7 @@ pub fn main() void {
     var elephantB = Elephant{ .letter = 'B' };
     var elephantC = Elephant{ .letter = 'C' };
 
-    // Link the elephants so that each tail "points" to the next.
+    // This links the elephants so that each tail "points" to the next.
     elephantA.tail = &elephantB;
     elephantB.tail = &elephantC;
 
@@ -52,7 +52,7 @@ fn visitElephants(first_elephant: *Elephant) void {
         e.print();
         e.visit();
 
-        // Get the next elephant or stop.
+        // This gets the next elephant or stops.
         if (e.hasTail()) {
             e = e.???; // Which method do we want here?
         } else {
