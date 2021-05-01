@@ -1,0 +1,4 @@
+42c42
+< fn makeLlamas(count: usize) [count]u8 {
+---
+> fn makeLlamas(comptime count: usize) [count]u8 {
