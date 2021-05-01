@@ -370,6 +370,15 @@ const exercises = [_]Exercise{
         .main_file = "073_comptime8.zig",
         .output = "My llama value is 25.",
     },
+    .{
+        .main_file = "074_comptime9.zig",
+        .output = "My llama value is 2.",
+    },
+    .{
+        .main_file = "075_quiz8.zig",
+        .output = "Archer's Point--2->Bridge--1->Dogwood Grove--3->Cottage--2->East Pond--1->Fox Pond",
+        .hint = "Roll up those sleeves. You get to WRITE some code for this one.",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.

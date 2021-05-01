@@ -1,0 +1,8 @@
+52c52,56
+< 
+---
+>     return Path{
+>         .from = from,
+>         .to = to,
+>         .dist = dist,
+>     };

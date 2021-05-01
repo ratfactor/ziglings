@@ -117,6 +117,8 @@ the learning resource I wished for. There will be tons of room for improvement:
 
 Planned exercises:
 
+Core Language
+
 * [x] Hello world (main needs to be public)
 * [x] Importing standard library
 * [x] Assignment
@@ -142,18 +144,24 @@ Planned exercises:
 * [x] Labelled blocks and loops
 * [x] Loops as expressions
 * [x] Builtins
-* [ ] Comptime (!)
-* [ ] Inline loops
+* [x] Inline loops
+* [x] Comptime
 * [ ] Anonymous structs
 * [ ] Sentinel termination
-* [ ] Vectors
+* [ ] Suspend / Resume
+* [ ] Async / Await
+* [ ] Nosuspend
+* [ ] Async Frames, Suspend Blocks
+* [ ] Working with C?
+
+Modules and the Zig Standard Library
+
 * [ ] Imports
 * [ ] Allocators
 * [ ] Arraylist
 * [ ] Filesystem
 * [ ] Readers and Writers
 * [ ] Formatting
-* [ ] JSON
 * [ ] Random Numbers
 * [ ] Crypto
 * [ ] Threads
@@ -161,12 +169,6 @@ Planned exercises:
 * [ ] Stacks
 * [ ] Sorting
 * [ ] Iterators
-* [ ] Formatting specifiers
-* [ ] Advanced Formatting
-* [ ] Suspend / Resume
-* [ ] Async / Await
-* [ ] Nosuspend
-* [ ] Async Frames, Suspend Blocks
 
 The initial topics for these exercises were unabashedly cribbed from
 [ziglearn.org](https://ziglearn.org/). I've since moved things around
