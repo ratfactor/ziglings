@@ -5,7 +5,7 @@
 // The following contexts are already IMPLICITLY evaluated at
 // compile time, and adding the 'comptime' keyword would be
 // superfluous, redundant, and smelly:
-// 
+//
 //    * The global scope (outside of any function in a source file)
 //    * Type declarations of:
 //        * Variables
@@ -16,8 +16,8 @@
 //    * The test expressions in inline for and while loops
 //    * An expression passed to the @cImport() builtin
 //
-// Work with Zig for a while, and you'll start to develop and
-// intuition for these contexts. Let's work on that/ now.
+// Work with Zig for a while, and you'll start to develop an
+// intuition for these contexts. Let's work on that now.
 //
 // You have been given just one 'comptime' statement to use in
 // the program below. Here it is:
