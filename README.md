@@ -146,8 +146,8 @@ Core Language
 * [x] Builtins
 * [x] Inline loops
 * [x] Comptime
+* [x] Sentinel termination
 * [ ] Anonymous structs
-* [ ] Sentinel termination
 * [ ] Suspend / Resume
 * [ ] Async / Await
 * [ ] Nosuspend

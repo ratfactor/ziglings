@@ -379,6 +379,10 @@ const exercises = [_]Exercise{
         .output = "Archer's Point--2->Bridge--1->Dogwood Grove--3->Cottage--2->East Pond--1->Fox Pond",
         .hint = "Roll up those sleeves. You get to WRITE some code for this one.",
     },
+    .{
+        .main_file = "076_sentinels.zig",
+        .output = "Array:123056. Many-pointer:123.",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.

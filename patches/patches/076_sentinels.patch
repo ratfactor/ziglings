@@ -1,0 +1,8 @@
+82c82
+<             for (???) |s| {
+---
+>             for (my_seq) |s| {
+94c94
+<             while (??? != my_sentinel) {
+---
+>             while (my_seq[i] != my_sentinel) {
