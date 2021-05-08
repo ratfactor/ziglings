@@ -381,7 +381,15 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "076_sentinels.zig",
-        .output = "Array:123056. Many-pointer:123.",
+        .output = "Array:123056. Many-item pointer:123.",
+    },
+    .{
+        .main_file = "077_sentinels2.zig",
+        .output = "Weird Data!",
+    },
+    .{
+        .main_file = "078_sentinels3.zig",
+        .output = "Weird Data!",
     },
 };
 

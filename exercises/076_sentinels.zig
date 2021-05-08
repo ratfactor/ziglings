@@ -29,11 +29,11 @@
 // Slice 'b' is only allowed to point to zero-terminated arrays
 // but otherwise works just like a normal slice.
 //
-// Pointer 'c' is exactly like the many-pointers we learned about
-// in exercise 054, but it is guaranteed to end in 0. Because of
-// this guarantee, we can safely find the end of this
-// many-pointer without knowing its length. (We CAN'T do that
-// with regular many-pointers!).
+// Pointer 'c' is exactly like the many-item pointers we learned
+// about in exercise 054, but it is guaranteed to end in 0.
+// Because of this guarantee, we can safely find the end of this
+// many-item pointer without knowing its length. (We CAN'T do
+// that with regular many-item pointers!).
 //
 const print = @import("std").debug.print;
 
@@ -41,24 +41,25 @@ pub fn main() void {
     // Here's a zero-terminated array of u32 values:
     var nums = [_:0]u32{ 1, 2, 3, 4, 5, 6 };
 
-    // And here's a zero-terminated many-pointer:
+    // And here's a zero-terminated many-item pointer:
     var ptr: [*:0]u32 = &nums;
 
     // For fun, let's replace the value at position 3 with the
     // sentinel value 0. This seems kind of naughty.
     nums[3] = 0;
 
-    // So now we have a zero-terminated array and a many-pointer
-    // that reference the same data: a sequence of numbers that
-    // both ends in and CONTAINS the sentinal value.
+    // So now we have a zero-terminated array and a many-item
+    // pointer that reference the same data: a sequence of
+    // numbers that both ends in and CONTAINS the sentinal value.
     //
     // Attempting to loop through and print both of these should
     // demonstrate how they are similar and different.
     //
     // (It turns out that the array prints completely, including
-    // the sentinel 0 in the middle. The many-pointer must stop
-    // at the first sentinel value. The difference is simply that
-    // arrays have a known length and many-pointers don't.)
+    // the sentinel 0 in the middle. The many-item pointer must
+    // stop at the first sentinel value. The difference is simply
+    // that arrays have a known length and many-item pointers
+    // don't.)
     printSequence(nums);
     printSequence(ptr);
 
@@ -86,7 +87,7 @@ fn printSequence(my_seq: anytype) void {
         .Pointer => {
             // Check this out - it's pretty cool:
             const my_sentinel = my_type.Pointer.sentinel;
-            print("Many-pointer:", .{});
+            print("Many-item pointer:", .{});
 
             // Loop through the items in my_seq until we hit the
             // sentinel value.
@@ -100,22 +101,3 @@ fn printSequence(my_seq: anytype) void {
     }
     print(". ", .{});
 }
-//
-// ------------------------------------------------------------
-//  TOP SECRET  TOP SECRET  TOP SECRET  TOP SECRET  TOP SECRET
-// ------------------------------------------------------------
-//
-// Are you ready for the THE TRUTH about Zig string literals?
-//
-// You've earned it. Here it is:
-//
-//     @TypeOf("foo") == *const [3:0]u8
-//
-// Zig's string literals are constant pointers to zero-terminated
-// (or "null-terminated") arrays of u8.
-//
-// Now you know. Welcome to the secret club!
-//
-// ------------------------------------------------------------
-//  TOP SECRET  TOP SECRET  TOP SECRET  TOP SECRET  TOP SECRET
-// ------------------------------------------------------------
