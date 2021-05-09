@@ -400,6 +400,10 @@ const exercises = [_]Exercise{
         .main_file = "080_anonymous_structs.zig",
         .output = "[Circle(i32): 25,70,15] [Circle(f32): 25.2,71.0,15.7]",
     },
+    .{
+        .main_file = "081_anonymous_structs2.zig",
+        .output = "x:205 y:187 radius:12",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.

@@ -1,0 +1,8 @@
+41c41
+< fn printCircle(???) void {
+---
+> fn printCircle(circle: anytype) void {
+44c44
+<         circle.centaur_y,
+---
+>         circle.center_y,
