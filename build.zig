@@ -396,6 +396,10 @@ const exercises = [_]Exercise{
         .output = "Sweet freedom: 55, false.",
         .hint = "Help us, Zig Programmer, you're our only hope!",
     },
+    .{
+        .main_file = "080_anonymous_structs.zig",
+        .output = "[Circle(i32): 25,70,15] [Circle(f32): 25.2,71.0,15.7]",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.

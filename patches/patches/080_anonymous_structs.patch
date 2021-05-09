@@ -1,0 +1,8 @@
+51c51
+<     var circle1 = ??? {
+---
+>     var circle1 = Circle(i32) {
+57c57
+<     var circle2 = ??? {
+---
+>     var circle2 = Circle(f32) {
