@@ -409,6 +409,10 @@ const exercises = [_]Exercise{
         .output = "\"0\"(bool):true \"1\"(bool):false \"2\"(i32):42 \"3\"(f32):3.14159202e+00",
         .hint = "This one is a challenge! But you have everything you need."
     },
+    .{
+        .main_file = "083_anonymous_lists.zig",
+        .output = "I say hello!",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.

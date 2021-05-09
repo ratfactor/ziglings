@@ -148,7 +148,7 @@ Core Language
 * [x] Comptime
 * [x] Sentinel termination
 * [x] Quoted identifiers @""
-* [ ] Anonymous structs
+* [x] Anonymous structs/tuples/lists
 * [ ] Suspend / Resume
 * [ ] Async / Await
 * [ ] Nosuspend
