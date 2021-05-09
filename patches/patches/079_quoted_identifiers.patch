@@ -1,0 +1,12 @@
+23,24c23,24
+<     const 55_cows: i32 = 55;
+<     const isn't true: bool = false;
+---
+>     const @"55_cows": i32 = 55;
+>     const @"isn't true": bool = false;
+27,28c27,28
+<         55_cows,
+<         isn't true,
+---
+>         @"55_cows",
+>         @"isn't true",

@@ -147,6 +147,7 @@ Core Language
 * [x] Inline loops
 * [x] Comptime
 * [x] Sentinel termination
+* [x] Quoted identifiers @""
 * [ ] Anonymous structs
 * [ ] Suspend / Resume
 * [ ] Async / Await

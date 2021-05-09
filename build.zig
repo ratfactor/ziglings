@@ -391,6 +391,11 @@ const exercises = [_]Exercise{
         .main_file = "078_sentinels3.zig",
         .output = "Weird Data!",
     },
+    .{
+        .main_file = "079_quoted_identifiers.zig",
+        .output = "Sweet freedom: 55, false.",
+        .hint = "Help us, Zig Programmer, you're our only hope!",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
