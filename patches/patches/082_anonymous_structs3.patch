@@ -1,0 +1,20 @@
+85c85
+<     const fields = ???;
+---
+>     const fields = @typeInfo(@TypeOf(tuple)).Struct.fields;
+92c92
+<     for (fields) |field| {
+---
+>     inline for (fields) |field| {
+116c116
+<         //         @field(foo, "x"); // returns the value at foo.x
+---
+>         //         @field(foo, "x");
+120,122c120,122
+<             field.???,
+<             field.???,
+<             ???,
+---
+>             field.name,
+>             field.field_type,
+>             @field(tuple, field.name),

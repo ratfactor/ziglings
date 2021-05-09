@@ -404,6 +404,11 @@ const exercises = [_]Exercise{
         .main_file = "081_anonymous_structs2.zig",
         .output = "x:205 y:187 radius:12",
     },
+    .{
+        .main_file = "082_anonymous_structs3.zig",
+        .output = "\"0\"(bool):true \"1\"(bool):false \"2\"(i32):42 \"3\"(f32):3.14159202e+00",
+        .hint = "This one is a challenge! But you have everything you need."
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
