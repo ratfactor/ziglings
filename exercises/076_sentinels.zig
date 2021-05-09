@@ -35,6 +35,9 @@
 // many-item pointer without knowing its length. (We CAN'T do
 // that with regular many-item pointers!).
 //
+// Important: the sentinel value must be of the same type as the
+// data being termined!
+//
 const print = @import("std").debug.print;
 
 pub fn main() void {
