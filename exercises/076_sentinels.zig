@@ -36,7 +36,7 @@
 // that with regular many-item pointers!).
 //
 // Important: the sentinel value must be of the same type as the
-// data being termined!
+// data being terminated!
 //
 const print = @import("std").debug.print;
 
