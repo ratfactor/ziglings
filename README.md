@@ -149,10 +149,7 @@ Core Language
 * [x] Sentinel termination
 * [x] Quoted identifiers @""
 * [x] Anonymous structs/tuples/lists
-* [ ] Suspend / Resume
-* [ ] Async / Await
-* [ ] Nosuspend
-* [ ] Async Frames, Suspend Blocks
+* [ ] Async
 * [ ] Working with C?
 
 Modules and the Zig Standard Library

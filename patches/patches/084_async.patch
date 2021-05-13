@@ -1,0 +1,4 @@
+49c49
+<     foo();
+---
+>     var foo_frame = async foo();

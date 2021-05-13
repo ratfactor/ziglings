@@ -407,11 +407,16 @@ const exercises = [_]Exercise{
     .{
         .main_file = "082_anonymous_structs3.zig",
         .output = "\"0\"(bool):true \"1\"(bool):false \"2\"(i32):42 \"3\"(f32):3.14159202e+00",
-        .hint = "This one is a challenge! But you have everything you need."
+        .hint = "This one is a challenge! But you have everything you need.",
     },
     .{
         .main_file = "083_anonymous_lists.zig",
         .output = "I say hello!",
+    },
+    .{
+        .main_file = "084_async.zig",
+        .output = "foo() A",
+        .hint = "Read the facts. Use the facts.",
     },
 };
 
