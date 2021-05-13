@@ -1,0 +1,9 @@
+16c16,21
+<     ???
+---
+>     // Silly solution. You can also use a loop.
+>     resume foo_frame;
+>     resume foo_frame;
+>     resume foo_frame;
+>     resume foo_frame;
+>     resume foo_frame;
