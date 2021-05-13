@@ -418,6 +418,10 @@ const exercises = [_]Exercise{
         .output = "foo() A",
         .hint = "Read the facts. Use the facts.",
     },
+    .{
+        .main_file = "085_async2.zig",
+        .output = "Hello async!",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
