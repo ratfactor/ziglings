@@ -430,6 +430,10 @@ const exercises = [_]Exercise{
         .main_file = "087_async4.zig",
         .output = "1 2 3 4 5",
     },
+    .{
+        .main_file = "088_async5.zig",
+        .output = "Example Title.",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
