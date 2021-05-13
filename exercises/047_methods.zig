@@ -32,7 +32,7 @@
 //    with the "dot syntax", the instance will be automatically
 //    passed as the "self" parameter:
 //
-//     const my_bar = Bar{ .number = 2000 };
+//     var my_bar = Bar{ .number = 2000 };
 //     my_bar.printMe(); // prints "2000"
 //
 // Okay, you're armed.
