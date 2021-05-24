@@ -21,7 +21,7 @@
 // functions.
 //
 //     fn fooThatSuspends() void {
-//         suspend; // return control, but leave the frame alone
+//         suspend {} // return control, but leave the frame alone
 //     }
 //
 // 4. To call any function in async context and get a reference
@@ -51,6 +51,6 @@ pub fn main() void {
 
 fn foo() void {
     print("foo() A\n", .{});
-    suspend;
+    suspend {}
     print("foo() B\n", .{});
 }

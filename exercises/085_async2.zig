@@ -7,7 +7,7 @@
 // async function invocation's frame and returns control to it.
 //
 //     fn fooThatSuspends() void {
-//         suspend;
+//         suspend {}
 //     }
 //
 //     var foo_frame = async fooThatSuspends();
@@ -23,7 +23,7 @@ pub fn main() void {
 
 fn foo() void {
     print("Hello ", .{});
-    suspend;
+    suspend {}
     print("async!\n", .{});
 }
 

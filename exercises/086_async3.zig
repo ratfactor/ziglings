@@ -24,6 +24,6 @@ fn foo(countdown: u32) void {
     while (current > 0) {
         print("{} ", .{current});
         current -= 1;
-        suspend;
+        suspend {}
     }
 }
