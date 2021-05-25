@@ -1,6 +1,6 @@
 //
 // So, 'suspend' returns control to the place from which it was
-// called (the "call site"). How do we control back to the
+// called (the "call site"). How do we give control back to the
 // suspended function?
 //
 // For that, we have a new keyword called 'resume' which takes an
