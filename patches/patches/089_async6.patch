@@ -1,0 +1,6 @@
+44,45c44,45
+<     var com_title = com_frame;
+<     var org_title = org_frame;
+---
+>     var com_title = await com_frame;
+>     var org_title = await org_frame;
