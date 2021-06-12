@@ -24,8 +24,8 @@
 // to use a comptime_int of undetermined size at runtime is
 // a MEMORY CRIME and you are UNDER ARREST.
 //
-// The second one is is okay because we've told Zig that 'bar2'
-// is a compile time variable. Zig will help us ensure this is true
+// The second one is okay because we've told Zig that 'bar2' is
+// a compile time variable. Zig will help us ensure this is true
 // and let us know if we make a mistake.
 //
 const print = @import("std").debug.print;
