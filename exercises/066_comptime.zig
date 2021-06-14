@@ -32,7 +32,7 @@ const print = @import("std").debug.print;
 
 pub fn main() void  {
     // ALL numeric literals in Zig are of type comptime_int or
-    // comptime_float. They are of arbitary size (as big or
+    // comptime_float. They are of arbitrary size (as big or
     // little as you need).
     //
     // Notice how we don't have to specify a size like "u8",
