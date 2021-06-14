@@ -13,7 +13,7 @@ pub fn main() void {
     // What is this nonsense? :-)
     const letters = "YZhifg";
 
-    const x: u8 = 1;
+    const x: usize = 1;
 
     // This is something you haven't seen before: declaring an array
     // without putting anything in it. There is no error here:
