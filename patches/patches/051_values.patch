@@ -1,12 +1,12 @@
-96c96
+95c95
 <     const print = ???;
 ---
 >     const print = std.debug.print;
-152c152
+160c160
 <     levelUp(glorp, reward_xp);
 ---
 >     levelUp(&glorp, reward_xp);
-157c157
+166c166
 < fn levelUp(character_access: Character, xp: u32) void {
 ---
 > fn levelUp(character_access: *Character, xp: u32) void {

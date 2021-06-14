@@ -1,4 +1,46 @@
-132,133c131,132
+20c20
+< // statement. Does that mean you can return a value from any
+---
+> // statement.  Does that mean you can return a value from any
+28,30c28,30
+< // Labels can also be used with loops. Being able to break out of
+< // nested loops at a specific level is one of those things that
+< // you won't use every day, but when the time comes, it's
+---
+> // And all of that also applies to loops. Being able to break out
+> // of nested loops at a specific level is one of those things
+> // that you won't use every day, but when the time comes, it's
+32,33c32
+< // inner loop is sometimes so handy, it almost feels like cheating
+< // (and can help you avoid creating a lot of temporary variables).
+---
+> // inner loop is is almost too beautiful to look at directly:
+41,44c40,44
+< // In the above example, the break exits from the outer loop
+< // labeled "two_loop" and returns the value 2. The else clause is
+< // attached to the outer two_loop and would be evaluated if the
+< // loop somehow ended without the break having been called.
+---
+> // The break exits from the outer loop labeled "two_loop" and
+> // returns the value 2. The else clause is attached to the outer
+> // two_loop and would be evaluated if the loop somehow ended
+> // without the break having been called. (Impossible in this
+> // case.)
+55,56c55,56
+< // As mentioned before, we'll soon understand why these two
+< // numbers don't need explicit types. Hang in there!
+---
+> // As mentioned before, we'll soon understand why these numbers
+> // don't need explicit types. Hang in there!
+100c100
+<     // numbers (based on array position) will be fine for our
+---
+>     // numbers (based on array position!) will be fine for our
+108c108
+<         // Now look at each required ingredient for the Food...
+---
+>         // Now look at each required ingredient for the food...
+131,132c131,132
 <         break;
 <     };
 ---
