@@ -41,7 +41,7 @@ Verify the installation and build number of `zig` like so:
 
 ```bash
 $ zig version
-0.8.0-dev.1983+xxxxxxxxx
+0.9.0-dev.137+xxxxxxxxx
 ```
 
 Clone this repository with Git:
@@ -62,7 +62,7 @@ $ zig build
 The Zig language is under very active development. In order to be current,
 Ziglings tracks **development** builds of the Zig compiler rather than
 versioned **release** builds. The last stable release was `0.7.1`, but Ziglings
-needs a dev build with pre-release version "0.8.0" and a build number at least
+needs a dev build with pre-release version "0.9.0" and a build number at least
 as high as that shown in the example version check above.
 
 It is likely that you'll download a build which is _greater_ than the minimum.
@@ -73,8 +73,9 @@ need to also update the other.
 
 ### Version Changes
 
-* 2021-04-21 0.8.0-dev.1983 - std.fmt.format() 'any' format string
-* 2021-02-12 0.8.0-dev.1065 - std.fmt.format() 's' (string) format string
+* 2021-06-14 0.9.0-dev.137  - std.build.Id `.Custom` is now `.custom`
+* 2021-04-21 0.8.0-dev.1983 - std.fmt.format() `any` format string required
+* 2021-02-12 0.8.0-dev.1065 - std.fmt.format() `s` (string) format string required
 
 ## Advanced Usage
 
