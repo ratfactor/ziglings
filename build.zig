@@ -438,6 +438,10 @@ const exercises = [_]Exercise{
         .main_file = "089_async6.zig",
         .output = ".com: Example Title, .org: Example Title.",
     },
+    .{
+        .main_file = "090_async7.zig",
+        .output = "beef? BEEF!",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
