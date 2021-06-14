@@ -556,7 +556,7 @@ pub fn build(b: *Builder) void {
         named_verify.dependOn(&verify_step.step);
 
         const chain_verify = b.allocator.create(Step) catch unreachable;
-        chain_verify.* = Step.initNoOp(.Custom, b.fmt("chain {s}", .{key}), b.allocator);
+        chain_verify.* = Step.initNoOp(.custom, b.fmt("chain {s}", .{key}), b.allocator);
         chain_verify.dependOn(&verify_step.step);
 
         const named_chain = b.step(b.fmt("{s}_start", .{key}), b.fmt("Check all solutions starting at {s}", .{ex.main_file}));
@@ -583,7 +583,7 @@ const ZiglingStep = struct {
     pub fn create(builder: *Builder, exercise: Exercise, use_healed: bool) *@This() {
         const self = builder.allocator.create(@This()) catch unreachable;
         self.* = .{
-            .step = Step.init(.Custom, exercise.main_file, builder.allocator, make),
+            .step = Step.init(.custom, exercise.main_file, builder.allocator, make),
             .exercise = exercise,
             .builder = builder,
             .use_healed = use_healed,
