@@ -1,12 +1,16 @@
-16c16
-<     const x: u8 = 1;
+22c22
+<     const x: usize = 1;
 ---
->     var x: u8 = 1;
-27c27
+>     var x: usize = 1;
+26c26
+<     // 'undefined'. There is no problem on this line.
+---
+>     // 'undefined'. There is no error here.
+36c36
 <     lang[???] = letters[x];
 ---
 >     lang[1] = letters[x];
-29,30c29,30
+38,39c38,39
 <     x = ???;
 <     lang[2] = letters[???];
 ---
