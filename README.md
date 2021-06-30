@@ -73,7 +73,7 @@ need to also update the other.
 
 Also note that the current "stage 1" Zig compiler is very strict
 about input: 
-https://github.com/ratfactor/ziglings/issues/60[no tab characters or Windows CR/LF newlines are allowed]
+[no tab characters or Windows CR/LF newlines are allowed](https://github.com/ratfactor/ziglings/issues/60).
 
 ### Version Changes
 
