@@ -81,7 +81,7 @@ const TripItem = union(enum) {
     place: *const Place,
     path: *const Path,
 
-    fn print(self: TripItem) void {
+    fn printMe(self: TripItem) void {
         switch (self) {
             .place => |p| print("{s}", .{p.name}),
             .path => |p| print("--{}->", .{p.dist}),
@@ -201,7 +201,7 @@ fn printTrip(trip: []?TripItem) void {
     while (i > 0) {
         i -= 1;
         if (trip[i] == null) continue;
-        trip[i].?.print();
+        trip[i].?.printMe();
     }
 
     print("\n", .{});
