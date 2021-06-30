@@ -176,11 +176,8 @@ const TripItem = union(enum) {
     path: *const Path,
 
     // This is a little helper function to print the two different
-    // types of item correctly. Note how this "print()" is namespaced
-    // to the TripItem union and doesn't interfere with calling the
-    // "print()" from the standard library we imported at the top of
-    // this program.
-    fn print(self: TripItem) void {
+    // types of item correctly.
+    fn printMe(self: TripItem) void {
         switch (self) {
             // Oops! The hermit forgot how to capture the union values
             // in a switch statement. Please capture both values as
@@ -427,7 +424,7 @@ fn printTrip(trip: []?TripItem) void {
     while (i > 0) {
         i -= 1;
         if (trip[i] == null) continue;
-        trip[i].?.print();
+        trip[i].?.printMe();
     }
 
     print("\n", .{});
