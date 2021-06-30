@@ -29,8 +29,6 @@ const Narcissus = struct {
 };
 
 pub fn main() void {
-    var narcissus: Narcissus = Narcissus {};
-
     print("Narcissus has room in his heart for:", .{});
 
     // Last time we examined the Narcissus struct, we had to
