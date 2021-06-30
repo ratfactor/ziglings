@@ -43,5 +43,6 @@ pub fn main() void {
 
 fn getPageTitle(url: []const u8) []const u8 {
     // Please PRETEND this is actually making a network request.
+    _ = url;
     return "Example Title.";
 }
