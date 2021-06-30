@@ -69,17 +69,12 @@ pub fn main() void {
         .gold = 30,
     };
 
-    // However, this "skull_farmer" character will be put in the
-    // global immutable data even though it's defined in a function.
-    // Since it's immutable, all invocations of the function can share
-    // this one value.
-
-    const skull_farmer = Character{};
-
-    // The "reward_xp" value is interesting. It's a constant value, so
-    // it could go with other global data. But being such a small
-    // value, it may also simply be inlined as a literal value in your
-    // instruction code where it is used. It's up to the compiler.
+    // The "reward_xp" value is interesting. It's an immutable
+    // value, so even though it is local, it can be put in global
+    // data and shared between all invocations. But being such a
+    // small value, it may also simply be inlined as a literal
+    // value in your instruction code where it is used.  It's up
+    // to the compiler.
 
     const reward_xp: u32 = 200;
 
