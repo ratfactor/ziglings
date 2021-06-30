@@ -71,6 +71,10 @@ Once you have a build of the Zig compiler that works with Ziglings, they'll
 continue to work together. But keep in mind that if you update one, you may
 need to also update the other.
 
+Also note that the current "stage 1" Zig compiler is very strict
+about input: 
+https://github.com/ratfactor/ziglings/issues/60[no tab characters or Windows CR/LF newlines are allowed]
+
 ### Version Changes
 
 * 2021-06-14 0.9.0-dev.137  - std.build.Id `.Custom` is now `.custom`
