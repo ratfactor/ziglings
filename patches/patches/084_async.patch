@@ -1,4 +1,4 @@
-49c49
+51c51
 <     foo();
 ---
->     var foo_frame = async foo();
+>     _ = async foo();
