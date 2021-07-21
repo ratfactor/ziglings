@@ -47,6 +47,7 @@ fn printHand(hand: ???) void {
     for (hand) |h| {
         std.debug.print("{u} ", .{h});
     }
+    std.debug.print("\n", .{});
 }
 //
 // Fun fact: Under the hood, slices are stored as a pointer to
