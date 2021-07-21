@@ -302,10 +302,10 @@ const exercises = [_]Exercise{
         .main_file = "057_unions3.zig",
         .output = "Insect report! Ant alive is: true. Bee visited 17 flowers.",
     },
-    .{ 
-        .main_file = "058_quiz7.zig", 
-        .output = "Archer's Point--2->Bridge--1->Dogwood Grove--3->Cottage--2->East Pond--1->Fox Pond", 
-        .hint = "This is the biggest program we've seen yet. But you can do it!" 
+    .{
+        .main_file = "058_quiz7.zig",
+        .output = "Archer's Point--2->Bridge--1->Dogwood Grove--3->Cottage--2->East Pond--1->Fox Pond",
+        .hint = "This is the biggest program we've seen yet. But you can do it!",
     },
     .{
         .main_file = "059_integers.zig",
@@ -336,10 +336,10 @@ const exercises = [_]Exercise{
         .main_file = "065_builtins2.zig",
         .output = "A Narcissus loves all Narcissuses. He has room in his heart for: me myself.",
     },
-    .{ 
-        .main_file = "066_comptime.zig", 
-        .output = "Immutable: 12345, 987.654; Mutable: 54321, 456.789; Types: comptime_int, comptime_float, u32, f32", 
-        .hint = "It may help to read this one out loud to your favorite stuffed animal until it sinks in completely." 
+    .{
+        .main_file = "066_comptime.zig",
+        .output = "Immutable: 12345, 987.654; Mutable: 54321, 456.789; Types: comptime_int, comptime_float, u32, f32",
+        .hint = "It may help to read this one out loud to your favorite stuffed animal until it sinks in completely.",
     },
     .{
         .main_file = "067_comptime2.zig",
