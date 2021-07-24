@@ -6,7 +6,7 @@ Maintenance!
 
 ## The Ziglings Audience
 
-Ziglings is is intended for programmers of all experience levels. No specific
+Ziglings is intended for programmers of all experience levels. No specific
 language knowledge is expected.  If you can install the current Zig snapshot,
 setup a copy of Ziglings, and understand if/then/else, loops, and functions,
 then you're ready.
