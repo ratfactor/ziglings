@@ -1,5 +1,5 @@
 //
-// Functions! We've already seen a lot of one called "main()". Now let's try
+// Functions! We've already seen lots of ones called "main()". Now let's try
 // writing one of our own:
 //
 //     fn foo(n: u8) u8 {

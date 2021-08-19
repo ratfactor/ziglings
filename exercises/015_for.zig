@@ -1,6 +1,6 @@
 //
-// Behold the 'for' loop! It lets you execute code for each
-// member of an array:
+// Behold the 'for' loop! For loops let you execute code for each
+// element of an array:
 //
 //     for (items) |item| {
 //
