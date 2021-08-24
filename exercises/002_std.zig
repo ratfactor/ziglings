@@ -21,4 +21,4 @@ pub fn main() void {
 // can only be used at compile time rather than run time. Zig evaluates
 // constant values at compile time. Don't worry, we'll cover imports
 // in detail later.
-// See also this answer: https://stackoverflow.com/a/62567550/695615
+// Also see this answer: https://stackoverflow.com/a/62567550/695615
