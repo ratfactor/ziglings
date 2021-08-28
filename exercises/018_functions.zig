@@ -1,18 +1,15 @@
 //
-// Functions! We've already created lots of functions called "main()". Now let's
+// Functions! We've already created lots of functions called 'main()'. Now let's
 // do something different:
 //
 //     fn foo(n: u8) u8 {
 //         return n + 1;
 //     }
 //
-// The foo() function above takes a number "n" and returns a number that is
+// The foo() function above takes a number 'n' and returns a number that is
 // larger by one.
 //
-// If your function doesn't take any parameters and doesn't return anything,
-// it would be defined like main():
-//
-//     fn foo() void { }
+// Note the input parameter 'n' and return types are both u8.
 //
 const std = @import("std");
 
