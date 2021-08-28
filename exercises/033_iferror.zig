@@ -15,6 +15,12 @@
 // We'll take it even further and use a switch statement to handle
 // the error types.
 //
+//     if (foo) |value| {
+//         ...
+//     } else |err| switch(err) {
+//         ...
+//     }
+//
 const MyNumberError = error{
     TooBig,
     TooSmall,
