@@ -1,6 +1,6 @@
 //
-// Functions! We've already seen lots of ones called "main()". Now let's try
-// writing one of our own:
+// Functions! We've already created lots of functions called "main()". Now let's
+// try writing one of our own:
 //
 //     fn foo(n: u8) u8 {
 //         return n + 1;
