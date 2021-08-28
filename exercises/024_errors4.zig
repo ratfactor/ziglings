@@ -19,8 +19,8 @@ const MyNumberError = error{
 };
 
 pub fn main() void {
-    // The "catch 0" below is just our way of dealing with the fact
-    // that makeJustRight() returns a error union (for now).
+    // The "catch 0" below is a temporary hack to deal with
+    // makeJustRight()'s returned error union (for now).
     var a: u32 = makeJustRight(44) catch 0;
     var b: u32 = makeJustRight(14) catch 0;
     var c: u32 = makeJustRight(4) catch 0;
