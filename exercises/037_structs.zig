@@ -14,7 +14,7 @@
 //     point2 = Point{ .x=7, .y=13, .z=34 };
 //
 // The Point above is an example of a "struct" (short for "structure").
-// Here's how it could have been defined:
+// Here's how that struct type could have been defined:
 //
 //     const Point = struct{ x: u32, y: u32, z: u32 };
 //
