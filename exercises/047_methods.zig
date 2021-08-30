@@ -28,6 +28,9 @@
 //         }
 //     }
 //
+//    (Actually, you can name the first parameter anything, but
+//    please follow convention and use "self".)
+//
 // 4. Now when you call the method on an INSTANCE of that struct
 //    with the "dot syntax", the instance will be automatically
 //    passed as the "self" parameter:
