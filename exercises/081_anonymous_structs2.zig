@@ -41,7 +41,7 @@ pub fn main() void {
 fn printCircle(???) void {
     print("x:{} y:{} radius:{}\n", .{
         circle.center_x,
-        circle.centaur_y,
+        circle.center_y,
         circle.radius,
     });
 }
