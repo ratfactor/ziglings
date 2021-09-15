@@ -191,7 +191,7 @@ const TripItem = union(enum) {
 // The Hermit's Notebook is where all the magic happens. A notebook
 // entry is a Place discovered on the map along with the Path taken to
 // get there and the distance to reach it from the start point. If we
-// find a better Path to reach a Place (lower distance), we update the
+// find a better Path to reach a Place (shorter distance), we update the
 // entry. Entries also serve as a "todo" list which is how we keep
 // track of which paths to explore next.
 const NotebookEntry = struct {
