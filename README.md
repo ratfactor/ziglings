@@ -41,7 +41,7 @@ Verify the installation and build number of `zig` like so:
 
 ```bash
 $ zig version
-0.9.0-dev.137+xxxxxxxxx
+0.9.0-dev.1343+xxxxxxxxx
 ```
 
 Clone this repository with Git:
