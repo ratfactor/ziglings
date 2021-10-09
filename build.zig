@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 const Builder = std.build.Builder;
 const Step = std.build.Step;
 const assert = std.debug.assert;
@@ -447,11 +448,11 @@ const exercises = [_]Exercise{
 /// Check the zig version to make sure it can compile the examples properly.
 /// This will compile with Zig 0.6.0 and later.
 fn checkVersion() bool {
-    if (!@hasDecl(std.builtin, "zig_version")) {
+    if (!@hasDecl(builtin, "zig_version")) {
         return false;
     }
 
-    const version = std.builtin.zig_version;
+    const version = builtin.zig_version;
     const order = version.order(needed_version);
     return order != .lt;
 }
@@ -490,7 +491,7 @@ pub fn build(b: *Builder) void {
         .auto => {
             if (std.io.getStdErr().supportsAnsiEscapeCodes()) {
                 use_color_escapes = true;
-            } else if (std.builtin.os.tag == .windows) {
+            } else if (builtin.os.tag == .windows) {
                 const w32 = struct {
                     const WINAPI = std.os.windows.WINAPI;
                     const DWORD = std.os.windows.DWORD;

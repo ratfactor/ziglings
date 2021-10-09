@@ -1,5 +1,5 @@
 62c62,68
-<     return detectProblems(n) ???
+<     return detectProblems(n) ???;
 ---
 >     return detectProblems(n) catch |err| {
 >         if (err == MyNumberError.TooSmall) {
