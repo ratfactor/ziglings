@@ -1,7 +1,7 @@
 //
 // The Zig compiler provides "builtin" functions. You've already
 // gotten used to seeing an @import() at the top of every
-// Ziglings exercise. 
+// Ziglings exercise.
 //
 // We've also seen @intCast() in "016_for2.zig", "058_quiz7.zig";
 // and @enumToInt() in "036_enums2.zig".
@@ -36,10 +36,12 @@ pub fn main() void {
     //       value over or under the capacity of type T.
     //
     // Let's try it with a tiny 4-bit integer size to make it clear:
-    const a: u4 = 0b1101;
-    const b: u4 = 0b0101;
+    const a: u4 = 0b1101; // 13
+    const b: u4 = 0b0101; // 5
+    // const would_be_result: u8 = 0b00010010
     var my_result: u4 = undefined;
     var overflowed: bool = undefined;
+    // `overflowed` should be true
     overflowed = @addWithOverflow(u4, a, b, &my_result);
     //
     // The print() below will produce: "1101 + 0101 = 0010 (true)".
@@ -51,10 +53,12 @@ pub fn main() void {
     //    1111 + 1 = 0000      Yes! (Real answer is 10000)
     //    0000 + 1 = 0001      Yes!
     //    0001 + 1 = 0010      Yes!
-    // 
+    //
+    // Overflowed just means, did we add an extra space for a digit or not.
+    //
     // Also, check out our fancy formatting! b:0>4 means, "print
     // as a binary number, zero-pad right-aligned four digits."
-    print("{b:0>4} + {b:0>4} = {b:0>4} ({})", .{a, b, my_result, overflowed});
+    print("{b:0>4} + {b:0>4} = {b:0>4} ({})", .{ a, b, my_result, overflowed });
 
     print(". Furthermore, ", .{});
 
@@ -69,6 +73,6 @@ pub fn main() void {
     // Now it's your turn. See if you can fix this attempt to use
     // this builtin to reverse the bits of a u8 integer.
     const input: u8 = 0b11110000;
-    const tupni: u8 = @bitReverse(input);
-    print("{b:0>8} backwards is {b:0>8}.\n", .{input, tupni});
+    const tupni: u8 = @bitReverse(u8, input);
+    print("{b:0>8} backwards is {b:0>8}.\n", .{ input, tupni });
 }

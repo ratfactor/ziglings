@@ -97,7 +97,7 @@ const Path = struct {
 const a_paths = [_]Path{
     Path{
         .from = &a, // from: Archer's Point
-        .to = &b,   //   to: Bridge
+        .to = &b, //   to: Bridge
         .dist = 2,
     },
 };
@@ -105,12 +105,12 @@ const a_paths = [_]Path{
 const b_paths = [_]Path{
     Path{
         .from = &b, // from: Bridge
-        .to = &a,   //   to: Archer's Point
+        .to = &a, //   to: Archer's Point
         .dist = 2,
     },
     Path{
         .from = &b, // from: Bridge
-        .to = &d,   //   to: Dogwood Grove
+        .to = &d, //   to: Dogwood Grove
         .dist = 1,
     },
 };
@@ -118,12 +118,12 @@ const b_paths = [_]Path{
 const c_paths = [_]Path{
     Path{
         .from = &c, // from: Cottage
-        .to = &d,   //   to: Dogwood Grove
+        .to = &d, //   to: Dogwood Grove
         .dist = 3,
     },
     Path{
         .from = &c, // from: Cottage
-        .to = &e,   //   to: East Pond
+        .to = &e, //   to: East Pond
         .dist = 2,
     },
 };
@@ -131,17 +131,17 @@ const c_paths = [_]Path{
 const d_paths = [_]Path{
     Path{
         .from = &d, // from: Dogwood Grove
-        .to = &b,   //   to: Bridge
+        .to = &b, //   to: Bridge
         .dist = 1,
     },
     Path{
         .from = &d, // from: Dogwood Grove
-        .to = &c,   //   to: Cottage
+        .to = &c, //   to: Cottage
         .dist = 3,
     },
     Path{
         .from = &d, // from: Dogwood Grove
-        .to = &f,   //   to: Fox Pond
+        .to = &f, //   to: Fox Pond
         .dist = 7,
     },
 };
@@ -149,20 +149,20 @@ const d_paths = [_]Path{
 const e_paths = [_]Path{
     Path{
         .from = &e, // from: East Pond
-        .to = &c,   //   to: Cottage
+        .to = &c, //   to: Cottage
         .dist = 2,
     },
     Path{
         .from = &e, // from: East Pond
-        .to = &f,   //   to: Fox Pond
-        .dist = 1,  // (one-way down a short waterfall!)
+        .to = &f, //   to: Fox Pond
+        .dist = 1, // (one-way down a short waterfall!)
     },
 };
 
 const f_paths = [_]Path{
     Path{
         .from = &f, // from: Fox Pond
-        .to = &d,   //   to: Dogwood Grove
+        .to = &d, //   to: Dogwood Grove
         .dist = 7,
     },
 };
@@ -182,8 +182,8 @@ const TripItem = union(enum) {
             // Oops! The hermit forgot how to capture the union values
             // in a switch statement. Please capture both values as
             // 'p' so the print statements work!
-            .place => print("{s}", .{p.name}),
-            .path => print("--{}->", .{p.dist}),
+            .place => |p| print("{s}", .{p.name}),
+            .path => |p| print("--{}->", .{p.dist}),
         }
     }
 };
@@ -245,7 +245,7 @@ const HermitsNotebook = struct {
             // dereference and optional value "unwrapping" look
             // together. Remember that you return the address with the
             // "&" operator.
-            if (place == entry.*.?.place) return entry;
+            if (place == entry.*.?.place) return &entry.*.?;
             // Try to make your answer this long:__________;
         }
         return null;
@@ -299,7 +299,9 @@ const HermitsNotebook = struct {
     //
     // Looks like the hermit forgot something in the return value of
     // this function. What could that be?
-    fn getTripTo(self: *HermitsNotebook, trip: []?TripItem, dest: *Place) void {
+
+    // TODO(jared): A function that only returns an error must have the void return type as well.
+    fn getTripTo(self: *HermitsNotebook, trip: []?TripItem, dest: *Place) TripError!void {
         // We start at the destination entry.
         const destination_entry = self.getEntry(dest);
 
@@ -345,8 +347,8 @@ pub fn main() void {
     // Here's where the hermit decides where he would like to go. Once
     // you get the program working, try some different Places on the
     // map!
-    const start = &a;        // Archer's Point
-    const destination = &f;  // Fox Pond
+    const start = &a; // Archer's Point
+    const destination = &f; // Fox Pond
 
     // Store each Path array as a slice in each Place. As mentioned
     // above, we needed to delay making these references to avoid

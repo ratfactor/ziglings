@@ -22,7 +22,7 @@
 // Versatility! Zig strings are compatible with C strings (which
 // are null-terminated) AND can be coerced to a variety of other
 // Zig types:
-// 
+//
 //     const a: [5]u8 = "array".*;
 //     const b: *const [16]u8 = "pointer to array";
 //     const c: []const u8 = "slice";
@@ -50,7 +50,7 @@ pub fn main() void {
     //
     // Luckily, the 'length' field makes it possible to still
     // work with this value.
-    const foo = WeirdContainer {
+    const foo = WeirdContainer{
         .data = "Weird Data!",
         .length = 11,
     };
@@ -60,7 +60,8 @@ pub fn main() void {
     // length... You've actually solved this problem before!
     //
     // Here's a big hint: do you remember how to take a slice?
-    const printable = ???;
+    // take a slice from the many-item pointer array.
+    const printable = foo.data[0..foo.length];
 
     print("{s}\n", .{printable});
 }

@@ -29,7 +29,7 @@
 // If a .{} thing is what the print function wants, do we need to
 // break our "tuple" apart and put it in another one? No! It's
 // redundant! This will print the same thing:
-//     
+//
 //     print("{} {}\n", foo);
 //
 // Aha! So now we know that print() takes a "tuple". Things are
@@ -82,14 +82,14 @@ fn printTuple(tuple: anytype) void {
     //         @typeInfo(Circle).Struct.fields
     //
     // This will be an array of StructFields.
-    const fields = ???;
+    const fields = @typeInfo(@TypeOf(tuple)).Struct.fields;
 
     // 2. Loop through each field. This must be done at compile
     // time.
     //
     //     Hint: remember 'inline' loops?
     //
-    for (fields) |field| {
+    inline for (fields) |field| {
         // 3. Print the field's name, type, and value.
         //
         //     Each 'field' in this loop is one of these:
@@ -117,9 +117,9 @@ fn printTuple(tuple: anytype) void {
         //
         // The first field should print as: "0"(bool):true
         print("\"{s}\"({s}):{any} ", .{
-            field.???,
-            field.???,
-            ???,
+            field.name,
+            field.field_type,
+            @field(tuple, field.name),
         });
     }
 }

@@ -35,8 +35,7 @@ const print = @import("std").debug.print;
 
 pub fn main() void {
     var myframe = async getPageTitle("http://example.com");
-
-    var value = ???
+    var value = await myframe;
 
     print("{s}\n", .{value});
 }

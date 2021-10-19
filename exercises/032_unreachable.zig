@@ -35,6 +35,7 @@ pub fn main() void {
             3 => {
                 current_value *= current_value;
             },
+            else => unreachable,
         }
 
         std.debug.print("{} ", .{current_value});

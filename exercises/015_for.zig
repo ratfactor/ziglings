@@ -15,7 +15,7 @@ pub fn main() void {
 
     std.debug.print("A Dramatic Story: ", .{});
 
-    for (???) |???| {
+    for (story) |scene| {
         if (scene == 'h') std.debug.print(":-)  ", .{});
         if (scene == 's') std.debug.print(":-(  ", .{});
         if (scene == 'n') std.debug.print(":-|  ", .{});

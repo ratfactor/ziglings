@@ -10,7 +10,7 @@
 //     fn bar() void {
 //         fooThatMightSuspend(true); // Now bar() is async!
 //     }
-// 
+//
 // But if you KNOW the function won't suspend, you can make a
 // promise to the compiler with the 'nosuspend' keyword:
 //
@@ -29,7 +29,7 @@ pub fn main() void {
     // The main() function can not be async. But we know
     // getBeef() will not suspend with this particular
     // invocation. Please make this okay:
-    var my_beef = getBeef(0);
+    var my_beef = nosuspend getBeef(0);
 
     print("beef? {X}!\n", .{my_beef});
 }
@@ -41,7 +41,6 @@ fn getBeef(input: u32) u32 {
 
     return 0xBEEF;
 }
-//
 // Going Deeper Into...
 //                     ...uNdeFiNEd beHAVi0r!
 //

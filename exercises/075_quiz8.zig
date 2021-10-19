@@ -49,17 +49,21 @@ const Path = struct {
 //
 // Please fill in the body of this function!
 fn makePath(from: *Place, to: *Place, dist: u8) Path {
-
+    return Path{
+        .from = from,
+        .to = to,
+        .dist = dist,
+    };
 }
 
 // Using our new function, these path definitions take up considerably less
 // space in our program now!
-const a_paths = [_]Path{ makePath(&a, &b, 2) };
+const a_paths = [_]Path{makePath(&a, &b, 2)};
 const b_paths = [_]Path{ makePath(&b, &a, 2), makePath(&b, &d, 1) };
 const c_paths = [_]Path{ makePath(&c, &d, 3), makePath(&c, &e, 2) };
 const d_paths = [_]Path{ makePath(&d, &b, 1), makePath(&d, &c, 3), makePath(&d, &f, 7) };
 const e_paths = [_]Path{ makePath(&e, &c, 2), makePath(&e, &f, 1) };
-const f_paths = [_]Path{ makePath(&f, &d, 7) };
+const f_paths = [_]Path{makePath(&f, &d, 7)};
 //
 // But is it more readable? That could be argued either way.
 //
@@ -69,7 +73,7 @@ const f_paths = [_]Path{ makePath(&f, &d, 7) };
 //
 // For example, we could create our own "path language" and
 // create Paths from that. Something like this, perhaps:
-// 
+//
 //    a -> (b[2])
 //    b -> (a[2] d[1])
 //    c -> (d[3] e[2])
@@ -151,8 +155,8 @@ const HermitsNotebook = struct {
 };
 
 pub fn main() void {
-    const start = &a;        // Archer's Point
-    const destination = &f;  // Fox Pond
+    const start = &a; // Archer's Point
+    const destination = &f; // Fox Pond
 
     // TODO: can we neaten this up????
     a.paths = a_paths[0..];

@@ -59,8 +59,10 @@ pub fn main() void {
     // demonstrate how they are similar and different.
     //
     // (It turns out that the array prints completely, including
-    // the sentinel 0 in the middle. The many-item pointer stops
-    // at the first sentinel value.)
+    // the sentinel 0 in the middle. The many-item pointer must
+    // stop at the first sentinel value. The difference is simply
+    // that arrays have a known length and many-item pointers
+    // don't.)
     printSequence(nums);
     printSequence(ptr);
 
@@ -81,7 +83,7 @@ fn printSequence(my_seq: anytype) void {
             print("Array:", .{});
 
             // Loop through the items in my_seq.
-            for (???) |s| {
+            for (my_seq) |s| {
                 print("{}", .{s});
             }
         },
@@ -93,9 +95,8 @@ fn printSequence(my_seq: anytype) void {
             // Loop through the items in my_seq until we hit the
             // sentinel value.
             var i: usize = 0;
-            while (??? != my_sentinel) {
+            while (my_seq[i] != my_sentinel.?) : (i += 1) {
                 print("{}", .{my_seq[i]});
-                i += 1;
             }
         },
         else => unreachable,

@@ -38,6 +38,7 @@ pub fn main() void {
         if (n) |value| {
             std.debug.print("={}. ", .{value});
         } else |err| switch (err) {
+            MyNumberError.TooSmall => std.debug.print("<4. ", .{}),
             MyNumberError.TooBig => std.debug.print(">4. ", .{}),
             // Please add a match for TooSmall here and have it print: "<4. "
         }

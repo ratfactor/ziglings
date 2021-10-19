@@ -47,7 +47,7 @@ pub fn main() void {
     // return it from the for loop.
     const current_lang: ?[]const u8 = for (langs) |lang| {
         if (lang.len == 3) break lang;
-    };
+    } else unreachable;
 
     if (current_lang) |cl| {
         print("Current language: {s}\n", .{cl});

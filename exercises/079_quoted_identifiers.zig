@@ -13,18 +13,18 @@
 // past the authorities: the @"" identifier quoting syntax.
 //
 //     @"foo"
-//     
+//
 // Please help us safely smuggle these fugitive identifiers into
 // our program:
 //
 const print = @import("std").debug.print;
 
 pub fn main() void {
-    const 55_cows: i32 = 55;
-    const isn't true: bool = false;
-    
+    const @"55_cows": i32 = 55;
+    const @"isn't true": bool = false;
+
     print("Sweet freedom: {}, {}.\n", .{
-        55_cows,
-        isn't true,
+        @"55_cows",
+        @"isn't true",
     });
 }

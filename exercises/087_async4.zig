@@ -16,7 +16,7 @@ pub fn main() void {
 
     while (global_counter <= 5) {
         print("{} ", .{global_counter});
-        ???
+        resume foo_frame;
     }
 
     print("\n", .{});
@@ -24,7 +24,7 @@ pub fn main() void {
 
 fn foo() void {
     while (true) {
-        ???
-        ???
+        global_counter += 1;
+        suspend {}
     }
 }
