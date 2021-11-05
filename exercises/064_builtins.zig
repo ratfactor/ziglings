@@ -54,7 +54,7 @@ pub fn main() void {
     //
     // Also, check out our fancy formatting! b:0>4 means, "print
     // as a binary number, zero-pad right-aligned four digits."
-    print("{b:0>4} + {b:0>4} = {b:0>4} ({})", .{a, b, my_result, overflowed});
+    print("{b:0>4} + {b:0>4} = {b:0>4} ({})", .{ a, b, my_result, overflowed });
 
     print(". Furthermore, ", .{});
 
@@ -70,5 +70,5 @@ pub fn main() void {
     // this builtin to reverse the bits of a u8 integer.
     const input: u8 = 0b11110000;
     const tupni: u8 = @bitReverse(input);
-    print("{b:0>8} backwards is {b:0>8}.\n", .{input, tupni});
+    print("{b:0>8} backwards is {b:0>8}.\n", .{ input, tupni });
 }

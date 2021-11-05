@@ -50,7 +50,7 @@ pub fn main() void {
     //
     // Luckily, the 'length' field makes it possible to still
     // work with this value.
-    const foo = WeirdContainer {
+    const foo = WeirdContainer{
         .data = "Weird Data!",
         .length = 11,
     };

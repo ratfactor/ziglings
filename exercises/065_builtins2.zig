@@ -53,7 +53,7 @@ const Narcissus = struct {
 };
 
 pub fn main() void {
-    var narcissus: Narcissus = Narcissus {};
+    var narcissus: Narcissus = Narcissus{};
 
     // Oops! We cannot leave the 'me' and 'myself' fields
     // undefined. Please set them here:
@@ -70,7 +70,7 @@ pub fn main() void {
     // fix this call:
     const T2 = narcissus.fetchTheMostBeautifulType();
 
-    print("A {} loves all {}es. ", .{T1, T2});
+    print("A {} loves all {}es. ", .{ T1, T2 });
 
     //   His final words as he was looking in
     //   those waters he habitually watched

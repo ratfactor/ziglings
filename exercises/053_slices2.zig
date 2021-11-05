@@ -31,5 +31,5 @@ pub fn main() void {
 }
 
 fn printPhrase(part1: []u8, part2: []u8, part3: []u8) void {
-    std.debug.print("'{s} {s} {s}.' ", .{part1, part2, part3});
+    std.debug.print("'{s} {s} {s}.' ", .{ part1, part2, part3 });
 }
