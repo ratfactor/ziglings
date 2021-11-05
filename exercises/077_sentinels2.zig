@@ -22,7 +22,7 @@
 // Versatility! Zig strings are compatible with C strings (which
 // are null-terminated) AND can be coerced to a variety of other
 // Zig types:
-// 
+//
 //     const a: [5]u8 = "array".*;
 //     const b: *const [16]u8 = "pointer to array";
 //     const c: []const u8 = "slice";

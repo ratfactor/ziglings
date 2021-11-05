@@ -49,6 +49,6 @@ fn makeSequence(comptime T: type, ??? size: usize) [???]T {
     while (i < size) : (i += 1) {
         sequence[i] = @intCast(T, i) + 1;
     }
-    
+
     return sequence;
 }

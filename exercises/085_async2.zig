@@ -26,4 +26,3 @@ fn foo() void {
     suspend {}
     print("async!\n", .{});
 }
-

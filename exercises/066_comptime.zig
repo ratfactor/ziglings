@@ -27,7 +27,7 @@
 //
 // Zig takes these concepts further by making these optimizations
 // an integral part of the language itself!
-// 
+//
 const print = @import("std").debug.print;
 
 pub fn main() void  {

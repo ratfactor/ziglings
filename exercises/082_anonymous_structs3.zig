@@ -29,7 +29,7 @@
 // If a .{} thing is what the print function wants, do we need to
 // break our "tuple" apart and put it in another one? No! It's
 // redundant! This will print the same thing:
-//     
+//
 //     print("{} {}\n", foo);
 //
 // Aha! So now we know that print() takes a "tuple". Things are

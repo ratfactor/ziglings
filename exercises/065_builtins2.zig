@@ -1,7 +1,7 @@
 //
 // Zig has builtins for mathematical operations such as...
 //
-//      @sqrt        @sin          @cos 
+//      @sqrt        @sin          @cos
 //      @exp         @log          @floor
 //
 // ...and lots of type casting operations such as...
@@ -20,18 +20,18 @@
 // by exploring just THREE of Zig's MANY introspection abilities:
 //
 // 1. @This() type
-// 
+//
 // Returns the innermost struct, enum, or union that a function
 // call is inside.
 //
 // 2. @typeInfo(comptime T: type) @import("std").builtin.TypeInfo
-// 
+//
 // Returns information about any type in a TypeInfo union which
 // will contain different information depending on which type
 // you're examining.
-// 
+//
 // 3. @TypeOf(...) type
-// 
+//
 // Returns the type common to all input parameters (each of which
 // may be any expression). The type is resolved using the same
 // "peer type resolution" process the compiler itself uses when
@@ -46,7 +46,7 @@ const Narcissus = struct {
     me: *Narcissus = undefined,
     myself: *Narcissus = undefined,
     echo: void = undefined,
-    
+
     fn fetchTheMostBeautifulType() type {
         return @This();
     }

@@ -33,7 +33,7 @@ pub fn main() void {
     // have a little preview of Zig 'for' loops instead:
     //
     //    for (<item array>) |item| { <do something with item> }
-    // 
+    //
     // Don't worry, we'll cover looping properly in upcoming
     // lessons.
     //

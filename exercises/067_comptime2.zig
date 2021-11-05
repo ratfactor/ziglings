@@ -8,7 +8,7 @@
 //        --o--            comptime        *    |      ..    .
 //     *    |       *  .        .    .   .    --*--  .     *  .
 //  .     .    .    .   . . .      .        .   |   .    .  .
-//        
+//
 // When placed before a variable declaration, 'comptime'
 // guarantees that every usage of that variable will be performed
 // at compile time.

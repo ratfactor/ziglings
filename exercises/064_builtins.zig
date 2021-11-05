@@ -1,7 +1,7 @@
 //
 // The Zig compiler provides "builtin" functions. You've already
 // gotten used to seeing an @import() at the top of every
-// Ziglings exercise. 
+// Ziglings exercise.
 //
 // We've also seen @intCast() in "016_for2.zig", "058_quiz7.zig";
 // and @enumToInt() in "036_enums2.zig".
@@ -51,7 +51,7 @@ pub fn main() void {
     //    1111 + 1 = 0000      Yes! (Real answer is 10000)
     //    0000 + 1 = 0001      Yes!
     //    0001 + 1 = 0010      Yes!
-    // 
+    //
     // Also, check out our fancy formatting! b:0>4 means, "print
     // as a binary number, zero-pad right-aligned four digits."
     print("{b:0>4} + {b:0>4} = {b:0>4} ({})", .{a, b, my_result, overflowed});

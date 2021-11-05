@@ -69,7 +69,7 @@ const f_paths = [_]Path{ makePath(&f, &d, 7) };
 //
 // For example, we could create our own "path language" and
 // create Paths from that. Something like this, perhaps:
-// 
+//
 //    a -> (b[2])
 //    b -> (a[2] d[1])
 //    c -> (d[3] e[2])
