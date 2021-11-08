@@ -59,7 +59,7 @@ pub fn main() void {
 //         |  exponent     significand
 //         |
 //          sign
-//    
+//
 // This example is the decimal number 3.140625, which happens to
 // be the closest representation of Pi we can make with an f16
 // due to the way IEEE-754 floating points store digits:
@@ -86,6 +86,6 @@ pub fn main() void {
 //
 // Fun fact: sometimes you'll see the significand labeled as a
 // "mantissa" but Donald E. Knuth says not to do that.
-//     
+//
 // C compatibility fact: There is also a Zig floating point type
 // specifically for working with C ABIs called c_longdouble.

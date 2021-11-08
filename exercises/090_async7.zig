@@ -10,7 +10,7 @@
 //     fn bar() void {
 //         fooThatMightSuspend(true); // Now bar() is async!
 //     }
-// 
+//
 // But if you KNOW the function won't suspend, you can make a
 // promise to the compiler with the 'nosuspend' keyword:
 //

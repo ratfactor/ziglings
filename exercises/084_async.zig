@@ -37,7 +37,7 @@
 //     fn bar() void {
 //         fooThatSuspends();
 //     }
-//     
+//
 // 6. The main() function cannot be async!
 //
 // Given facts 3 and 4, how do we fix this program (broken by facts

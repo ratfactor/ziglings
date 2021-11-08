@@ -61,10 +61,10 @@ const Schooner = struct {
     }
 };
 
-pub fn main() void  {
-    var whale = Schooner {.name = "Whale"};
-    var shark = Schooner {.name = "Shark"};
-    var minnow = Schooner {.name = "Minnow"};
+pub fn main() void {
+    var whale = Schooner{ .name = "Whale" };
+    var shark = Schooner{ .name = "Shark" };
+    var minnow = Schooner{ .name = "Minnow" };
 
     // Hey, we can't just pass this runtime variable as an
     // argument to the scaleMe() method. What would let us do
