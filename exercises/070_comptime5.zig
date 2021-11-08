@@ -140,6 +140,6 @@ fn isADuck(possible_duck: anytype) bool {
         // error, not a runtime panic or crash!
         possible_duck.quack();
     }
-        
+
     return is_duck;
 }

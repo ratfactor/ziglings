@@ -13,7 +13,7 @@
 // past the authorities: the @"" identifier quoting syntax.
 //
 //     @"foo"
-//     
+//
 // Please help us safely smuggle these fugitive identifiers into
 // our program:
 //

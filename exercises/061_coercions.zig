@@ -22,7 +22,7 @@
 //    const arr: [3]u8 = [3]u8{5, 6, 7};
 //    const s: []const u8 = &arr;  // to slice
 //    const p: [*]const u8 = &arr; // to many-item pointer
-//    
+//
 // 4. Single-item mutable pointers can coerce to single-item
 //    pointers pointing to an array of length 1. (Interesting!)
 //

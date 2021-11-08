@@ -8,7 +8,7 @@
 //        --o--            comptime        *    |      ..    .
 //     *    |       *  .        .    .   .    --*--  .     *  .
 //  .     .    .    .   . . .      .        .   |   .    .  .
-//        
+//
 // When placed before a variable declaration, 'comptime'
 // guarantees that every usage of that variable will be performed
 // at compile time.
@@ -30,7 +30,7 @@
 //
 const print = @import("std").debug.print;
 
-pub fn main() void  {
+pub fn main() void {
     //
     // In this contrived example, we've decided to allocate some
     // arrays using a variable count! But something's missing...
@@ -49,7 +49,7 @@ pub fn main() void  {
     count += 1;
     var a4: [count]u8 = .{'D'} ** count;
 
-    print("{s} {s} {s} {s}\n", .{a1, a2, a3, a4});
+    print("{s} {s} {s} {s}\n", .{ a1, a2, a3, a4 });
 
     // Builtin BONUS!
     //

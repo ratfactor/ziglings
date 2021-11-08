@@ -44,7 +44,7 @@ pub fn main() void {
     var com_title = com_frame;
     var org_title = org_frame;
 
-    print(".com: {s}, .org: {s}.\n", .{com_title, org_title});
+    print(".com: {s}, .org: {s}.\n", .{ com_title, org_title });
 }
 
 fn getPageTitle(url: []const u8) []const u8 {

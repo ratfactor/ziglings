@@ -49,7 +49,7 @@ pub fn main() void {
             '*' => value *= digit,
             else => unreachable,
         }
-        // ...But it's quite a bit more exciting than it first appears. 
+        // ...But it's quite a bit more exciting than it first appears.
         // The 'inline while' no longer exists at runtime and neither
         // does anything else not touched directly by runtime
         // code. The 'instructions' string, for example, does not
@@ -61,6 +61,6 @@ pub fn main() void {
         // code at compile time. Guess we're compiler writers
         // now. See? The wizard hat was justified after all.
     }
-    
+
     print("{}\n", .{value});
 }

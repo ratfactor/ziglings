@@ -23,6 +23,6 @@ pub fn main() void {
         0b1101000, // binary
         0x66,      // hex
     };
-        
+
     print("{s} is cool.\n", .{zig});
 }
