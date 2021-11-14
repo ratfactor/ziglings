@@ -443,6 +443,10 @@ const exercises = [_]Exercise{
         .main_file = "090_async7.zig",
         .output = "beef? BEEF!",
     },
+    .{
+        .main_file = "091_async8.zig",
+        .output = "ABCDEF",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.

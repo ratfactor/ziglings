@@ -1,5 +1,6 @@
-*~
 *.swp
-zig-cache/
+*~
+.direnv
 answers/
 patches/healed/
+zig-cache/

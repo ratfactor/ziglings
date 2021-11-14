@@ -111,16 +111,11 @@ to zig-cache/bin with:
 zig build 19_install
 ```
 
-## TODO
+## What's Covered
 
-Contributions are very welcome! I'm writing this to teach myself and to create
-the learning resource I wished for. There will be tons of room for improvement:
-
-* Wording of explanations
-* Idiomatic usage of Zig
-* Additional exercises
-
-Planned exercises:
+I've decide to limit Ziglings to the core language and not
+attempt coverage of the Standard Library. Perhaps you can change
+my mind?
 
 Core Language
 
@@ -154,25 +149,17 @@ Core Language
 * [x] Sentinel termination
 * [x] Quoted identifiers @""
 * [x] Anonymous structs/tuples/lists
-* [ ] Async
-* [ ] Working with C?
+* [ ] Async <--- IN PROGRESS!
 
-Modules and the Zig Standard Library
+## Contributing
 
-* [ ] Imports
-* [ ] Allocators
-* [ ] Arraylist
-* [ ] Filesystem
-* [ ] Readers and Writers
-* [ ] Formatting
-* [ ] Random Numbers
-* [ ] Crypto
-* [ ] Threads
-* [ ] Hash Maps
-* [ ] Stacks
-* [ ] Sorting
-* [ ] Iterators
+Contributions are very welcome! I'm writing this to teach myself and to create
+the learning resource I wished for. There will be tons of room for improvement:
 
-The initial topics for these exercises were unabashedly cribbed from
-[ziglearn.org](https://ziglearn.org/). I've since moved things around
-in an order that I think best lets each topic build upon each other.
+* Wording of explanations
+* Idiomatic usage of Zig
+* Maybe additional exercises?
+
+Please see CONTRIBUTING.md in this repo for the full details.
+
+
