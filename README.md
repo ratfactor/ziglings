@@ -1,5 +1,14 @@
 # Ziglings
 
+## (for Zig version 0.8.1)
+
+This is a branch of Ziglings locked at a specific version of Zig. **It may or may not
+be actively maintained!** This branch exists so that you can still learn using older
+versioned releases or custom compiled versions of Zig. These may or may not be actively
+maintained with bugfixes, but at least they should work with those versions.
+
+Now onward with the regular README...
+
 Welcome to Ziglings! This project contains a series of tiny broken programs.
 By fixing them, you'll learn how to read and write
 [Zig](https://ziglang.org/)
