@@ -8,7 +8,7 @@ const print = std.debug.print;
 // When changing this version, be sure to also update README.md in two places:
 //     1) Getting Started
 //     2) Version Changes
-const needed_version = std.SemanticVersion.parse("0.9.0-dev.1343") catch unreachable;
+const needed_version = std.SemanticVersion.parse("0.9.0-dev.2025") catch unreachable;
 
 const Exercise = struct {
     /// main_file must have the format key_name.zig.
@@ -501,9 +501,9 @@ pub fn build(b: *Builder) void {
                     const DWORD = std.os.windows.DWORD;
                     const ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
                     const STD_ERROR_HANDLE = @bitCast(DWORD, @as(i32, -12));
-                    extern "kernel32" fn GetStdHandle(id: DWORD) callconv(WINAPI) ?*c_void;
-                    extern "kernel32" fn GetConsoleMode(console: ?*c_void, out_mode: *DWORD) callconv(WINAPI) u32;
-                    extern "kernel32" fn SetConsoleMode(console: ?*c_void, mode: DWORD) callconv(WINAPI) u32;
+                    extern "kernel32" fn GetStdHandle(id: DWORD) callconv(WINAPI) ?*anyopaque;
+                    extern "kernel32" fn GetConsoleMode(console: ?*anyopaque, out_mode: *DWORD) callconv(WINAPI) u32;
+                    extern "kernel32" fn SetConsoleMode(console: ?*anyopaque, mode: DWORD) callconv(WINAPI) u32;
                 };
                 const handle = w32.GetStdHandle(w32.STD_ERROR_HANDLE);
                 var mode: w32.DWORD = 0;
