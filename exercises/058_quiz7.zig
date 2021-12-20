@@ -31,7 +31,7 @@
 // *************************************************************
 // *                A NOTE ABOUT THIS EXERCISE                 *
 // *                                                           *
-// * You do NOT have to read an understand every bit of this   *
+// * You do NOT have to read and understand every bit of this  *
 // * program. This is a very big example. Feel free to skim    *
 // * through it and then just focus on the few parts that are  *
 // * actually broken!                                          *
