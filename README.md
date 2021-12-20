@@ -67,6 +67,10 @@ as high as that shown in the example version check above.
 
 It is likely that you'll download a build which is _greater_ than the minimum.
 
+_(For those who cannot easily update Zig, there are also community-supported
+branches in this repo. At the moment, there's one for v0.8.1. Older version
+branches may or may not have all exercises and/or bugfixes.)_
+
 Once you have a build of the Zig compiler that works with Ziglings, they'll
 continue to work together. But keep in mind that if you update one, you may
 need to also update the other.
