@@ -29,12 +29,12 @@ const MyNumberError = error{
 const std = @import("std");
 
 pub fn main() void {
-    var nums = [_]u8{ 2, 3, 4, 5, 6 };
+    const nums = [_]u8{ 2, 3, 4, 5, 6 };
 
     for (nums) |num| {
         std.debug.print("{}", .{num});
 
-        var n = numberMaybeFail(num);
+        const n = numberMaybeFail(num);
         if (n) |value| {
             std.debug.print("={}. ", .{value});
         } else |err| switch (err) {
