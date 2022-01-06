@@ -53,7 +53,7 @@
 // 9. Tagged unions coerce to the current tagged enum.
 //
 // 10. Enums coerce to a tagged union when that tagged field is a
-//     a zero-length type that has only one value (like void).
+//     zero-length type that has only one value (like void).
 //
 // 11. Zero-bit types (like void) can be coerced into single-item
 //     pointers.
