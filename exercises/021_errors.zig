@@ -16,7 +16,7 @@ const MyNumberError = error{
 const std = @import("std");
 
 pub fn main() void {
-    var nums = [_]u8{ 2, 3, 4, 5, 6 };
+    const nums = [_]u8{ 2, 3, 4, 5, 6 };
 
     for (nums) |n| {
         std.debug.print("{}", .{n});

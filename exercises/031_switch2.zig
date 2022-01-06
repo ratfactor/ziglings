@@ -15,7 +15,7 @@ pub fn main() void {
     const lang_chars = [_]u8{ 26, 9, 7, 42 };
 
     for (lang_chars) |c| {
-        var real_char: u8 = switch (c) {
+        const real_char: u8 = switch (c) {
             1 => 'A',
             2 => 'B',
             3 => 'C',
