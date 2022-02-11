@@ -11,7 +11,7 @@
 // Example:
 //
 //     var foo = 2;
-//     while (foo<10) : (foo+=2) {
+//     while (foo < 10) : (foo += 2) {
 //         // Do something with even numbers less than 10...
 //     }
 //
