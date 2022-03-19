@@ -80,17 +80,12 @@ about input:
 [no tab characters or Windows CR/LF newlines are allowed](https://github.com/ziglang/zig/issues/544).
 
 ### Version Changes
-..
-./patches/healed/076_sentinels.zig:95:30: error: incompatible
-types: 'u32' and '?*const anyopaque'
-            while (my_seq[i] != my_sentinel) {
-                             9
 
-* 2022-03-19 0.10.0-dev.1427 - method for getting sentinel of type changed
-* 2021-12-20 0.9.0-dev.2025 - `c_void` is now `anyopaque`
-* 2021-06-14 0.9.0-dev.137  - std.build.Id `.Custom` is now `.custom`
-* 2021-04-21 0.8.0-dev.1983 - std.fmt.format() `any` format string required
-* 2021-02-12 0.8.0-dev.1065 - std.fmt.format() `s` (string) format string required
+* *2022-03-19* zig 0.10.0-dev.1427 - method for getting sentinel of type changed
+* *2021-12-20* zig 0.9.0-dev.2025 - `c_void` is now `anyopaque`
+* *2021-06-14* zig 0.9.0-dev.137  - std.build.Id `.Custom` is now `.custom`
+* *2021-04-21* zig 0.8.0-dev.1983 - std.fmt.format() `any` format string required
+* *2021-02-12* zig 0.8.0-dev.1065 - std.fmt.format() `s` (string) format string required
 
 ## Advanced Usage
 
