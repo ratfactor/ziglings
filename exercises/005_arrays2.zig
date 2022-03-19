@@ -11,6 +11,11 @@
 //
 //   const d = [_]u8{ 1,2,3 } ** 2; // equals 1 2 3 1 2 3
 //
+// Note that both '++' and '**' only operate on arrays while your
+// program is _being compiled_. This special time is known in Zig
+// parlance as "comptime" and we'll learn plenty more about that
+// later.
+//
 const std = @import("std");
 
 pub fn main() void {
