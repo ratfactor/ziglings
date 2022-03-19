@@ -39,6 +39,7 @@
 // data being terminated!
 //
 const print = @import("std").debug.print;
+const sentinel = @import("std").meta.sentinel;
 
 pub fn main() void {
     // Here's a zero-terminated array of u32 values:
@@ -71,12 +72,12 @@ pub fn main() void {
 // complete, but there are a couple missing bits. Please fix
 // them!
 fn printSequence(my_seq: anytype) void {
-    const my_type = @typeInfo(@TypeOf(my_seq));
+    const my_typeinfo = @typeInfo(@TypeOf(my_seq));
 
     // The TypeInfo contained in my_type is a union. We use a
     // switch to handle printing the Array or Pointer fields,
     // depending on which type of my_seq was passed in:
-    switch (my_type) {
+    switch (my_typeinfo) {
         .Array => {
             print("Array:", .{});
 
@@ -87,7 +88,7 @@ fn printSequence(my_seq: anytype) void {
         },
         .Pointer => {
             // Check this out - it's pretty cool:
-            const my_sentinel = my_type.Pointer.sentinel;
+            const my_sentinel = sentinel(@TypeOf(my_seq));
             print("Many-item pointer:", .{});
 
             // Loop through the items in my_seq until we hit the
