@@ -154,13 +154,21 @@ pub fn main() void {
     const start = &a;        // Archer's Point
     const destination = &f;  // Fox Pond
 
-    // TODO: can we neaten this up????
-    a.paths = a_paths[0..];
-    b.paths = b_paths[0..];
-    c.paths = c_paths[0..];
-    d.paths = d_paths[0..];
-    e.paths = e_paths[0..];
-    f.paths = f_paths[0..];
+    // We could either have this:
+    //
+    //   a.paths = a_paths[0..];
+    //   b.paths = b_paths[0..];
+    //   c.paths = c_paths[0..];
+    //   d.paths = d_paths[0..];
+    //   e.paths = e_paths[0..];
+    //   f.paths = f_paths[0..];
+    //
+    // or this comptime wizardry:
+    //
+    const letters = [_][]const u8{ "a", "b", "c", "d", "e", "f" };
+    inline for (letters) |letter| {
+        @field(@This(), letter).paths = @field(@This(), letter ++ "_paths")[0..];
+    }
 
     var notebook = HermitsNotebook{};
     var working_note = NotebookEntry{
