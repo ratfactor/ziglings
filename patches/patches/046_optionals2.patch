@@ -1,16 +1,3 @@
-8,19d7
-< // We also introduce the handy ".?" shortcut:
-< //
-< //     const foo = bar.?;
-< //
-< // is the same as
-< //
-< //     const foo = bar orelse unreachable;
-< //
-< // See if you can find where we use this shortcut below.
-< //
-< // Now let's make those elephant tails optional!
-< //
 24c12
 <     tail: *Elephant = null, // Hmm... tail needs something...
 ---

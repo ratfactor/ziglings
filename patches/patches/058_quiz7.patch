@@ -1,31 +1,14 @@
-185,186c185,186
+195,196c195,196
 <             .place => print("{s}", .{p.name}),
 <             .path => print("--{}->", .{p.dist}),
 ---
 >             .place => |p| print("{s}", .{p.name}),
 >             .path => |p| print("--{}->", .{p.dist}),
-248c248
+258c258
 <             if (place == entry.*.?.place) return entry;
 ---
 >             if (place == entry.*.?.place) return &entry.*.?;
-302c302
+312c312
 <     fn getTripTo(self: *HermitsNotebook, trip: []?TripItem, dest: *Place) void {
 ---
 >     fn getTripTo(self: *HermitsNotebook, trip: []?TripItem, dest: *Place) TripError!void {
-336d335
-<             // Note: you do not need to fix anything here.
-419,422c418
-<     // We convert the usize length to a u8 with @intCast(), a
-<     // builtin function just like @import().  We'll learn about
-<     // these properly in a later exercise.
-<     var i: u8 = @intCast(u8, trip.len);
----
->     var i: u8 = @intCast(u8, trip.len); // convert usize length
-449,452c445,446
-< // Search" (BFS).
-< //
-< // By tracking "lowest cost" paths, we can also say that we're
-< // performing a "least-cost search".
----
-> // Search" (BFS). By tracking "lowest cost" paths, we can also say
-> // that we're performing a "least-cost search".

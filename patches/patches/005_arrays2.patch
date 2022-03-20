@@ -1,8 +1,8 @@
-23c23
+28c28
 <     const leet = ???;
 ---
 >     const leet = le ++ et;
-28c28
+33c33
 <     const bit_pattern = [_]u8{ ??? } ** 3;
 ---
 >     const bit_pattern = [_]u8{ 1, 0, 0, 1 } ** 3;

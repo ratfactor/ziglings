@@ -1,24 +1,8 @@
-38,40d37
-< // Important: the sentinel value must be of the same type as the
-< // data being terminated!
-< //
-56c53
-<     // numbers that both ends in and CONTAINS the sentinel value.
----
->     // numbers that both ends in and CONTAINS the sentinal value.
-62,63c59,62
-<     // the sentinel 0 in the middle. The many-item pointer stops
-<     // at the first sentinel value.)
----
->     // the sentinel 0 in the middle. The many-item pointer must
->     // stop at the first sentinel value. The difference is simply
->     // that arrays have a known length and many-item pointers
->     // don't.)
-84c83
+85c84
 <             for (???) |s| {
 ---
 >             for (my_seq) |s| {
-96c95
+97c96
 <             while (??? != my_sentinel) {
 ---
 >             while (my_seq[i] != my_sentinel) {
