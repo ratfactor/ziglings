@@ -49,8 +49,8 @@ pub fn main() void {
     //    1101 + 1 = 1110      No.
     //    1110 + 1 = 1111      No.
     //    1111 + 1 = 0000      Yes! (Real answer is 10000)
-    //    0000 + 1 = 0001      Yes!
-    //    0001 + 1 = 0010      Yes!
+    //    0000 + 1 = 0001      No.
+    //    0001 + 1 = 0010      No.
     //
     // Also, check out our fancy formatting! b:0>4 means, "print
     // as a binary number, zero-pad right-aligned four digits."
