@@ -41,22 +41,38 @@ pub fn main() void {
     var my_result: u4 = undefined;
     var overflowed: bool = undefined;
     overflowed = @addWithOverflow(u4, a, b, &my_result);
-    //
-    // The print() below will produce: "1101 + 0101 = 0010 (true)".
-    // Let's make sense of this answer by counting up from 1101:
-    //
-    //                     Overflowed?
-    //    1101 + 1 = 1110      No.
-    //    1110 + 1 = 1111      No.
-    //    1111 + 1 = 0000      Yes! (Real answer is 10000)
-    //    0000 + 1 = 0001      No.
-    //    0001 + 1 = 0010      No.
-    //
-    // Also, check out our fancy formatting! b:0>4 means, "print
+
+    // Check out our fancy formatting! b:0>4 means, "print
     // as a binary number, zero-pad right-aligned four digits."
+    // The print() below will produce: "1101 + 0101 = 0010 (true)".
     print("{b:0>4} + {b:0>4} = {b:0>4} ({})", .{ a, b, my_result, overflowed });
 
-    print(". Furthermore, ", .{});
+    // Let's make sense of this answer. The value of 'b' in decimal is 5.
+    // Let's add 5 to 'a' but go one by one and see where it overflows:
+    //
+    //   a  |  b   | result | overflowed?
+    // ----------------------------------
+    // 1101 + 0001 =  1110  | false
+    // 1110 + 0001 =  1111  | false
+    // 1111 + 0001 =  0000  | true  (the real answer is 10000)
+    // 0000 + 0001 =  0001  | false
+    // 0001 + 0001 =  0010  | false
+    //
+    // In the last two lines the value of 'a' is corrupted because there was
+    // an overflow in line 3, but the operations of lines 4 and 5 themselves
+    // do not overflow.
+    // There is a difference between
+    //  - a value, that overflowed at some point and is now corrupted
+    //  - a single operation that overflows and maybe causes subsequent errors
+    // In practise we usually notice the overflowed value first and have to work
+    // our way backwards to the operation that caused the overflow.
+    //
+    // If there was no overflow at all while adding 5 to a, what value would
+    // 'my_result' hold? Write the answer in into 'expected_result'.
+    const expected_result: u8 = ???;
+    print(". Without overflow: {b:0>8}. ", .{expected_result});
+
+    print("Furthermore, ", .{});
 
     // Here's a fun one:
     //

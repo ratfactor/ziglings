@@ -331,7 +331,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "064_builtins.zig",
-        .output = "1101 + 0101 = 0010 (true). Furthermore, 11110000 backwards is 00001111.",
+        .output = "1101 + 0101 = 0010 (true). Without overflow: 00010010. Furthermore, 11110000 backwards is 00001111.",
     },
     .{
         .main_file = "065_builtins2.zig",
