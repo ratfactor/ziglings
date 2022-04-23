@@ -13,8 +13,8 @@
 // But what value is returned from a loop if a break statement is
 // never reached? We need a default expression. Thankfully, Zig
 // loops also have 'else' clauses! As you might have guessed, the
-// else clause is evaluated once a while condition becomes false
-// or a for loop runs out of items.
+// 'else' clause is evaluated when: 1) a 'while' condition becomes
+// false or 2) a 'for' loop runs out of items.
 //
 //     const two: u8 = while (true) break 2 else 0;         // 2
 //     const three: u8 = for ([1]u8{1}) |f| break 3 else 0; // 3
