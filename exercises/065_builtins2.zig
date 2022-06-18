@@ -121,7 +121,7 @@ pub fn main() void {
     // Alas, we can't use a regular 'for' loop here because
     // 'fields' can only be evaluated at compile time.  It seems
     // like we're overdue to learn about this "comptime" stuff,
-    // isn't it? :-)
+    // doesn't it? :-)
 
     print(".\n", .{});
 }
