@@ -10,7 +10,6 @@ const std = @import("std");
 // that Zig will infer the error type. This is appropriate in the case
 // of main(), but can have consequences elsewhere.
 pub fn main() !void {
-
     // We get a Writer for Standard Out so we can print() to it.
     const stdout = std.io.getStdOut().writer();
 
