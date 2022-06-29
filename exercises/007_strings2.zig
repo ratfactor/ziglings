@@ -9,6 +9,9 @@
 //         \\Line Two
 //     ;
 //
+// If you get the error: "expected expression, found ';'" 
+// that means you used forward slashes, multi line strings are not comments 
+//
 // See if you can make this program print some song lyrics.
 //
 const std = @import("std");
