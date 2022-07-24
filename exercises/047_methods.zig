@@ -80,7 +80,7 @@ pub fn main() void {
     while (aliens_alive > 0) {
         aliens_alive = 0;
 
-        // Loop through every alien...
+        // Loop through every alien by reference by specifying that the capture value is a pointer
         for (aliens) |*alien| {
 
             // *** Zap the Alien Here! ***
