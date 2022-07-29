@@ -71,7 +71,7 @@ pub fn main() void {
     var first_line2: Err!*const [21]u8 = ???;
     first_line2 = "which can eternal lie";
 
-    std.debug.print("{s} {s} / ", .{ first_line1, first_line2 });
+    std.debug.print("{s} {!s} / ", .{ first_line1, first_line2 });
 
     printSecondLine();
 }
