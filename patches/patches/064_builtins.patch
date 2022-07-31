@@ -1,6 +1,8 @@
 72c72
--    const expected_result: u8 = ???;
-+    const expected_result: u8 = 0b00010010;
+<     const expected_result: u8 = ???;
+---
+>     const expected_result: u8 = 0b00010010;
 88c88
--     const tupni: u8 = @bitReverse(input);
-+     const tupni: u8 = @bitReverse(u8, input);
+<     const tupni: u8 = @bitReverse(input);
+---
+>     const tupni: u8 = @bitReverse(u8, input);
