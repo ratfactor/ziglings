@@ -1,4 +1,4 @@
-60c60
+71c71
 <     printCharacter(???);
 ---
 >     printCharacter(&glorp);

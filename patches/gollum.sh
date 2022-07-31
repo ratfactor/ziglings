@@ -22,7 +22,9 @@ p=patches/patches/$f.patch
 if [ ! -f $b ]; then echo "No $f! We hates it!"; exit 1; fi
 if [ ! -f $a ]; then echo "No $a! Where is it? Where is the answer, precious?"; exit; fi
 
-echo "Hissss!\tbefore: '$b'\n\t after: '$a'\n\t patch: '$p'\n"
+echo "Hissss!    before: '$b'"
+echo "            after: '$a'"
+echo "            patch: '$p'"
 
 diff $b $a > $p
 

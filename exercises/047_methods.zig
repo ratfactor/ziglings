@@ -10,7 +10,7 @@
 //         pub fn hello() void {
 //             std.debug.print("Foo says hello!\n", .{});
 //         }
-//     }
+//     };
 //
 // 2. A function that is a member of a struct is a "method" and is
 //    called with the "dot syntax" like so:
@@ -23,10 +23,10 @@
 //     const Bar = struct{
 //         number: u32,
 //
-//         pub fn printMe(self: *Bar) void {
+//         pub fn printMe(self: Bar) void {
 //             std.debug.print("{}\n", .{self.number});
 //         }
-//     }
+//     };
 //
 //    (Actually, you can name the first parameter anything, but
 //    please follow convention and use "self".)

@@ -240,7 +240,8 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "043_pointers5.zig",
-        .output = "Wizard (G:10 H:100 XP:20)",
+        .output = "Wizard (G:10 H:100 XP:20)\n  Mentor: Wizard (G:10000 H:100 XP:2340)",
+
     },
     .{
         .main_file = "044_quiz5.zig",

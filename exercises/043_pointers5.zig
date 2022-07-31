@@ -1,8 +1,7 @@
 //
-// Passing integer pointers around is generally not something you're going
-// to do. Integers are cheap to copy.
-//
-// But you know what IS useful? Pointers to structs:
+// As with integers, you can pass a pointer to a struct when you
+// will wish to modify that struct. Pointers are also useful when
+// you need to store a reference to a struct (a "link" to it).
 //
 //     const Vertex = struct{ x: u32, y: u32, z: u32 };
 //
@@ -16,7 +15,8 @@
 //     YES: pv.x
 //     NO:  pv.*.x
 //
-// We can write functions that take pointer arguments:
+// We can write functions that take pointers to structs as
+// arguments. This foo() function modifies struct v:
 //
 //     fn foo(v: *Vertex) void {
 //         v.x += 2;
@@ -24,13 +24,13 @@
 //         v.z += 7;
 //     }
 //
-// And pass references to them:
+// And call them like so:
 //
 //     foo(&v1);
 //
-//
 // Let's revisit our RPG example and make a printCharacter() function
-// that takes a Character pointer.
+// that takes a Character by reference and prints it...*and*
+// prints a linked "mentor" Character, if there is one.
 //
 const std = @import("std");
 
@@ -44,19 +44,30 @@ const Class = enum {
 const Character = struct {
     class: Class,
     gold: u32,
-    health: u8 = 100, // <--- You can also provide fields a default value!
+    health: u8 = 100, // You can provide default values
     experience: u32,
+
+    // I need to use the '?' here to allow for a null value. But
+    // I don't explain it until later. Please don't tell anyone.
+    mentor: ?*Character = null,
 };
 
 pub fn main() void {
-    var glorp = Character{
+    var mighty_krodor = Character{
+        .class = Class.wizard,
+        .gold = 10000,
+        .experience = 2340,
+    };
+
+    var glorp = Character{ // Glorp!
         .class = Class.wizard,
         .gold = 10,
         .experience = 20,
+        .mentor = &mighty_krodor, // Glorp's mentor is the Mighty Krodor
     };
 
     // FIX ME!
-    // Please pass our Character "glorp" to printCharacter():
+    // Please pass Glorp to printCharacter():
     printCharacter(???);
 }
 
@@ -78,4 +89,11 @@ fn printCharacter(c: *Character) void {
         c.health,
         c.experience,
     });
+
+    // Checking an "optional" value and capturing it will be
+    // explained later (this pairs with the '?' mentioned above.)
+    if (c.mentor) |mentor| {
+        std.debug.print("  Mentor: ", .{});
+        printCharacter(mentor);
+    }
 }
