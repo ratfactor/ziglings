@@ -88,7 +88,7 @@ pub fn main() void {
         // Loop through every alien...
         for (aliens) |*alien| {
 
-            // *** Zap the Alien Here! ***
+            // *** Zap the alien with the heat ray here! ***
             ???.zap(???);
 
             // If the alien's health is still above 0, it's still alive.
