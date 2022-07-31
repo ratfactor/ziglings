@@ -64,7 +64,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "004_arrays.zig",
-        .output = "Fourth: 7, Length: 8",
+        .output = "First: 2, Fourth: 7, Length: 8",
         .hint = "There are two things to complete here.",
     },
     .{
