@@ -7,7 +7,7 @@
 // In fact, types are ONLY available at compile time, so the
 // 'comptime' keyword is required here.
 //
-// Please take a moment put on the wizard hat which has been
+// Please take a moment to put on the wizard hat which has been
 // provided for you. We're about to use this ability to implement
 // a generic function.
 //
