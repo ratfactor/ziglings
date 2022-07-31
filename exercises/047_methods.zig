@@ -55,10 +55,15 @@ const Alien = struct {
             .health = strength * 5,
         };
     }
+};
+
+// Your trusty weapon. Zap those aliens!
+const HeatRay = struct {
+    damage: u8,
 
     // We love this method:
-    pub fn zap(self: *Alien, damage: u8) void {
-        self.health -= if (damage >= self.health) self.health else damage;
+    pub fn zap(self: *HeatRay, alien: *Alien) void {
+        alien.health -= if (self.damage >= alien.health) alien.health else self.damage;
     }
 };
 
@@ -74,7 +79,7 @@ pub fn main() void {
     };
 
     var aliens_alive = aliens.len;
-    var heat_ray_strength: u8 = 7; // We've been given a heat ray weapon.
+    var heat_ray = HeatRay{ .damage = 7 }; // We've been given a heat ray weapon.
 
     // We'll keep checking to see if we've killed all the aliens yet.
     while (aliens_alive > 0) {
@@ -83,8 +88,8 @@ pub fn main() void {
         // Loop through every alien...
         for (aliens) |*alien| {
 
-            // *** Zap the Alien Here! ***
-            ???.zap(heat_ray_strength);
+            // *** Zap the alien with the heat ray here! ***
+            ???.zap(???);
 
             // If the alien's health is still above 0, it's still alive.
             if (alien.health > 0) aliens_alive += 1;
