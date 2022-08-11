@@ -23,7 +23,7 @@
 //     const Bar = struct{
 //         number: u32,
 //
-//         pub fn printMe(self: Bar) void {
+//         pub fn printMe(self: *Bar) void {
 //             std.debug.print("{}\n", .{self.number});
 //         }
 //     };
