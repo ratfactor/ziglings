@@ -27,6 +27,10 @@ const Exercise = struct {
     /// Set this to true to check stdout instead.
     check_stdout: bool = false,
 
+    /// This exercise makes use of the async feature.
+    /// We need to keep track of this, so we compile without the self hosted compiler
+    @"async": bool = false,
+
     /// Returns the name of the main file with .zig stripped.
     pub fn baseName(self: Exercise) []const u8 {
         assert(std.mem.endsWith(u8, self.main_file, ".zig"));
@@ -241,7 +245,6 @@ const exercises = [_]Exercise{
     .{
         .main_file = "043_pointers5.zig",
         .output = "Wizard (G:10 H:100 XP:20)\n  Mentor: Wizard (G:10000 H:100 XP:2340)",
-
     },
     .{
         .main_file = "044_quiz5.zig",
@@ -419,34 +422,42 @@ const exercises = [_]Exercise{
         .main_file = "084_async.zig",
         .output = "foo() A",
         .hint = "Read the facts. Use the facts.",
+        .@"async" = true,
     },
     .{
         .main_file = "085_async2.zig",
         .output = "Hello async!",
+        .@"async" = true,
     },
     .{
         .main_file = "086_async3.zig",
         .output = "5 4 3 2 1",
+        .@"async" = true,
     },
     .{
         .main_file = "087_async4.zig",
         .output = "1 2 3 4 5",
+        .@"async" = true,
     },
     .{
         .main_file = "088_async5.zig",
         .output = "Example Title.",
+        .@"async" = true,
     },
     .{
         .main_file = "089_async6.zig",
         .output = ".com: Example Title, .org: Example Title.",
+        .@"async" = true,
     },
     .{
         .main_file = "090_async7.zig",
         .output = "beef? BEEF!",
+        .@"async" = true,
     },
     .{
         .main_file = "091_async8.zig",
         .output = "ABCDEF",
+        .@"async" = true,
     },
 };
 
@@ -698,6 +709,11 @@ const ZiglingStep = struct {
 
         zig_args.append(builder.zig_exe) catch unreachable;
         zig_args.append("build-exe") catch unreachable;
+
+        // Enable the stage 1 compiler if using the async feature
+        if (self.exercise.@"async") {
+            zig_args.append("-fstage1") catch unreachable;
+        }
 
         if (builder.color != .auto) {
             zig_args.append("--color") catch unreachable;
