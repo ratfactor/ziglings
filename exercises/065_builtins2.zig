@@ -40,12 +40,12 @@
 // (Notice how the two functions which return types start with
 // uppercase letters? This is a standard naming practice in Zig.)
 //
-const print = import(std).debug.print; // Oops!
+const print = @import("std").debug.print;
 
 const Narcissus = struct {
     me: *Narcissus = undefined,
     myself: *Narcissus = undefined,
-    echo: void = undefined,
+    echo: void = undefined, // Alas, poor Echo!
 
     fn fetchTheMostBeautifulType() type {
         return @This();
@@ -57,20 +57,26 @@ pub fn main() void {
 
     // Oops! We cannot leave the 'me' and 'myself' fields
     // undefined. Please set them here:
-    ??? = &narcissus;
-    ??? = &narcissus;
+    narcissus.me = &narcissus;
+    narcissus.??? = ???;
 
     // This determines a "peer type" from three separate
     // references (they just happen to all be the same object).
-    const T1 = @TypeOf(narcissus, narcissus.me.*, narcissus.myself.*);
+    const Type1 = @TypeOf(narcissus, narcissus.me.*, narcissus.myself.*);
 
     // Oh dear, we seem to have done something wrong when calling
-    // this function. It is namespaced to the struct, but doesn't
-    // use the method syntax (there's no self parameter). Please
-    // fix this call:
-    const T2 = narcissus.fetchTheMostBeautifulType();
+    // this function. We called it as a method, which would work
+    // if it had a self parameter. But it doesn't. (See above.)
+    //
+    // The fix for this is very subtle, but it makes a big
+    // difference!
+    const Type2 = narcissus.fetchTheMostBeautifulType();
 
-    print("A {} loves all {}es. ", .{ T1, T2 });
+    // Now we print a pithy statement about Narcissus.
+    print("A {s} loves all {s}es. ", .{
+        maximumNarcissism(Type1),
+        maximumNarcissism(Type2),
+    });
 
     //   His final words as he was looking in
     //   those waters he habitually watched
@@ -121,7 +127,23 @@ pub fn main() void {
     // Alas, we can't use a regular 'for' loop here because
     // 'fields' can only be evaluated at compile time.  It seems
     // like we're overdue to learn about this "comptime" stuff,
-    // doesn't it? :-)
+    // doesn't it? Don't worry, we'll get there.
 
     print(".\n", .{});
+}
+
+// NOTE: This exercise did not originally include the function below.
+// But a change after Zig 0.10.0 added the source file name to the
+// type. "Narcissus" became "065_builtins2.Narcissus".
+//
+// To fix this, I've added this function to strip the filename from
+// the front of the type name in the dumbest way possible. (It returns
+// a slice of the type name starting at character 14 (assuming
+// single-byte characters).
+//
+// We'll be seeing @typeName again in Exercise 070. For now, you can
+// see that it takes a Type and returns a u8 "string".
+fn maximumNarcissism(myType: anytype) []const u8 {
+    // Turn '065_builtins2.Narcissus' into 'Narcissus'
+    return @typeName(myType)[14..];
 }
