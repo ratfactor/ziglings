@@ -7,7 +7,7 @@
 //
 //     const Foo = struct {};
 //
-// * The value of @typeName(Foo) is "Foo".
+// * The value of @typeName(Foo) is "<filename>.Foo".
 //
 // A struct is also given a name when you return it from a
 // function:
@@ -61,16 +61,25 @@ pub fn main() void {
     };
 
     print("[{s}: {},{},{}] ", .{
-        @typeName(@TypeOf(circle1)),
+        stripFname(@typeName(@TypeOf(circle1))),
         circle1.center_x,
         circle1.center_y,
         circle1.radius,
     });
 
     print("[{s}: {d:.1},{d:.1},{d:.1}]\n", .{
-        @typeName(@TypeOf(circle2)),
+        stripFname(@typeName(@TypeOf(circle2))),
         circle2.center_x,
         circle2.center_y,
         circle2.radius,
     });
 }
+
+// Perhaps you remember the "narcissistic fix" for the type name
+// in Ex. 065? We're going to do the same thing here: use a hard-
+// coded slice to return the type name. That's just so our output
+// look prettier. Indulge your vanity. Programmers are beautiful.
+fn stripFname(mytype: []const u8) []const u8 {
+    return mytype[22..];
+}
+// The above would be an instant red flag in a "real" program.
