@@ -41,7 +41,7 @@ Verify the installation and build number of `zig` like so:
 
 ```bash
 $ zig version
-0.10.0-dev.3385+xxxxxxxxx
+0.10.0-dev.3685+xxxxxxxxx
 ```
 
 Clone this repository with Git:
@@ -81,6 +81,7 @@ about input:
 
 ### Version Changes
 
+* *2022-08-29* zig 0.10.0-dev.3685 - @typeName() output change, stage1 req. for async
 * *2022-07-31* zig 0.10.0-dev.3385 - std lib string fmt() option changes
 * *2022-03-19* zig 0.10.0-dev.1427 - method for getting sentinel of type changed
 * *2021-12-20* zig 0.9.0-dev.2025 - `c_void` is now `anyopaque`
