@@ -8,7 +8,7 @@ const print = std.debug.print;
 // When changing this version, be sure to also update README.md in two places:
 //     1) Getting Started
 //     2) Version Changes
-const needed_version = std.SemanticVersion.parse("0.10.0-dev.3685") catch unreachable;
+const needed_version = std.SemanticVersion.parse("0.10.0-dev.3880") catch unreachable;
 
 const Exercise = struct {
     /// main_file must have the format key_name.zig.
