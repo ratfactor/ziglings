@@ -55,7 +55,7 @@ Ziglings.  Please file an issue...or make a pull request!
 
 ## Formatting
 
-All exercises should conformt to `zig fmt`. I often forget to do
+All exercises should conform to `zig fmt`. I often forget to do
 this.
 
 
