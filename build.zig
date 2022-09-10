@@ -754,8 +754,7 @@ const ZiglingStep = struct {
         const build_output_dir = std.mem.trimRight(u8, output_dir_nl, "\r\n");
 
         const target_info = std.zig.system.NativeTargetInfo.detect(
-            builder.allocator,
-            .{},
+            .{}
         ) catch unreachable;
         const target = target_info.target;
 
