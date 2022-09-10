@@ -41,7 +41,7 @@ Verify the installation and build number of `zig` like so:
 
 ```bash
 $ zig version
-0.10.0-dev.3952+xxxxxxxxx
+0.10.0-dev.3978+xxxxxxxxx
 ```
 
 Clone this repository with Git:
@@ -81,11 +81,10 @@ about input:
 
 ### Version Changes
 
-* *2022-09-09* zig 0.10.0-dev.3952 - remove an Allocator parameter to the
-`NativeTargetInfo.detect` function.
+* *2022-09-09* zig 0.10.0-dev.3978 - change in `NativeTargetInfo.detect` in build
 * *2022-09-06* zig 0.10.0-dev.3880 - Ex 074 correctly fails again: comptime array len
-* *2022-08-29* zig 0.10.0-dev.3685 - @typeName() output change, stage1 req. for async
-* *2022-07-31* zig 0.10.0-dev.3385 - std lib string fmt() option changes
+* *2022-08-29* zig 0.10.0-dev.3685 - `@typeName()` output change, stage1 req. for async
+* *2022-07-31* zig 0.10.0-dev.3385 - std lib string `fmt()` option changes
 * *2022-03-19* zig 0.10.0-dev.1427 - method for getting sentinel of type changed
 * *2021-12-20* zig 0.9.0-dev.2025 - `c_void` is now `anyopaque`
 * *2021-06-14* zig 0.9.0-dev.137  - std.build.Id `.Custom` is now `.custom`
