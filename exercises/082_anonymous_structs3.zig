@@ -4,8 +4,8 @@
 //
 //     .{
 //         false,
-//         @as(u32, 15);
-//         @as(i64, 67.12);
+//         @as(u32, 15),
+//         @as(f64, 67.12)
 //     }
 //
 // We call these "tuples", which is a term used by many
