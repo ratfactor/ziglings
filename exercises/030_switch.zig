@@ -6,7 +6,7 @@
 //
 //     switch (players) {
 //         1 => startOnePlayerGame(),
-//         2 => startTwoPlayerGame(),
+//         2 => startTwoPlayersGame(),
 //         else => {
 //             alert();
 //             return GameError.TooManyPlayers;
@@ -16,7 +16,7 @@
 // Is equivalent to this if/else:
 //
 //     if (players == 1) startOnePlayerGame();
-//     else if (players == 2) startTwoPlayerGame();
+//     else if (players == 2) startTwoPlayersGame();
 //     else {
 //         alert();
 //         return GameError.TooManyPlayers;
