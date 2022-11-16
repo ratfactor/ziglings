@@ -683,7 +683,7 @@ const ZiglingStep = struct {
         }
 
         // validate the output
-        if (std.mem.indexOf(u8, output, self.exercise.output) == null) {
+        if (std.mem.indexOf(u8, output, self.exercise.output) == null or output.len != self.exercise.output.len) {
             print(
                 \\
                 \\{s}----------- Expected this output -----------{s}
