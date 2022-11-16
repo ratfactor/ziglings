@@ -54,12 +54,12 @@ const Exercise = struct {
 const exercises = [_]Exercise{
     .{
         .main_file = "001_hello.zig",
-        .output = "Hello world",
+        .output = "Hello world!",
         .hint = "DON'T PANIC!\nRead the error above.\nSee how it has something to do with 'main'?\nOpen up the source file as noted and read the comments.\nYou can do this!",
     },
     .{
         .main_file = "002_std.zig",
-        .output = "Standard Library",
+        .output = "Standard Library.",
     },
     .{
         .main_file = "003_assignment.zig",
@@ -420,7 +420,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "084_async.zig",
-        .output = "foo() A",
+        .output = "foo() A\nfoo() B",
         .hint = "Read the facts. Use the facts.",
         .@"async" = true,
     },
@@ -682,17 +682,19 @@ const ZiglingStep = struct {
             },
         }
 
+        const trimOutput = std.mem.trimRight(u8, output, " \r\n");
+        const trimExerciseOutput = std.mem.trimRight(u8, self.exercise.output, " \r\n");
         // validate the output
-        if (std.mem.indexOf(u8, output, self.exercise.output) == null or output.len != self.exercise.output.len) {
+        if (std.mem.indexOf(u8, trimOutput, trimExerciseOutput) == null or trimOutput.len != trimExerciseOutput.len) {
             print(
                 \\
                 \\{s}----------- Expected this output -----------{s}
-                \\{s}
+                \\"{s}"
                 \\{s}----------- but found -----------{s}
-                \\{s}
+                \\"{s}"
                 \\{s}-----------{s}
                 \\
-            , .{ red_text, reset_text, self.exercise.output, red_text, reset_text, output, red_text, reset_text });
+            , .{ red_text, reset_text, trimExerciseOutput, red_text, reset_text, trimOutput, red_text, reset_text });
             return error.InvalidOutput;
         }
 
