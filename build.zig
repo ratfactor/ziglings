@@ -123,7 +123,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "016_for2.zig",
-        .output = "13",
+        .output = "The value of bits '1101': 13.",
     },
     .{
         .main_file = "017_quiz2.zig",
@@ -137,7 +137,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "019_functions2.zig",
-        .output = "2 4 8 16",
+        .output = "Powers of two: 2 4 8 16",
     },
     .{
         .main_file = "020_quiz3.zig",
@@ -151,7 +151,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "022_errors2.zig",
-        .output = "I compiled",
+        .output = "I compiled!",
         .hint = "Get the error union type right to allow this to compile.",
     },
     .{
