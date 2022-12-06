@@ -318,7 +318,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "060_floats.zig",
-        .output = "Shuttle liftoff weight: 1995796kg",
+        .output = "Shuttle liftoff weight: 1995796kg == 1995.796tonne",
     },
     .{
         .main_file = "061_coercions.zig",
