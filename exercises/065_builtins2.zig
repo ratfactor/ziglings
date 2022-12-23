@@ -100,7 +100,7 @@ pub fn main() void {
     //
     //     pub const StructField = struct {
     //         name: []const u8,
-    //         field_type: type,
+    //         type: type,
     //         default_value: anytype,
     //         is_comptime: bool,
     //         alignment: comptime_int,
