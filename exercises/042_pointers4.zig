@@ -17,7 +17,7 @@ pub fn main() void {
     var num: u8 = 1;
     var more_nums = [_]u8{ 1, 1, 1, 1 };
 
-    // Let's pass a reference to num to our function and print it:
+    // Let's pass the num reference to our function and print it:
     makeFive(&num);
     std.debug.print("num: {}, ", .{num});
 
