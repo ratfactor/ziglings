@@ -54,12 +54,12 @@ const Exercise = struct {
 const exercises = [_]Exercise{
     .{
         .main_file = "001_hello.zig",
-        .output = "Hello world",
+        .output = "Hello world!",
         .hint = "DON'T PANIC!\nRead the error above.\nSee how it has something to do with 'main'?\nOpen up the source file as noted and read the comments.\nYou can do this!",
     },
     .{
         .main_file = "002_std.zig",
-        .output = "Standard Library",
+        .output = "Standard Library.",
     },
     .{
         .main_file = "003_assignment.zig",
@@ -123,7 +123,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "016_for2.zig",
-        .output = "13",
+        .output = "The value of bits '1101': 13.",
     },
     .{
         .main_file = "017_quiz2.zig",
@@ -137,7 +137,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "019_functions2.zig",
-        .output = "2 4 8 16",
+        .output = "Powers of two: 2 4 8 16",
     },
     .{
         .main_file = "020_quiz3.zig",
@@ -151,7 +151,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "022_errors2.zig",
-        .output = "I compiled",
+        .output = "I compiled!",
         .hint = "Get the error union type right to allow this to compile.",
     },
     .{
@@ -622,7 +622,7 @@ const ZiglingStep = struct {
 
             print("\n{s}Edit exercises/{s} and run this again.{s}", .{ red_text, self.exercise.main_file, reset_text });
             print("\n{s}To continue from this zigling, use this command:{s}\n    {s}zig build {s}{s}\n", .{ red_text, reset_text, bold_text, self.exercise.key(), reset_text });
-            std.os.exit(0);
+            std.os.exit(1);
         };
     }
 
@@ -683,17 +683,19 @@ const ZiglingStep = struct {
             },
         }
 
+        const trimOutput = std.mem.trimRight(u8, output, " \r\n");
+        const trimExerciseOutput = std.mem.trimRight(u8, self.exercise.output, " \r\n");
         // validate the output
-        if (std.mem.indexOf(u8, output, self.exercise.output) == null) {
+        if (std.mem.indexOf(u8, trimOutput, trimExerciseOutput) == null or trimOutput.len != trimExerciseOutput.len) {
             print(
                 \\
                 \\{s}----------- Expected this output -----------{s}
-                \\{s}
+                \\"{s}"
                 \\{s}----------- but found -----------{s}
-                \\{s}
+                \\"{s}"
                 \\{s}-----------{s}
                 \\
-            , .{ red_text, reset_text, self.exercise.output, red_text, reset_text, output, red_text, reset_text });
+            , .{ red_text, reset_text, trimExerciseOutput, red_text, reset_text, trimOutput, red_text, reset_text });
             return error.InvalidOutput;
         }
 
