@@ -460,6 +460,10 @@ const exercises = [_]Exercise{
     //     .output = "ABCDEF",
     //     .@"async" = true,
     // },
+    .{
+        .main_file = "the_end.zig",
+        .output = "This is the end for now!\nWe hope you had fun and were able to learn a lot, so visit us again when the next exercises are available.",
+    },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
