@@ -12,5 +12,5 @@
 <             ???,
 ---
 >             field.name,
->             field.field_type,
+>             field.type,
 >             @field(tuple, field.name),
