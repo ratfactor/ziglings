@@ -4,8 +4,8 @@
 //
 //     .{
 //         false,
-//         @as(u32, 15);
-//         @as(i64, 67.12);
+//         @as(u32, 15),
+//         @as(f64, 67.12)
 //     }
 //
 // We call these "tuples", which is a term used by many
@@ -96,7 +96,7 @@ fn printTuple(tuple: anytype) void {
         //
         //         pub const StructField = struct {
         //             name: []const u8,
-        //             field_type: type,
+        //             type: type,
         //             default_value: anytype,
         //             is_comptime: bool,
         //             alignment: comptime_int,

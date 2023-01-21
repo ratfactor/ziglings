@@ -1,7 +1,7 @@
 //
 // Zig has support for IEEE-754 floating-point numbers in these
-// specific sizes: f16, f32, f64, f128. Floating point literals
-// may be writen in scientific notation:
+// specific sizes: f16, f32, f64, f80, and f128. Floating point
+// literals may be written in scientific notation:
 //
 //     const a1: f32 = 1200.0;     // 1,200
 //     const a2: f32 = 1.2e+3;     // 1,200

@@ -10,7 +10,7 @@ Ziglings is intended for programmers of all experience levels. No
 specific language knowledge is expected. Anyone who can install
 the current Zig snapshot, setup a copy of Ziglings, and knows
 common language building blocks (if/then/else, loops, and
-functions) is ready or Ziglings.
+functions) is ready for Ziglings.
 
 Ziglings is intended to be completely self-contained. If you
 can't solve an exercise from the information you've gleaned so
