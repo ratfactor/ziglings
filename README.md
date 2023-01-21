@@ -81,7 +81,7 @@ about input:
 
 ### Version Changes
 
-Version-0.11.0-dev.1302+d813cef42
+Version-0.11.0-dev.1302+xxxxxxxxx
 * *2023-01-14* zig 0.11.0-dev.1302 - changes in `@addWithOverflow` (now returns a tuple) and `@typeInfo`; temporary disabled async functionality
 * *2022-09-09* zig 0.10.0-dev.3978 - change in `NativeTargetInfo.detect` in build
 * *2022-09-06* zig 0.10.0-dev.3880 - Ex 074 correctly fails again: comptime array len
