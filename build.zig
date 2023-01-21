@@ -418,47 +418,48 @@ const exercises = [_]Exercise{
         .main_file = "083_anonymous_lists.zig",
         .output = "I say hello!",
     },
-    .{
-        .main_file = "084_async.zig",
-        .output = "foo() A",
-        .hint = "Read the facts. Use the facts.",
-        .@"async" = true,
-    },
-    .{
-        .main_file = "085_async2.zig",
-        .output = "Hello async!",
-        .@"async" = true,
-    },
-    .{
-        .main_file = "086_async3.zig",
-        .output = "5 4 3 2 1",
-        .@"async" = true,
-    },
-    .{
-        .main_file = "087_async4.zig",
-        .output = "1 2 3 4 5",
-        .@"async" = true,
-    },
-    .{
-        .main_file = "088_async5.zig",
-        .output = "Example Title.",
-        .@"async" = true,
-    },
-    .{
-        .main_file = "089_async6.zig",
-        .output = ".com: Example Title, .org: Example Title.",
-        .@"async" = true,
-    },
-    .{
-        .main_file = "090_async7.zig",
-        .output = "beef? BEEF!",
-        .@"async" = true,
-    },
-    .{
-        .main_file = "091_async8.zig",
-        .output = "ABCDEF",
-        .@"async" = true,
-    },
+    // disabled because of https://github.com/ratfactor/ziglings/issues/163
+    // .{
+    //     .main_file = "084_async.zig",
+    //     .output = "foo() A",
+    //     .hint = "Read the facts. Use the facts.",
+    //     .@"async" = true,
+    // },
+    // .{
+    //     .main_file = "085_async2.zig",
+    //     .output = "Hello async!",
+    //     .@"async" = true,
+    // },
+    // .{
+    //     .main_file = "086_async3.zig",
+    //     .output = "5 4 3 2 1",
+    //     .@"async" = true,
+    // },
+    // .{
+    //     .main_file = "087_async4.zig",
+    //     .output = "1 2 3 4 5",
+    //     .@"async" = true,
+    // },
+    // .{
+    //     .main_file = "088_async5.zig",
+    //     .output = "Example Title.",
+    //     .@"async" = true,
+    // },
+    // .{
+    //     .main_file = "089_async6.zig",
+    //     .output = ".com: Example Title, .org: Example Title.",
+    //     .@"async" = true,
+    // },
+    // .{
+    //     .main_file = "090_async7.zig",
+    //     .output = "beef? BEEF!",
+    //     .@"async" = true,
+    // },
+    // .{
+    //     .main_file = "091_async8.zig",
+    //     .output = "ABCDEF",
+    //     .@"async" = true,
+    // },
 };
 
 /// Check the zig version to make sure it can compile the examples properly.
@@ -711,9 +712,10 @@ const ZiglingStep = struct {
         zig_args.append("build-exe") catch unreachable;
 
         // Enable the stage 1 compiler if using the async feature
-        if (self.exercise.@"async") {
-            zig_args.append("-fstage1") catch unreachable;
-        }
+        // disabled because of https://github.com/ratfactor/ziglings/issues/163
+        // if (self.exercise.@"async") {
+        //     zig_args.append("-fstage1") catch unreachable;
+        // }
 
         if (builder.color != .auto) {
             zig_args.append("--color") catch unreachable;
