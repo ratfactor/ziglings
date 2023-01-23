@@ -25,12 +25,12 @@ const Duck = struct {
     location_x: i32 = 0,
     location_y: i32 = 0,
 
-    fn waddle(self: Duck, x: i16, y: i16) void {
+    fn waddle(self: *Duck, x: i16, y: i16) void {
         self.location_x += x;
         self.location_y += y;
     }
 
-    fn quack(self: Duck) void {
+    fn quack(self: *const Duck) void {
         if (self.loudness < 4) {
             print("\"Quack.\" ", .{});
         } else {
@@ -44,19 +44,19 @@ const RubberDuck = struct {
     location_x: i32 = 0,
     location_y: i32 = 0,
 
-    fn waddle(self: RubberDuck, x: i16, y: i16) void {
+    fn waddle(self: *RubberDuck, x: i16, y: i16) void {
         self.location_x += x;
         self.location_y += y;
     }
 
-    fn quack(self: RubberDuck) void {
+    fn quack(self: *const RubberDuck) void {
         // Assigning an expression to '_' allows us to safely
         // "use" the value while also ignoring it.
         _ = self;
         print("\"Squeek!\" ", .{});
     }
 
-    fn listen(self: RubberDuck, dev_talk: []const u8) void {
+    fn listen(self: *const RubberDuck, dev_talk: []const u8) void {
         // Listen to developer talk about programming problem.
         // Silently contemplate problem. Emit helpful sound.
         _ = dev_talk;
@@ -70,7 +70,7 @@ const Duct = struct {
     galvanized: bool,
     connection: ?*Duct = null,
 
-    fn connect(self: Duct, other: *Duct) !void {
+    fn connect(self: *Duct, other: *Duct) !void {
         if (self.diameter == other.diameter) {
             self.connection = other;
         } else {
@@ -83,27 +83,27 @@ const DuctError = error{UnmatchedDiameters};
 
 pub fn main() void {
     // This is a real duck!
-    const ducky1 = Duck{
+    var ducky1 = Duck{
         .eggs = 0,
         .loudness = 3,
     };
 
     // This is not a real duck, but it has quack() and waddle()
     // abilities, so it's still a "duck".
-    const ducky2 = RubberDuck{
+    var ducky2 = RubberDuck{
         .in_bath = false,
     };
 
     // This is not even remotely a duck.
-    const ducky3 = Duct{
+    var ducky3 = Duct{
         .diameter = 17,
         .length = 165,
         .galvanized = true,
     };
 
-    print("ducky1: {}, ", .{isADuck(ducky1)});
-    print("ducky2: {}, ", .{isADuck(ducky2)});
-    print("ducky3: {}\n", .{isADuck(ducky3)});
+    print("ducky1: {}, ", .{actDuckIfDuck(&ducky1)});
+    print("ducky2: {}, ", .{actDuckIfDuck(&ducky2)});
+    print("ducky3: {}\n", .{actDuckIfDuck(&ducky3)});
 }
 
 // This function has a single parameter which is inferred at
@@ -111,7 +111,7 @@ pub fn main() void {
 // perform duck typing ("if it walks like a duck and it quacks
 // like a duck, then it must be a duck") to determine if the type
 // is a "duck".
-fn isADuck(possible_duck: anytype) bool {
+fn actDuckIfDuck(possible_duck: anytype) bool {
     // We'll use @hasDecl() to determine if the type has
     // everything needed to be a "duck".
     //
@@ -122,23 +122,24 @@ fn isADuck(possible_duck: anytype) bool {
     //
     // Please make sure MyType has both waddle() and quack()
     // methods:
-    const MyType = @TypeOf(possible_duck);
+    const MyType = @TypeOf(possible_duck.*);
     const walks_like_duck = ???;
     const quacks_like_duck = ???;
 
     const is_duck = walks_like_duck and quacks_like_duck;
 
     if (is_duck) {
-        // We also call the quack() method here to prove that Zig
-        // allows us to perform duck actions on anything
-        // sufficiently duck-like.
-        //
         // Because all of the checking and inference is performed
         // at compile time, we still have complete type safety:
         // attempting to call the quack() method on a struct that
         // doesn't have it (like Duct) would result in a compile
         // error, not a runtime panic or crash!
         possible_duck.quack();
+
+        // We also call the waddle method here to prove that Zig
+        // allows us to perform duck actions on anything
+        // sufficiently duck-like.
+        possible_duck.waddle(2, 3);
     }
 
     return is_duck;
