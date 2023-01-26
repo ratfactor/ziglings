@@ -26,14 +26,11 @@
 const print = @import("std").debug.print;
 
 pub fn main() void {
-    // The first builtin, alphabetically, is:
-    //
-    //   @addWithOverflow(comptime T: type, a: T, b: T, result: *T) bool
+    // The second builtin, alphabetically, is:
+    //   @addWithOverflow(a: anytype, b: anytype) struct { @TypeOf(a, b), u1 }
     //     * 'T' will be the type of the other parameters.
     //     * 'a' and 'b' are numbers of the type T.
-    //     * 'result' is a pointer to space you're providing of type T.
-    //     * The return value is true if the addition resulted in a
-    //       value over or under the capacity of type T.
+    //     * The return value is a tuple with the result and a possible overflow bit.
     //
     // Let's try it with a tiny 4-bit integer size to make it clear:
     const a: u4 = 0b1101;
