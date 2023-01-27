@@ -19,7 +19,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Setup Zig
-      uses: goto-bus-stop/setup-zig@v1.3.0
+      uses: goto-bus-stop/setup-zig@v2
       with:
         version: master
 
