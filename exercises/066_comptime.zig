@@ -61,6 +61,7 @@ pub fn main() void {
     // values. Therefore, it follows that we just specify numeric
     // types with specific sizes. The comptime numbers will be
     // coerced (if they'll fit!) into your chosen runtime types.
+    // For this it is necessary to specify a size, e.g. 32 bit.
     var var_int = 12345;
     var var_float = 987.654;
 
