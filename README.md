@@ -41,7 +41,7 @@ Verify the installation and build number of `zig` like so:
 
 ```bash
 $ zig version
-0.11.0-dev.1302+xxxxxxxxx
+0.11.0-dev.1501+xxxxxxxxx
 ```
 
 Clone this repository with Git:
@@ -61,7 +61,7 @@ $ zig build
 
 The Zig language is under very active development. In order to be current,
 Ziglings tracks **development** builds of the Zig compiler rather than
-versioned **release** builds. The last stable release was `0.10.0`, but Ziglings
+versioned **release** builds. The last stable release was `0.10.1`, but Ziglings
 needs a dev build with pre-release version "0.11.0" and a build number at least
 as high as that shown in the example version check above.
 
@@ -81,7 +81,8 @@ about input:
 
 ### Version Changes
 
-Version-0.11.0-dev.1302+xxxxxxxxx
+Version-0.11.0-dev.1501+xxxxxxxxx
+* *2023-01-30* zig 0.11.0-dev.1501
 * *2023-01-14* zig 0.11.0-dev.1302 - changes in `@addWithOverflow` (now returns a tuple) and `@typeInfo`; temporary disabled async functionality
 * *2022-09-09* zig 0.10.0-dev.3978 - change in `NativeTargetInfo.detect` in build
 * *2022-09-06* zig 0.10.0-dev.3880 - Ex 074 correctly fails again: comptime array len
@@ -162,7 +163,8 @@ Core Language
 * [x] Quoted identifiers @""
 * [x] Anonymous structs/tuples/lists
 * [ ] Async <--- IN PROGRESS!
-* [ ] Interfaces
+* [ ] Interfaces <--- IN PROGRESS!
+* [ ] Working with C
 
 ## Contributing
 
