@@ -462,7 +462,7 @@ const exercises = [_]Exercise{
     // },
     .{
         .main_file = "999_the_end.zig",
-        .output = "This is the end for now!\nWe hope you had fun and were able to learn a lot, so visit us again when the next exercises are available.",
+        .output = "\nThis is the end for now!\nWe hope you had fun and were able to learn a lot, so visit us again when the next exercises are available.",
     },
 };
 
@@ -687,9 +687,9 @@ const ZiglingStep = struct {
             },
         }
 
-        const trimOutput = std.mem.trim(u8, output, " \r\n");
-        const trimExerciseOutput = std.mem.trim(u8, self.exercise.output, " \r\n");
         // validate the output
+        const trimOutput = std.mem.trimRight(u8, output, " \r\n");
+        const trimExerciseOutput = std.mem.trimRight(u8, self.exercise.output, " \r\n");
         if (std.mem.indexOf(u8, trimOutput, trimExerciseOutput) == null or trimOutput.len != trimExerciseOutput.len) {
             print(
                 \\
