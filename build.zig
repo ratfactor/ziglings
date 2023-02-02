@@ -564,7 +564,11 @@ pub fn build(b: *Builder) void {
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
             if (use_healed) "patches/healed" else "exercises", ex.main_file,
         }) catch unreachable;
-        const build_step = b.addExecutable(base_name, file_path);
+        const build_step = b.addExecutable(.{
+            .name = base_name,
+            .root_source_file = .{ .path = file_path }
+        });
+
         build_step.install();
 
         const verify_step = ZiglingStep.create(b, ex, use_healed);
