@@ -8,7 +8,7 @@ const print = std.debug.print;
 // When changing this version, be sure to also update README.md in two places:
 //     1) Getting Started
 //     2) Version Changes
-const needed_version = std.SemanticVersion.parse("0.11.0-dev.1501") catch unreachable;
+const needed_version = std.SemanticVersion.parse("0.11.0-dev.1568") catch unreachable;
 
 const Exercise = struct {
     /// main_file must have the format key_name.zig.
@@ -564,7 +564,11 @@ pub fn build(b: *Builder) void {
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
             if (use_healed) "patches/healed" else "exercises", ex.main_file,
         }) catch unreachable;
-        const build_step = b.addExecutable(base_name, file_path);
+        const build_step = b.addExecutable(.{
+            .name = base_name,
+            .root_source_file = .{ .path = file_path }
+        });
+
         build_step.install();
 
         const verify_step = ZiglingStep.create(b, ex, use_healed);
