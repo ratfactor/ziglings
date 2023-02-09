@@ -22,7 +22,7 @@ pub fn main() void {
 // You'll need to figure out the parameter name and type that we're
 // expecting. The output type has already been specified for you.
 //
-fn twoToThe(???) u32 {
+fn twoToThe(my_number: u8) u32 {
     return std.math.pow(u32, 2, my_number);
     // std.math.pow(type, a, b) takes a numeric type and two
     // numbers of that type (or that can coerce to that type) and
