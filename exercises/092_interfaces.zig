@@ -1,20 +1,7 @@
 //
-// Remeber excerice xx with tagged unions. That was a lot more better
-// but it's can bee perfect.
+// Remeber excerices 55-57 with tagged unions.
 //
-// With tagged unions, it gets EVEN BETTER! If you don't have a
-// need for a separate enum, you can define an inferred enum with
-// your union all in one place. Just use the 'enum' keyword in
-// place of the tag type:
-//
-//     const Foo = union(enum) {
-//         small: u8,
-//         medium: u32,
-//         large: u64,
-//     };
-//
-// Let's convert Insect. Doctor Zoraptera has already deleted the
-// explicit InsectStat enum for you!
+// (story/explanation from Dave)
 //
 const std = @import("std");
 
@@ -63,9 +50,14 @@ pub fn main() !void {
         .grasshopper = Grasshopper{ .distance_hopped = 32 },
     } };
 
+    // The daily situation report, what's going on in the garden
     try dailyReport(&my_insects);
 }
 
+// Through the interface we can keep a list of various objects
+// (in this case the insects of our garden) and even pass them
+// to a function without having to know the specific properties
+// of each or the object itself. This is really cool!
 fn dailyReport(insectReport: []Insect) !void {
     std.debug.print("Daily insect report:\n", .{});
     for (insectReport) |insect| {
@@ -73,16 +65,4 @@ fn dailyReport(insectReport: []Insect) !void {
     }
 }
 
-// Inferred enums are neat, representing the tip of the iceberg
-// in the relationship between enums and unions. You can actually
-// coerce a union TO an enum (which gives you the active field
-// from the union as an enum). What's even wilder is that you can
-// coerce an enum to a union! But don't get too excited, that
-// only works when the union type is one of those weird zero-bit
-// types like void!
-//
-// Tagged unions, as with most ideas in computer science, have a
-// long history going back to the 1960s. However, they're only
-// recently becoming mainstream, particularly in system-level
-// programming languages. You might have also seen them called
-// "variants", "sum types", or even "enums"!
+// Interfaces... (explanation from Dave)

@@ -461,6 +461,10 @@ const exercises = [_]Exercise{
     //     .@"async" = true,
     // },
     .{
+        .main_file = "092_interfaces.zig",
+        .output = "Daily insect report:\nAnt is alive.\nBee visited 17 flowers.\nGrasshopper hopped 32 m.",
+    },
+    .{
         .main_file = "999_the_end.zig",
         .output = "\nThis is the end for now!\nWe hope you had fun and were able to learn a lot, so visit us again when the next exercises are available.",
     },
@@ -564,10 +568,7 @@ pub fn build(b: *Builder) void {
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
             if (use_healed) "patches/healed" else "exercises", ex.main_file,
         }) catch unreachable;
-        const build_step = b.addExecutable(.{
-            .name = base_name,
-            .root_source_file = .{ .path = file_path }
-        });
+        const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
 
         build_step.install();
 
