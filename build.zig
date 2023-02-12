@@ -8,7 +8,7 @@ const print = std.debug.print;
 // When changing this version, be sure to also update README.md in two places:
 //     1) Getting Started
 //     2) Version Changes
-const needed_version = std.SemanticVersion.parse("0.11.0-dev.1568") catch unreachable;
+const needed_version = std.SemanticVersion.parse("0.11.0-dev.1602") catch unreachable;
 
 const Exercise = struct {
     /// main_file must have the format key_name.zig.
@@ -419,6 +419,7 @@ const exercises = [_]Exercise{
         .output = "I say hello!",
     },
     // disabled because of https://github.com/ratfactor/ziglings/issues/163
+    // direct link: https://github.com/ziglang/zig/issues/6025
     // .{
     //     .main_file = "084_async.zig",
     //     .output = "foo() A",
@@ -564,10 +565,7 @@ pub fn build(b: *Builder) void {
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
             if (use_healed) "patches/healed" else "exercises", ex.main_file,
         }) catch unreachable;
-        const build_step = b.addExecutable(.{
-            .name = base_name,
-            .root_source_file = .{ .path = file_path }
-        });
+        const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
 
         build_step.install();
 
