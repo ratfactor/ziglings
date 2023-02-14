@@ -1,3 +1,4 @@
-68a69,70
-> //
-> // just an empty patch
+54c54
+<     try dailyReport("what is here the right parameter?");
+---
+>     try dailyReport(&my_insects);

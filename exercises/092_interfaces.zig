@@ -51,7 +51,7 @@ pub fn main() !void {
     } };
 
     // The daily situation report, what's going on in the garden
-    try dailyReport(&my_insects);
+    try dailyReport("what is here the right parameter?");
 }
 
 // Through the interface we can keep a list of various objects
