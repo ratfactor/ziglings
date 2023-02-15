@@ -31,6 +31,10 @@ const Exercise = struct {
     /// We need to keep track of this, so we compile without the self hosted compiler
     @"async": bool = false,
 
+    /// This exercise makes use of C functions
+    /// We need to keep track of this, so we compile with libc
+    C: bool = false,
+
     /// Returns the name of the main file with .zig stripped.
     pub fn baseName(self: Exercise) []const u8 {
         assert(std.mem.endsWith(u8, self.main_file, ".zig"));
@@ -462,6 +466,11 @@ const exercises = [_]Exercise{
     //     .@"async" = true,
     // },
     .{
+        .main_file = "093_hello_c.zig",
+        .output = "Hello C from Zig! - C result ist 17 chars",
+        .C = true,
+    },
+    .{
         .main_file = "999_the_end.zig",
         .output = "\nThis is the end for now!\nWe hope you had fun and were able to learn a lot, so visit us again when the next exercises are available.",
     },
@@ -724,6 +733,11 @@ const ZiglingStep = struct {
         // if (self.exercise.@"async") {
         //     zig_args.append("-fstage1") catch unreachable;
         // }
+
+        // Enable C support for exercises that use C functions
+        if (self.exercise.C) {
+            zig_args.append("-lc") catch unreachable;
+        }
 
         if (builder.color != .auto) {
             zig_args.append("--color") catch unreachable;

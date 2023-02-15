@@ -1,0 +1,4 @@
+58c58
+<     const c_res = fprintf(c.stderr, "Hello C from Zig!");
+---
+>     const c_res = c.fprintf(c.stderr, "Hello C from Zig!");
