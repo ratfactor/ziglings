@@ -462,7 +462,7 @@ const exercises = [_]Exercise{
     // },
     .{
         .main_file = "092_interfaces.zig",
-        .output = "Daily insect report:\nAnt is alive.\nBee visited 17 flowers.\nGrasshopper hopped 32 m.",
+        .output = "Daily Insect Report:\nAnt is alive.\nBee visited 17 flowers.\nGrasshopper hopped 32 meters.",
     },
     .{
         .main_file = "999_the_end.zig",

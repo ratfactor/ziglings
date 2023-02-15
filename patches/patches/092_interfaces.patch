@@ -1,4 +1,4 @@
-54c54
-<     try dailyReport("what is here the right parameter?");
+109c109
+<         ???
 ---
->     try dailyReport(&my_insects);
+>         insect.print();
