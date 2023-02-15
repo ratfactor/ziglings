@@ -8,7 +8,7 @@ const print = std.debug.print;
 // When changing this version, be sure to also update README.md in two places:
 //     1) Getting Started
 //     2) Version Changes
-const needed_version = std.SemanticVersion.parse("0.11.0-dev.1602") catch unreachable;
+const needed_version = std.SemanticVersion.parse("0.11.0-dev.1638") catch unreachable;
 
 const Exercise = struct {
     /// main_file must have the format key_name.zig.
@@ -639,7 +639,7 @@ const ZiglingStep = struct {
 
         print("Checking {s}...\n", .{self.exercise.main_file});
 
-        const cwd = self.builder.build_root;
+        const cwd = self.builder.build_root.path.?;
 
         const argv = [_][]const u8{exe_file};
 
@@ -734,7 +734,7 @@ const ZiglingStep = struct {
         zig_args.append(builder.pathFromRoot(zig_file)) catch unreachable;
 
         zig_args.append("--cache-dir") catch unreachable;
-        zig_args.append(builder.pathFromRoot(builder.cache_root)) catch unreachable;
+        zig_args.append(builder.pathFromRoot(builder.cache_root.path.?)) catch unreachable;
 
         zig_args.append("--enable-cache") catch unreachable;
 
