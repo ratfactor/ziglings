@@ -1,4 +1,4 @@
-63c63
-<     const c_res = fprintf(stderr, "Hello C from Zig!");
+57c57
+<     const c_res = write(2, "Hello C from Zig!", 17);
 ---
->     const c_res = c.fprintf(stderr, "Hello C from Zig!");
+>     const c_res = c.write(2, "Hello C from Zig!", 17);
