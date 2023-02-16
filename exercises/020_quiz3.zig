@@ -1,5 +1,5 @@
 //
-// Let's see if we can make use of some of things we've learned so far.
+// Let's see if we can make use of some of the things we've learned so far.
 // We'll create two functions: one that contains a "for" loop and one
 // that contains a "while" loop.
 //
