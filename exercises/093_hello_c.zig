@@ -49,13 +49,22 @@ const c = @cImport({
 
 pub fn main() void {
 
+    // Due to a current limitation in the Zig compiler,
+    // we need a small workaround to make this exercise
+    // work on mac-os.
+    const builtin = @import("builtin");
+    const stderr = switch (builtin.target.os.tag) {
+        .macos => 1,
+        else => c.stderr,
+    };
+
     // In order to output a text that can be evaluated by the
     // Zig Builder, we need to write it to the Error output.
     // In Zig we do this with "std.debug.print" and in C we can
     // specify the file to write to, i.e. "standard error (stderr)".
     //
     // Ups, something is wrong...
-    const c_res = fprintf(c.stderr, "Hello C from Zig!");
+    const c_res = fprintf(stderr, "Hello C from Zig!");
 
     // let's see what the result from C is:
     std.debug.print(" - C result ist {d} chars\n", .{c_res});
