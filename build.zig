@@ -466,13 +466,13 @@ const exercises = [_]Exercise{
     //     .@"async" = true,
     // },
     .{
+        .main_file = "092_interfaces.zig",
+        .output = "Daily Insect Report:\nAnt is alive.\nBee visited 17 flowers.\nGrasshopper hopped 32 meters.",
+    },
+    .{
         .main_file = "093_hello_c.zig",
         .output = "Hello C from Zig! - C result ist 17 chars",
         .C = true,
-},
-.{
-        .main_file = "092_interfaces.zig",
-        .output = "Daily Insect Report:\nAnt is alive.\nBee visited 17 flowers.\nGrasshopper hopped 32 meters.",
     },
     .{
         .main_file = "999_the_end.zig",
