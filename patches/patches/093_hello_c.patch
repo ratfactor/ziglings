@@ -1,0 +1,4 @@
+57c57
+<     const c_res = write(2, "Hello C from Zig!", 17);
+---
+>     const c_res = c.write(2, "Hello C from Zig!", 17);
