@@ -164,7 +164,7 @@ Core Language
 * [x] Quoted identifiers @""
 * [x] Anonymous structs/tuples/lists
 * [ ] Async <--- IN PROGRESS!
-* [ ] Interfaces <--- IN PROGRESS!
+* [X] Interfaces
 * [ ] Working with C
 
 ## Contributing
