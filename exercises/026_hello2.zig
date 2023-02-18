@@ -7,8 +7,13 @@ const std = @import("std");
 
 // Take note that this main() definition now returns "!void" rather
 // than just "void". Since there's no specific error type, this means
-// that Zig will infer the error type. This is appropriate in the case
-// of main(), but can have consequences elsewhere.
+// that Zig will infer the error type. This is appropriate in the
+// case of main(), but can make a function harder (function pointers)
+// or even impossible to work with (recursion) in some situations.
+//
+// You can find more information at:
+// https://ziglang.org/documentation/master/#Inferred-Error-Sets
+//
 pub fn main() !void {
     // We get a Writer for Standard Out so we can print() to it.
     const stdout = std.io.getStdOut().writer();
