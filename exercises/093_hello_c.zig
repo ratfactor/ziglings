@@ -57,7 +57,7 @@ pub fn main() void {
     const c_res = write(2, "Hello C from Zig!", 17);
 
     // let's see what the result from C is:
-    std.debug.print(" - C result ist {d} chars\n", .{c_res});
+    std.debug.print(" - C result ist {d} chars written.\n", .{c_res});
 }
 //
 // Something must be considered when compiling with C functions.

@@ -471,7 +471,12 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "093_hello_c.zig",
-        .output = "Hello C from Zig! - C result ist 17 chars",
+        .output = "Hello C from Zig! - C result ist 17 chars written.",
+        .C = true,
+    },
+    .{
+        .main_file = "094_c_math.zig",
+        .output = "The normalized angle of 765.2 degrees is 45.2 degrees.",
         .C = true,
     },
     .{
