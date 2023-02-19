@@ -167,7 +167,7 @@ Core Language
 * [ ] Async <--- IN PROGRESS!
 * [X] Interfaces
 * [X] Working with C
-* [ ] String formating
+* [ ] String formatting
 
 ## Contributing
 
