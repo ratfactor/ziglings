@@ -29,5 +29,6 @@ pub fn main() !void {
     // Here we call the C function 'fmod' to get our normalized angel.
     const result = c.fmod(angel, circle);
 
+    // We use formatters for the desired precision and to truncate the decimal places
     std.debug.print("The normalized angle of {d: >3.1} degrees is {d: >3.1} degrees.\n", .{ angel, result });
 }

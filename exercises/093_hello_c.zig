@@ -53,8 +53,8 @@ pub fn main() void {
     // specify a file descriptor i.e. 2 for error console.
     //
     // In  this exercise we use 'write' to output 17 chars,
-    // but something is missing...
-    const c_res = ???write(2, "Hello C from Zig!", 17);
+    // but something is still missing...
+    const c_res = write(2, "Hello C from Zig!", 17);
 
     // let's see what the result from C is:
     std.debug.print(" - C result ist {d} chars written.\n", .{c_res});
