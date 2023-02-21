@@ -1,8 +1,9 @@
 //
-// For loops also let you store the "index" of the iteration - a
-// number starting with 0 that counts up with each iteration:
+// For loops also let you use the "index" of the iteration, a number
+// that counts up with each iteration. To access the index of iteration,
+// specify a second condition as well as a second capture value.
 //
-//     for (items) |item, index| {
+//     for (items, 0..) |item, index| {
 //
 //         // Do something with item and index
 //
@@ -23,8 +24,8 @@ pub fn main() void {
     // Now we'll convert the binary bits to a number value by adding
     // the value of the place as a power of two for each bit.
     //
-    // See if you can figure out the missing piece:
-    for (bits) |bit, ???| {
+    // See if you can figure out the missing pieces:
+    for (bits, ???) |bit, ???| {
         // Note that we convert the usize i to a u32 with
         // @intCast(), a builtin function just like @import().
         // We'll learn about these properly in a later exercise.

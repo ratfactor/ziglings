@@ -86,7 +86,7 @@ pub fn main() void {
         aliens_alive = 0;
 
         // Loop through every alien by reference (* makes a pointer capture value)
-        for (aliens) |*alien| {
+        for (&aliens) |*alien| {
 
             // *** Zap the alien with the heat ray here! ***
             ???.zap(???);

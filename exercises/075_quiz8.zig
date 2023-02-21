@@ -102,7 +102,7 @@ const HermitsNotebook = struct {
     end_of_entries: u8 = 0,
 
     fn getEntry(self: *HermitsNotebook, place: *const Place) ?*NotebookEntry {
-        for (self.entries) |*entry, i| {
+        for (&self.entries, 0..) |*entry, i| {
             if (i >= self.end_of_entries) break;
             if (place == entry.*.?.place) return &entry.*.?;
         }
