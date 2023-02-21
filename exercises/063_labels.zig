@@ -106,7 +106,7 @@ pub fn main() void {
     const meal = food_loop: for (menu) |food| {
 
         // Now look at each required ingredient for the Food...
-        for (food.requires) |required, required_ingredient| {
+        for (food.requires, 0..) |required, required_ingredient| {
 
             // This ingredient isn't required, so skip it.
             if (!required) continue;

@@ -239,7 +239,7 @@ const HermitsNotebook = struct {
     // We'll often want to find an entry by Place. If one is not
     // found, we return null.
     fn getEntry(self: *HermitsNotebook, place: *const Place) ?*NotebookEntry {
-        for (self.entries) |*entry, i| {
+        for (&self.entries, 0..) |*entry, i| {
             if (i >= self.end_of_entries) break;
 
             // Here's where the hermit got stuck. We need to return
