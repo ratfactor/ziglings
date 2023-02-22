@@ -83,7 +83,7 @@ about input:
 ### Version Changes
 
 Version-0.11.0-dev.1711+xxxxxxxxx
-* *2023-02-21* zig 0.11.0-dev.1711 - changes in `for loops` - new: Multi Object For Loops + Struct-of-Arrays
+* *2023-02-21* zig 0.11.0-dev.1711 - changes in `for loops` - new: Multi-Object For-Loops + Struct-of-Arrays
 * *2023-02-12* zig 0.11.0-dev.1638 - changes in `std.Build` cache_root now returns a directory struct
 * *2023-02-04* zig 0.11.0-dev.1568 - changes in `std.Build` (combine `std.build` and `std.build.Builder` into `std.Build`)
 * *2023-01-14* zig 0.11.0-dev.1302 - changes in `@addWithOverflow` (now returns a tuple) and `@typeInfo`; temporary disabled async functionality
