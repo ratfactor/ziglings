@@ -471,7 +471,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "093_hello_c.zig",
-        .output = "Hello C from Zig! - C result ist 17 chars written.",
+        .output = "Hello C from Zig! - C result is 17 chars written.",
         .C = true,
     },
     .{

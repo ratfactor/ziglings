@@ -47,17 +47,17 @@ const c = @cImport({
 
 pub fn main() void {
 
-    // In order to output a text that can be evaluated by the
+    // In order to output text that can be evaluated by the
     // Zig Builder, we need to write it to the Error output.
-    // In Zig we do this with "std.debug.print" and in C we can
+    // In Zig, we do this with "std.debug.print" and in C we can
     // specify a file descriptor i.e. 2 for error console.
     //
-    // In  this exercise we use 'write' to output 17 chars,
+    // In this exercise we use 'write' to output 17 chars,
     // but something is still missing...
     const c_res = write(2, "Hello C from Zig!", 17);
 
     // let's see what the result from C is:
-    std.debug.print(" - C result ist {d} chars written.\n", .{c_res});
+    std.debug.print(" - C result is {d} chars written.\n", .{c_res});
 }
 //
 // Something must be considered when compiling with C functions.
