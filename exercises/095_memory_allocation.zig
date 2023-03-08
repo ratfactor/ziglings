@@ -25,7 +25,7 @@
 //         const ptr = try allocator.create(i32);
 //         std.debug.print("ptr={*}\n", .{ptr});
 //
-//         const slice_ptr = try allocator.create(f64, 5);
+//         const slice_ptr = try allocator.alloc(f64, 5);
 //         std.debug.print("ptr={*}\n", .{ptr});
 //     }
 
