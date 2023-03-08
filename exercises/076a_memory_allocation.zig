@@ -1,22 +1,22 @@
-// In most of the examples so far, the inputs are known at compile time, thus
-// the amount of memory used by the program is fixed and is requested. However, if responding to
-// input whose size is not known at compile time, such as:
+// In most of the examples so far, the inputs are known at compile
+// time, thus the amount of memory used by the program is fixed.
+// However, if responding to input whose size is not known at compile
+// time, such as:
 //  - user input via command-line arguments
 //  - inputs from another program
 //
-// You'll need to request memory for you program to be allocated by your
-// operating system at runtime.
+// You'll need to request memory for your program to be allocated by
+// your operating system at runtime.
 //
-// Zig provides several different allocators. In the Zig documentation, it
-// recommends the Arena allocator for simple programs which allocate once and
-// then exit:
+// Zig provides several different allocators. In the Zig
+// documentation, it recommends the Arena allocator for simple
+// programs which allocate once and then exit:
 //
 //     const std = @import("std");
 //
-//     // memory allocation can fail because your computer is out of memory, so
-//     // the return type is !void
+//     // memory allocation can fail, so the return type is !void
 //     pub fn main() !void {
-//         
+//
 //         var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
 //         defer arena.deinit();
 //
@@ -25,17 +25,21 @@
 //         const ptr = try allocator.create(i32);
 //         std.debug.print("ptr={*}\n", .{ptr});
 //
-//         const slice_ptr = try allocator.create(i32);
+//         const slice_ptr = try allocator.create(f64, 5);
 //         std.debug.print("ptr={*}\n", .{ptr});
 //     }
 
-// Instead of a simple integer, this program requires a slice to be allocated that is the same size as an input array
+// Instead of an simple integer or a constant sized slice, this
+// program requires a slice to be allocated that is the same size as
+// an input array.
 
-// Given a series of numbers, take the running average. In other words, the running average of the last N elements
+// Given a series of numbers, take the running average. In other
+// words, each item N should contain the average of the last N
+// elements.
 
 const std = @import("std");
 
-fn runningAverage(arr: []const f64, avg: [] f64) void {
+fn runningAverage(arr: []const f64, avg: []f64) void {
     var sum: f64 = 0;
 
     for (0.., arr) |index, val| {
@@ -54,11 +58,11 @@ pub fn main() !void {
     // free the memory on exit
     defer arena.deinit();
 
-    // initialize the allocator (TODO: replace this with ???)
+    // initialize the allocator
     const allocator = arena.allocator();
 
-    // TODO: replace this whole line with ???
-    var avg = try allocator.alloc(f64, arr.len);
+    // allocate memory for this array instead of empty initialization
+    var avg: []f64 = {};
 
     runningAverage(arr, avg);
     std.debug.print("Running Average: ", .{});
@@ -67,4 +71,5 @@ pub fn main() !void {
     }
 }
 
-// For more details on memory allocation and the different types of memory allocators, see https://www.youtube.com/watch?v=vHWiDx_l4V0
+// For more details on memory allocation and the different types of
+// memory allocators, see https://www.youtube.com/watch?v=vHWiDx_l4V0
