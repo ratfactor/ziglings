@@ -484,6 +484,10 @@ const exercises = [_]Exercise{
         .output = "1 2 4 7 8 11 13 14 16 17 19",
     },
     .{
+        .main_file = "096_memory_allocation.zig",
+        .output = "Running Average: 0.30 0.25 0.20 0.18 0.22",
+    },
+    .{
         .main_file = "999_the_end.zig",
         .output = "\nThis is the end for now!\nWe hope you had fun and were able to learn a lot, so visit us again when the next exercises are available.",
     },

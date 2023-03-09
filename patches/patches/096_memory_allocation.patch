@@ -1,0 +1,4 @@
+65c65
+<     var avg: []f64 = ???;
+---
+>     var avg: []f64 = try allocator.alloc(f64, arr.len);
