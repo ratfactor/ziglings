@@ -69,6 +69,7 @@ pub fn main() !void {
     for (avg) |val| {
         std.debug.print("{d:.2} ", .{val});
     }
+    std.debug.print("\n", .{});
 }
 
 // For more details on memory allocation and the different types of
