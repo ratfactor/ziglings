@@ -1,9 +1,7 @@
 # Ziglings
 
 Welcome to Ziglings! This project contains a series of tiny broken programs (and one nasty surprise).
-By fixing them, you'll learn how to read and write
-[Zig](https://ziglang.org/)
-code.
+By fixing them, you'll learn how to read and write [Zig](https://ziglang.org/) code.
 
 ![ziglings](https://user-images.githubusercontent.com/1458409/109398392-c1069500-790a-11eb-8ed4-7d7d74d32666.jpg)
 
