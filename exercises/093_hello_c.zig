@@ -34,7 +34,7 @@
 // information can be obtained. For example, 'puts' returns the number
 // of characters output.
 //
-// So that all this does not remain a dry theroy now, let's just start
+// So that all this does not remain a dry theory now, let's just start
 // and call a C function out of Zig.
 
 // our well-known "import" for Zig

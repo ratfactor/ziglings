@@ -78,7 +78,7 @@ pub fn main() void {
 // Perhaps you remember the "narcissistic fix" for the type name
 // in Ex. 065? We're going to do the same thing here: use a hard-
 // coded slice to return the type name. That's just so our output
-// look prettier. Indulge your vanity. Programmers are beautiful.
+// looks prettier. Indulge your vanity. Programmers are beautiful.
 fn stripFname(mytype: []const u8) []const u8 {
     return mytype[22..];
 }
