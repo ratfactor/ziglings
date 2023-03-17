@@ -532,31 +532,30 @@ pub fn build(b: *Builder) void {
         std.os.exit(0);
     }
 
-    use_color_escapes = false;
-    switch (b.color) {
-        .on => use_color_escapes = true,
-        .off => use_color_escapes = false,
-        .auto => {
-            if (std.io.getStdErr().supportsAnsiEscapeCodes()) {
-                use_color_escapes = true;
-            } else if (builtin.os.tag == .windows) {
-                const w32 = struct {
-                    const WINAPI = std.os.windows.WINAPI;
-                    const DWORD = std.os.windows.DWORD;
-                    const ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
-                    const STD_ERROR_HANDLE = @bitCast(DWORD, @as(i32, -12));
-                    extern "kernel32" fn GetStdHandle(id: DWORD) callconv(WINAPI) ?*anyopaque;
-                    extern "kernel32" fn GetConsoleMode(console: ?*anyopaque, out_mode: *DWORD) callconv(WINAPI) u32;
-                    extern "kernel32" fn SetConsoleMode(console: ?*anyopaque, mode: DWORD) callconv(WINAPI) u32;
-                };
-                const handle = w32.GetStdHandle(w32.STD_ERROR_HANDLE);
-                var mode: w32.DWORD = 0;
-                if (w32.GetConsoleMode(handle, &mode) != 0) {
-                    mode |= w32.ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-                    use_color_escapes = w32.SetConsoleMode(handle, mode) != 0;
-                }
+    if (b.env_map.get("NO_COLOR") != null) {
+        use_color_escapes = false;
+    } else if (b.env_map.get("ZIG_DEBUG_COLOR") != null) {
+        use_color_escapes = true;
+    } else {
+        if (std.io.getStdErr().supportsAnsiEscapeCodes()) {
+            use_color_escapes = true;
+        } else if (builtin.os.tag == .windows) {
+            const w32 = struct {
+                const WINAPI = std.os.windows.WINAPI;
+                const DWORD = std.os.windows.DWORD;
+                const ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
+                const STD_ERROR_HANDLE = @bitCast(DWORD, @as(i32, -12));
+                extern "kernel32" fn GetStdHandle(id: DWORD) callconv(WINAPI) ?*anyopaque;
+                extern "kernel32" fn GetConsoleMode(console: ?*anyopaque, out_mode: *DWORD) callconv(WINAPI) u32;
+                extern "kernel32" fn SetConsoleMode(console: ?*anyopaque, mode: DWORD) callconv(WINAPI) u32;
+            };
+            const handle = w32.GetStdHandle(w32.STD_ERROR_HANDLE);
+            var mode: w32.DWORD = 0;
+            if (w32.GetConsoleMode(handle, &mode) != 0) {
+                mode |= w32.ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+                use_color_escapes = w32.SetConsoleMode(handle, mode) != 0;
             }
-        },
+        }
     }
 
     if (use_color_escapes) {
@@ -754,11 +753,6 @@ const ZiglingStep = struct {
         // Enable C support for exercises that use C functions
         if (self.exercise.C) {
             zig_args.append("-lc") catch unreachable;
-        }
-
-        if (builder.color != .auto) {
-            zig_args.append("--color") catch unreachable;
-            zig_args.append(@tagName(builder.color)) catch unreachable;
         }
 
         const zig_file = std.fs.path.join(builder.allocator, &[_][]const u8{ if (self.use_healed) "patches/healed" else "exercises", self.exercise.main_file }) catch unreachable;
