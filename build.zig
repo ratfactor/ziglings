@@ -565,20 +565,7 @@ pub fn build(b: *Builder) void {
         reset_text = "\x1b[0m";
     }
 
-    const header_step = b.addLog(
-        \\
-        \\         _       _ _
-        \\     ___(_) __ _| (_)_ __   __ _ ___
-        \\    |_  | |/ _' | | | '_ \ / _' / __|
-        \\     / /| | (_| | | | | | | (_| \__ \
-        \\    /___|_|\__, |_|_|_| |_|\__, |___/
-        \\           |___/           |___/
-        \\
-        \\
-    , .{});
-
     const verify_all = b.step("ziglings", "Check all ziglings");
-    verify_all.dependOn(&header_step.step);
     b.default_step = verify_all;
 
     var prev_chain_verify = verify_all;
@@ -614,7 +601,6 @@ pub fn build(b: *Builder) void {
         chain_verify.dependOn(&verify_step.step);
 
         const named_chain = b.step(b.fmt("{s}_start", .{key}), b.fmt("Check all solutions starting at {s}", .{ex.main_file}));
-        named_chain.dependOn(&header_step.step);
         named_chain.dependOn(chain_verify);
 
         prev_chain_verify.dependOn(chain_verify);
