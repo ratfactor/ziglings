@@ -609,7 +609,8 @@ pub fn build(b: *Builder) void {
         named_verify.dependOn(&verify_step.step);
 
         const chain_verify = b.allocator.create(Step) catch unreachable;
-        chain_verify.* = Step.initNoOp(.custom, b.fmt("chain {s}", .{key}), b.allocator);
+        const step_options = Step.Options{ .id = .custom, .name = b.fmt("chain {s}", .{key}), .owner = b };
+        chain_verify.* = Step.init(step_options);
         chain_verify.dependOn(&verify_step.step);
 
         const named_chain = b.step(b.fmt("{s}_start", .{key}), b.fmt("Check all solutions starting at {s}", .{ex.main_file}));
@@ -635,8 +636,9 @@ const ZiglingStep = struct {
 
     pub fn create(builder: *Builder, exercise: Exercise, use_healed: bool) *@This() {
         const self = builder.allocator.create(@This()) catch unreachable;
+        const step_options = Step.Options{ .id = .custom, .name = exercise.main_file, .owner = builder, .makeFn = make };
         self.* = .{
-            .step = Step.init(.custom, exercise.main_file, builder.allocator, make),
+            .step = Step.init(step_options),
             .exercise = exercise,
             .builder = builder,
             .use_healed = use_healed,
@@ -644,7 +646,8 @@ const ZiglingStep = struct {
         return self;
     }
 
-    fn make(step: *Step) anyerror!void {
+    fn make(step: *Step, prog_node: *std.Progress.Node) anyerror!void {
+        _ = prog_node;
         const self = @fieldParentPtr(@This(), "step", step);
         self.makeInternal() catch {
             if (self.exercise.hint.len > 0) {
