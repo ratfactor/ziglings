@@ -8,7 +8,7 @@ const print = std.debug.print;
 // When changing this version, be sure to also update README.md in two places:
 //     1) Getting Started
 //     2) Version Changes
-const needed_version = std.SemanticVersion.parse("0.11.0-dev.1844") catch unreachable;
+const needed_version = std.SemanticVersion.parse("0.11.0-dev.2157") catch unreachable;
 
 const Exercise = struct {
     /// main_file must have the format key_name.zig.
@@ -505,7 +505,7 @@ fn checkVersion() bool {
     return order != .lt;
 }
 
-pub fn build(b: *Builder) void {
+pub fn build(b: *Builder) !void {
     // Use a comptime branch for the version check.
     // If this fails, code after this block is not compiled.
     // It is parsed though, so versions of zig from before 0.6.0
@@ -533,30 +533,24 @@ pub fn build(b: *Builder) void {
     }
 
     use_color_escapes = false;
-    switch (b.color) {
-        .on => use_color_escapes = true,
-        .off => use_color_escapes = false,
-        .auto => {
-            if (std.io.getStdErr().supportsAnsiEscapeCodes()) {
-                use_color_escapes = true;
-            } else if (builtin.os.tag == .windows) {
-                const w32 = struct {
-                    const WINAPI = std.os.windows.WINAPI;
-                    const DWORD = std.os.windows.DWORD;
-                    const ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
-                    const STD_ERROR_HANDLE = @bitCast(DWORD, @as(i32, -12));
-                    extern "kernel32" fn GetStdHandle(id: DWORD) callconv(WINAPI) ?*anyopaque;
-                    extern "kernel32" fn GetConsoleMode(console: ?*anyopaque, out_mode: *DWORD) callconv(WINAPI) u32;
-                    extern "kernel32" fn SetConsoleMode(console: ?*anyopaque, mode: DWORD) callconv(WINAPI) u32;
-                };
-                const handle = w32.GetStdHandle(w32.STD_ERROR_HANDLE);
-                var mode: w32.DWORD = 0;
-                if (w32.GetConsoleMode(handle, &mode) != 0) {
-                    mode |= w32.ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-                    use_color_escapes = w32.SetConsoleMode(handle, mode) != 0;
-                }
-            }
-        },
+    if (std.io.getStdErr().supportsAnsiEscapeCodes()) {
+        use_color_escapes = true;
+    } else if (builtin.os.tag == .windows) {
+        const w32 = struct {
+            const WINAPI = std.os.windows.WINAPI;
+            const DWORD = std.os.windows.DWORD;
+            const ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
+            const STD_ERROR_HANDLE = @bitCast(DWORD, @as(i32, -12));
+            extern "kernel32" fn GetStdHandle(id: DWORD) callconv(WINAPI) ?*anyopaque;
+            extern "kernel32" fn GetConsoleMode(console: ?*anyopaque, out_mode: *DWORD) callconv(WINAPI) u32;
+            extern "kernel32" fn SetConsoleMode(console: ?*anyopaque, mode: DWORD) callconv(WINAPI) u32;
+        };
+        const handle = w32.GetStdHandle(w32.STD_ERROR_HANDLE);
+        var mode: w32.DWORD = 0;
+        if (w32.GetConsoleMode(handle, &mode) != 0) {
+            mode |= w32.ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+            use_color_escapes = w32.SetConsoleMode(handle, mode) != 0;
+        }
     }
 
     if (use_color_escapes) {
@@ -566,7 +560,7 @@ pub fn build(b: *Builder) void {
         reset_text = "\x1b[0m";
     }
 
-    const header_step = b.addLog(
+    const logo =
         \\
         \\         _       _ _
         \\     ___(_) __ _| (_)_ __   __ _ ___
@@ -576,10 +570,12 @@ pub fn build(b: *Builder) void {
         \\           |___/           |___/
         \\
         \\
-    , .{});
+    ;
+    const header_step = b.step("info", logo);
+    print("{s}\n", .{logo});
 
     const verify_all = b.step("ziglings", "Check all ziglings");
-    verify_all.dependOn(&header_step.step);
+    verify_all.dependOn(header_step);
     b.default_step = verify_all;
 
     var prev_chain_verify = verify_all;
@@ -610,11 +606,11 @@ pub fn build(b: *Builder) void {
         named_verify.dependOn(&verify_step.step);
 
         const chain_verify = b.allocator.create(Step) catch unreachable;
-        chain_verify.* = Step.initNoOp(.custom, b.fmt("chain {s}", .{key}), b.allocator);
+        chain_verify.* = Step.init(Step.Options{ .id = .custom, .name = b.fmt("chain {s}", .{key}), .owner = b });
         chain_verify.dependOn(&verify_step.step);
 
         const named_chain = b.step(b.fmt("{s}_start", .{key}), b.fmt("Check all solutions starting at {s}", .{ex.main_file}));
-        named_chain.dependOn(&header_step.step);
+        named_chain.dependOn(header_step);
         named_chain.dependOn(chain_verify);
 
         prev_chain_verify.dependOn(chain_verify);
@@ -637,7 +633,7 @@ const ZiglingStep = struct {
     pub fn create(builder: *Builder, exercise: Exercise, use_healed: bool) *@This() {
         const self = builder.allocator.create(@This()) catch unreachable;
         self.* = .{
-            .step = Step.init(.custom, exercise.main_file, builder.allocator, make),
+            .step = Step.init(Step.Options{ .id = .custom, .name = exercise.main_file, .owner = builder, .makeFn = make }),
             .exercise = exercise,
             .builder = builder,
             .use_healed = use_healed,
@@ -645,7 +641,8 @@ const ZiglingStep = struct {
         return self;
     }
 
-    fn make(step: *Step) anyerror!void {
+    fn make(step: *Step, prog_node: *std.Progress.Node) anyerror!void {
+        _ = prog_node;
         const self = @fieldParentPtr(@This(), "step", step);
         self.makeInternal() catch {
             if (self.exercise.hint.len > 0) {
@@ -754,11 +751,6 @@ const ZiglingStep = struct {
         // Enable C support for exercises that use C functions
         if (self.exercise.C) {
             zig_args.append("-lc") catch unreachable;
-        }
-
-        if (builder.color != .auto) {
-            zig_args.append("--color") catch unreachable;
-            zig_args.append(@tagName(builder.color)) catch unreachable;
         }
 
         const zig_file = std.fs.path.join(builder.allocator, &[_][]const u8{ if (self.use_healed) "patches/healed" else "exercises", self.exercise.main_file }) catch unreachable;

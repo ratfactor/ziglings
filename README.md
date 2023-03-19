@@ -40,7 +40,7 @@ Verify the installation and build number of `zig` like so:
 
 ```bash
 $ zig version
-0.11.0-dev.1844+xxxxxxxxx
+0.11.0-dev.2157+xxxxxxxxx
 ```
 
 Clone this repository with Git:
@@ -50,11 +50,18 @@ $ git clone https://github.com/ratfactor/ziglings
 $ cd ziglings
 ```
 
-Then run `zig build` and follow the instructions to begin!
+Then run `zig build 1` and follow the instructions to begin!
 
 ```bash
-$ zig build
+$ zig build 1
 ```
+## Note
+Due to Zig's new build system, exercises can currently only be run manually with their number!
+
+```bash
+$ zig build xy
+```
+We hope to be able to offer this again soon in the automatic way.
 
 ## A Note About Versions
 
@@ -80,7 +87,8 @@ about input:
 
 ### Version Changes
 
-Version-0.11.0-dev.1844+xxxxxxxxx
+Version-0.11.0-dev.2157+xxxxxxxxx
+* *2023-02-21* zig 0.11.0-dev.2157 - changes in `build system` - new: parallel processing of the build steps
 * *2023-02-21* zig 0.11.0-dev.1711 - changes in `for loops` - new: Multi-Object For-Loops + Struct-of-Arrays
 * *2023-02-12* zig 0.11.0-dev.1638 - changes in `std.Build` cache_root now returns a directory struct
 * *2023-02-04* zig 0.11.0-dev.1568 - changes in `std.Build` (combine `std.build` and `std.build.Builder` into `std.Build`)
