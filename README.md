@@ -55,7 +55,7 @@ Then run `zig build 1` and follow the instructions to begin!
 ```bash
 $ zig build 1
 ```
-## Note
+## :warning: Attention 
 Due to Zig's new build system, exercises can currently only be run manually with their number!
 
 ```bash
