@@ -571,7 +571,7 @@ pub fn build(b: *Builder) !void {
         \\
         \\
     ;
-    const header_step = b.step("header", logo);
+    const header_step = b.step("info", logo);
     print("{s}\n", .{logo});
 
     const verify_all = b.step("ziglings", "Check all ziglings");
@@ -582,45 +582,40 @@ pub fn build(b: *Builder) !void {
 
     const use_healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse false;
 
-    // for (exercises) |ex| {
-    const ex = exercises[0];
-    const base_name = ex.baseName();
-    const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
-        if (use_healed) "patches/healed" else "exercises", ex.main_file,
-    }) catch unreachable;
-    const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
+    for (exercises) |ex| {
+        const base_name = ex.baseName();
+        const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
+            if (use_healed) "patches/healed" else "exercises", ex.main_file,
+        }) catch unreachable;
+        const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
 
-    build_step.install();
-    // std.time.sleep(1000000);
+        build_step.install();
 
-    const verify_step = ZiglingStep.create(b, ex, use_healed);
+        const verify_step = ZiglingStep.create(b, ex, use_healed);
 
-    const key = ex.key();
+        const key = ex.key();
 
-    const named_test = b.step(b.fmt("{s}_test", .{key}), b.fmt("Run {s} without checking output", .{ex.main_file}));
-    const run_step = build_step.run();
-    named_test.dependOn(&run_step.step);
+        const named_test = b.step(b.fmt("{s}_test", .{key}), b.fmt("Run {s} without checking output", .{ex.main_file}));
+        const run_step = build_step.run();
+        named_test.dependOn(&run_step.step);
 
-    const named_install = b.step(b.fmt("{s}_install", .{key}), b.fmt("Install {s} to zig-cache/bin", .{ex.main_file}));
-    named_install.dependOn(&build_step.install_step.?.step);
+        const named_install = b.step(b.fmt("{s}_install", .{key}), b.fmt("Install {s} to zig-cache/bin", .{ex.main_file}));
+        named_install.dependOn(&build_step.install_step.?.step);
 
-    const named_verify = b.step(key, b.fmt("Check {s} only", .{ex.main_file}));
-    named_verify.dependOn(&verify_step.step);
+        const named_verify = b.step(key, b.fmt("Check {s} only", .{ex.main_file}));
+        named_verify.dependOn(&verify_step.step);
 
-    const chain_verify = b.allocator.create(Step) catch unreachable;
-    chain_verify.* = Step.init(Step.Options{ .id = .custom, .name = b.fmt("chain {s}", .{key}), .owner = b });
-    chain_verify.dependOn(&verify_step.step);
+        const chain_verify = b.allocator.create(Step) catch unreachable;
+        chain_verify.* = Step.init(Step.Options{ .id = .custom, .name = b.fmt("chain {s}", .{key}), .owner = b });
+        chain_verify.dependOn(&verify_step.step);
 
-    const named_chain = b.step(b.fmt("{s}_start", .{key}), b.fmt("Check all solutions starting at {s}", .{ex.main_file}));
-    named_chain.dependOn(header_step);
-    named_chain.dependOn(chain_verify);
+        const named_chain = b.step(b.fmt("{s}_start", .{key}), b.fmt("Check all solutions starting at {s}", .{ex.main_file}));
+        named_chain.dependOn(header_step);
+        named_chain.dependOn(chain_verify);
 
-    prev_chain_verify.dependOn(chain_verify);
-    prev_chain_verify = chain_verify;
-    // std.os.exit(0);
-    // while (true) {}
-
-    // }
+        prev_chain_verify.dependOn(chain_verify);
+        prev_chain_verify = chain_verify;
+    }
 }
 
 var use_color_escapes = false;
@@ -638,7 +633,6 @@ const ZiglingStep = struct {
     pub fn create(builder: *Builder, exercise: Exercise, use_healed: bool) *@This() {
         const self = builder.allocator.create(@This()) catch unreachable;
         self.* = .{
-            // .step = Step.init(.custom, exercise.main_file, builder.allocator, make),
             .step = Step.init(Step.Options{ .id = .custom, .name = exercise.main_file, .owner = builder, .makeFn = make }),
             .exercise = exercise,
             .builder = builder,
