@@ -42,6 +42,7 @@ pub fn main() void {
             // ... we don't need everything in between ...
             25 => std.debug.print("Y", .{}),
             26 => std.debug.print("Z", .{}),
+            else => std.debug.print("?", .{}),
             // Switch statements must be "exhaustive" (there must be a
             // match for every possible value).  Please add an "else"
             // to this switch to print a question mark "?" when c is

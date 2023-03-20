@@ -67,7 +67,7 @@ const print = @import("std").debug.print;
 pub fn main() void {
     var letter: u8 = 'A';
 
-    const my_letter:   ???   = &letter;
+    const my_letter: ?*[1]u8 = &letter;
     //               ^^^^^^^
     //           Your type here.
     // Must coerce from &letter (which is a *u8).
@@ -75,4 +75,11 @@ pub fn main() void {
 
     // When it's right, this will work:
     print("Letter: {u}\n", .{my_letter.?.*[0]});
+
+    // maybe pointer to an array of 1 u8
+
+    // variant of the same memory: pointer to a maybe u8 memory cell
+    // const my_letter: *[1]?u8 = &letter;
+
+    // print("Letter: {u}\n", .{my_letter.*[0].?});
 }

@@ -25,12 +25,11 @@ pub fn main() void {
     // the value of the place as a power of two for each bit.
     //
     // See if you can figure out the missing pieces:
-    for (bits, ???) |bit, ???| {
+    for (bits, 0..) |bit, index| {
         // Note that we convert the usize i to a u32 with
         // @intCast(), a builtin function just like @import().
         // We'll learn about these properly in a later exercise.
-        const i_u32: u32 = @intCast(i);
-        const place_value = std.math.pow(u32, 2, i_u32);
+        const place_value = std.math.pow(u32, 2, @intCast(u32, index));
         value += place_value * bit;
     }
 

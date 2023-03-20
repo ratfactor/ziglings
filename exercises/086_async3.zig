@@ -13,9 +13,7 @@ pub fn main() void {
     const n = 5;
     var foo_frame = async foo(n);
 
-    ???
-
-    print("\n", .{});
+    ???print("\n", .{});
 }
 
 fn foo(countdown: u32) void {

@@ -82,14 +82,14 @@ fn printTuple(tuple: anytype) void {
     //         @typeInfo(Circle).Struct.fields
     //
     // This will be an array of StructFields.
-    const fields = ???;
+    const fields = @typeInfo(@TypeOf(tuple)).Struct.fields;
 
     // 2. Loop through each field. This must be done at compile
     // time.
     //
     //     Hint: remember 'inline' loops?
     //
-    for (fields) |field| {
+    inline for (fields) |field| {
         // 3. Print the field's name, type, and value.
         //
         //     Each 'field' in this loop is one of these:
@@ -116,10 +116,6 @@ fn printTuple(tuple: anytype) void {
         //         @field(foo, "x"); // returns the value at foo.x
         //
         // The first field should print as: "0"(bool):true
-        print("\"{s}\"({any}):{any} ", .{
-            field.???,
-            field.???,
-            ???,
-        });
+        print("\"{s}\"({any}):{any} ", .{ field.name, field.type, @field(tuple, field.name) });
     }
 }

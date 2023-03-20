@@ -40,7 +40,7 @@ pub fn main() void {
 
     const fields = @typeInfo(Narcissus).Struct.fields;
 
-    ??? {
+    inline for (fields) |field| {
         if (field.type != void) {
             print(" {s}", .{field.name});
         }
