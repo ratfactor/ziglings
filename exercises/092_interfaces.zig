@@ -99,14 +99,16 @@ pub fn main() !void {
     var my_insects = [_]Insect{
         Insect{ .ant = Ant{ .still_alive = true } },
         Insect{ .bee = Bee{ .flowers_visited = 17 } },
-        Insect{ .grasshopper = Grasshopper{ .distance_hopped = 32 } },
+        Insect{
+            .grasshopper = Grasshopper{ .distance_hopped = 32 }
+        },
     };
 
     std.debug.print("Daily Insect Report:\n", .{});
     for (my_insects) |insect| {
         // Almost done! We want to print() each insect with a
         // single method call here.
-        ???
+        Insect.print(insect);
     }
 }
 
