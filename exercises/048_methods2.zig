@@ -52,12 +52,9 @@ fn visitElephants(first_elephant: *Elephant) void {
         e.print();
         e.visit();
 
-        // This gets the next elephant or stops.
-        if (e.hasTail()) {
-            e = e.???; // Which method do we want here?
-        } else {
-            break;
-        }
+        // This gets the next elephant or stops:
+        // which method do we want here?
+        e = if (e.hasTail()) e.??? else break;
     }
 }
 
