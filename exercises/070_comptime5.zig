@@ -25,7 +25,7 @@ const Duck = struct {
     location_x: i32 = 0,
     location_y: i32 = 0,
 
-    fn waddle(self: Duck, x: i16, y: i16) void {
+    fn waddle(self: *Duck, x: i16, y: i16) void {
         self.location_x += x;
         self.location_y += y;
     }
@@ -44,7 +44,7 @@ const RubberDuck = struct {
     location_x: i32 = 0,
     location_y: i32 = 0,
 
-    fn waddle(self: RubberDuck, x: i16, y: i16) void {
+    fn waddle(self: *RubberDuck, x: i16, y: i16) void {
         self.location_x += x;
         self.location_y += y;
     }
@@ -83,14 +83,14 @@ const DuctError = error{UnmatchedDiameters};
 
 pub fn main() void {
     // This is a real duck!
-    const ducky1 = Duck{
+    var ducky1 = Duck{
         .eggs = 0,
         .loudness = 3,
     };
 
     // This is not a real duck, but it has quack() and waddle()
     // abilities, so it's still a "duck".
-    const ducky2 = RubberDuck{
+    var ducky2 = RubberDuck{
         .in_bath = false,
     };
 
