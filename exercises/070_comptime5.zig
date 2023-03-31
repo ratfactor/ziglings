@@ -70,7 +70,7 @@ const Duct = struct {
     galvanized: bool,
     connection: ?*Duct = null,
 
-    fn connect(self: Duct, other: *Duct) !void {
+    fn connect(self: *Duct, other: *Duct) !void {
         if (self.diameter == other.diameter) {
             self.connection = other;
         } else {
@@ -95,7 +95,7 @@ pub fn main() void {
     };
 
     // This is not even remotely a duck.
-    const ducky3 = Duct{
+    var ducky3 = Duct{
         .diameter = 17,
         .length = 165,
         .galvanized = true,
