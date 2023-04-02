@@ -572,7 +572,9 @@ pub fn build(b: *Builder) !void {
         \\
     ;
     const header_step = b.step("info", logo);
-    print("{s}\n", .{logo});
+
+    const logo_step = PrintStep.create(b, logo, std.io.getStdErr());
+    logo_step.step.dependOn(header_step);
 
     const verify_all = b.step("ziglings", "Check all ziglings");
     verify_all.dependOn(header_step);
@@ -802,5 +804,35 @@ const ZiglingStep = struct {
         return std.fs.path.join(builder.allocator, &[_][]const u8{
             build_output_dir, file_name,
         });
+    }
+};
+
+// Print a message to a file.
+const PrintStep = struct {
+    step: Step,
+    message: []const u8,
+    file: std.fs.File,
+
+    pub fn create(owner: *std.Build, message: []const u8, file: std.fs.File) *PrintStep {
+        const self = owner.allocator.create(PrintStep) catch @panic("OOM");
+        self.* = .{
+            .step = Step.init(.{
+                .id = .custom,
+                .name = "Print",
+                .owner = owner,
+                .makeFn = make,
+            }),
+            .message = message,
+            .file = file,
+        };
+
+        return self;
+    }
+
+    fn make(step: *Step, prog_node: *std.Progress.Node) !void {
+        _ = prog_node;
+        const p = @fieldParentPtr(PrintStep, "step", step);
+
+        try p.file.writeAll(p.message);
     }
 };
