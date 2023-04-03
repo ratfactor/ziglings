@@ -1,14 +1,12 @@
 const std = @import("std");
 const builtin = @import("builtin");
-const Builder = std.build.Builder;
-const Step = std.build.Step;
+const compat = @import("src/compat.zig");
+
+const Build = compat.Build;
+const Step = compat.build.Step;
+
 const assert = std.debug.assert;
 const print = std.debug.print;
-
-// When changing this version, be sure to also update README.md in two places:
-//     1) Getting Started
-//     2) Version Changes
-const needed_version = std.SemanticVersion.parse("0.11.0-dev.2157") catch unreachable;
 
 const Exercise = struct {
     /// main_file must have the format key_name.zig.
@@ -493,44 +491,8 @@ const exercises = [_]Exercise{
     },
 };
 
-/// Check the zig version to make sure it can compile the examples properly.
-/// This will compile with Zig 0.6.0 and later.
-fn checkVersion() bool {
-    if (!@hasDecl(builtin, "zig_version")) {
-        return false;
-    }
-
-    const version = builtin.zig_version;
-    const order = version.order(needed_version);
-    return order != .lt;
-}
-
-pub fn build(b: *Builder) !void {
-    // Use a comptime branch for the version check.
-    // If this fails, code after this block is not compiled.
-    // It is parsed though, so versions of zig from before 0.6.0
-    // cannot do the version check and will just fail to compile.
-    // We could fix this by moving the ziglings code to a separate file,
-    // but 0.5.0 was a long time ago, it is unlikely that anyone who
-    // attempts these exercises is still using it.
-    if (comptime !checkVersion()) {
-        // very old versions of Zig used warn instead of print.
-        const stderrPrintFn = if (@hasDecl(std.debug, "print")) std.debug.print else std.debug.warn;
-        stderrPrintFn(
-            \\ERROR: Sorry, it looks like your version of zig is too old. :-(
-            \\
-            \\Ziglings requires development build
-            \\
-            \\    {}
-            \\
-            \\or higher. Please download a development ("master") build from
-            \\
-            \\    https://ziglang.org/download/
-            \\
-            \\
-        , .{needed_version});
-        std.os.exit(0);
-    }
+pub fn build(b: *Build) !void {
+    if (!compat.is_compatible) compat.die();
 
     use_color_escapes = false;
     if (std.io.getStdErr().supportsAnsiEscapeCodes()) {
@@ -629,10 +591,10 @@ var reset_text: []const u8 = "";
 const ZiglingStep = struct {
     step: Step,
     exercise: Exercise,
-    builder: *Builder,
+    builder: *Build,
     use_healed: bool,
 
-    pub fn create(builder: *Builder, exercise: Exercise, use_healed: bool) *@This() {
+    pub fn create(builder: *Build, exercise: Exercise, use_healed: bool) *@This() {
         const self = builder.allocator.create(@This()) catch unreachable;
         self.* = .{
             .step = Step.init(Step.Options{ .id = .custom, .name = exercise.main_file, .owner = builder, .makeFn = make }),
@@ -813,7 +775,7 @@ const PrintStep = struct {
     message: []const u8,
     file: std.fs.File,
 
-    pub fn create(owner: *std.Build, message: []const u8, file: std.fs.File) *PrintStep {
+    pub fn create(owner: *Build, message: []const u8, file: std.fs.File) *PrintStep {
         const self = owner.allocator.create(PrintStep) catch @panic("OOM");
         self.* = .{
             .step = Step.init(.{
