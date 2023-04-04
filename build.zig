@@ -533,13 +533,11 @@ pub fn build(b: *Build) !void {
         \\
         \\
     ;
-    const header_step = b.step("info", logo);
 
-    const logo_step = PrintStep.create(b, logo, std.io.getStdErr());
-    logo_step.step.dependOn(header_step);
+    const header_step = PrintStep.create(b, logo, std.io.getStdErr());
 
     const verify_all = b.step("ziglings", "Check all ziglings");
-    verify_all.dependOn(header_step);
+    verify_all.dependOn(&header_step.step);
     b.default_step = verify_all;
 
     var prev_chain_verify = verify_all;
@@ -574,7 +572,7 @@ pub fn build(b: *Build) !void {
         chain_verify.dependOn(&verify_step.step);
 
         const named_chain = b.step(b.fmt("{s}_start", .{key}), b.fmt("Check all solutions starting at {s}", .{ex.main_file}));
-        named_chain.dependOn(header_step);
+        named_chain.dependOn(&header_step.step);
         named_chain.dependOn(chain_verify);
 
         prev_chain_verify.dependOn(chain_verify);
