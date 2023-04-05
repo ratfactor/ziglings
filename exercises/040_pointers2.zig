@@ -12,10 +12,12 @@
 //     &foo is of type "*u8"
 //     &bar is of type "*const u8"
 //
-// You can always make a constant pointer to a variable, but you cannot
-// make a variable pointer to a constant. This sounds like a logic puzzle,
-// but it just means that once data is declared immutable, you can't
-// coerce it to a mutable type. It's a safety thing (to prevent mistakes).
+// You can always make a const pointer to a mutable value (var), but
+// you cannot make a var pointer to an immutable value (const).
+// This sounds like a logic puzzle, but it just means that once data
+// is declared immutable, you can't coerce it to a mutable type.
+// Think of mutable data as being volatile or even dangerous. Zig
+// always lets you be "more safe" and never "less safe."
 //
 const std = @import("std");
 
