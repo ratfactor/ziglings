@@ -549,8 +549,8 @@ pub fn build(b: *Build) !void {
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
             if (use_healed) "patches/healed" else "exercises", ex.main_file,
         }) catch unreachable;
-        const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
 
+        const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
         build_step.install();
 
         const verify_step = ZiglingStep.create(b, ex, use_healed);
@@ -561,7 +561,7 @@ pub fn build(b: *Build) !void {
         const run_step = build_step.run();
         named_test.dependOn(&run_step.step);
 
-        const named_install = b.step(b.fmt("{s}_install", .{key}), b.fmt("Install {s} to zig-cache/bin", .{ex.main_file}));
+        const named_install = b.step(b.fmt("{s}_install", .{key}), b.fmt("Copy {s} to prefix path", .{ex.main_file}));
         named_install.dependOn(&build_step.install_step.?.step);
 
         const named_verify = b.step(key, b.fmt("Check {s} only", .{ex.main_file}));
