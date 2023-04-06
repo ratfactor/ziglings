@@ -51,6 +51,11 @@ const Exercise = struct {
         while (self.main_file[start_index] == '0') start_index += 1;
         return self.main_file[start_index..end_index.?];
     }
+
+    /// Returns the exercise key as an integer.
+    pub fn number(self: Exercise) usize {
+        return std.fmt.parseInt(usize, self.key(), 10) catch unreachable;
+    }
 };
 
 const exercises = [_]Exercise{
@@ -534,17 +539,21 @@ pub fn build(b: *Build) !void {
         \\
     ;
 
+    const use_healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse false;
+    const exno: ?usize = b.option(usize, "n", "Select exercise");
+
     const header_step = PrintStep.create(b, logo, std.io.getStdErr());
 
-    const verify_all = b.step("ziglings", "Check all ziglings");
-    verify_all.dependOn(&header_step.step);
-    b.default_step = verify_all;
+    if (exno) |i| {
+        const ex = blk: {
+            for (exercises) |ex| {
+                if (ex.number() == i) break :blk ex;
+            }
 
-    var prev_chain_verify = verify_all;
+            print("unknown exercise number: {}\n", .{i});
+            std.os.exit(1);
+        };
 
-    const use_healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse false;
-
-    for (exercises) |ex| {
         const base_name = ex.baseName();
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
             if (use_healed) "patches/healed" else "exercises", ex.main_file,
@@ -553,31 +562,64 @@ pub fn build(b: *Build) !void {
         const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
         build_step.install();
 
+        const run_step = build_step.run();
+
+        const test_step = b.step("test", b.fmt("Run {s} without checking output", .{ex.main_file}));
+        test_step.dependOn(&run_step.step);
+
+        const install_step = b.step("install", b.fmt("Install {s} to prefix path", .{ex.main_file}));
+        install_step.dependOn(b.getInstallStep());
+
+        const uninstall_step = b.step("uninstall", b.fmt("Uninstall {s} from prefix path", .{ex.main_file}));
+        uninstall_step.dependOn(b.getUninstallStep());
+
         const verify_step = ZiglingStep.create(b, ex, use_healed);
 
-        const key = ex.key();
+        const zigling_step = b.step("zigling", b.fmt("Check the solution of {s}", .{ex.main_file}));
+        zigling_step.dependOn(&verify_step.step);
+        b.default_step = zigling_step;
 
-        const named_test = b.step(b.fmt("{s}_test", .{key}), b.fmt("Run {s} without checking output", .{ex.main_file}));
-        const run_step = build_step.run();
-        named_test.dependOn(&run_step.step);
+        const start_step = b.step("start", b.fmt("Check all solutions starting at {s}", .{ex.main_file}));
 
-        const named_install = b.step(b.fmt("{s}_install", .{key}), b.fmt("Copy {s} to prefix path", .{ex.main_file}));
-        named_install.dependOn(&build_step.install_step.?.step);
+        var prev_step = verify_step;
+        for (exercises) |exn| {
+            const n = exn.number();
+            if (n > i) {
+                const verify_stepn = ZiglingStep.create(b, exn, use_healed);
+                verify_stepn.step.dependOn(&prev_step.step);
 
-        const named_verify = b.step(key, b.fmt("Check {s} only", .{ex.main_file}));
-        named_verify.dependOn(&verify_step.step);
+                prev_step = verify_stepn;
+            }
+        }
+        start_step.dependOn(&prev_step.step);
 
-        const chain_verify = b.allocator.create(Step) catch unreachable;
-        chain_verify.* = Step.init(Step.Options{ .id = .custom, .name = b.fmt("chain {s}", .{key}), .owner = b });
-        chain_verify.dependOn(&verify_step.step);
-
-        const named_chain = b.step(b.fmt("{s}_start", .{key}), b.fmt("Check all solutions starting at {s}", .{ex.main_file}));
-        named_chain.dependOn(&header_step.step);
-        named_chain.dependOn(chain_verify);
-
-        prev_chain_verify.dependOn(chain_verify);
-        prev_chain_verify = chain_verify;
+        return;
     }
+
+    const ziglings_step = b.step("ziglings", "Check all ziglings");
+    ziglings_step.dependOn(&header_step.step);
+    b.default_step = ziglings_step;
+
+    var prev_step: *Step = undefined;
+    for (exercises, 0..) |ex, i| {
+        const base_name = ex.baseName();
+        const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
+            if (use_healed) "patches/healed" else "exercises", ex.main_file,
+        }) catch unreachable;
+
+        const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
+        build_step.install();
+
+        const verify_stepn = ZiglingStep.create(b, ex, use_healed);
+        if (i == 0) {
+            prev_step = &verify_stepn.step;
+        } else {
+            verify_stepn.step.dependOn(prev_step);
+
+            prev_step = &verify_stepn.step;
+        }
+    }
+    ziglings_step.dependOn(prev_step);
 }
 
 var use_color_escapes = false;
