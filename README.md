@@ -50,18 +50,11 @@ $ git clone https://github.com/ratfactor/ziglings
 $ cd ziglings
 ```
 
-Then run `zig build 1` and follow the instructions to begin!
+Then run `zig build` and follow the instructions to begin!
 
 ```bash
-$ zig build 1
+$ zig build
 ```
-## :warning: Attention 
-Due to Zig's new build system, exercises can currently only be run manually with their number!
-
-```bash
-$ zig build xy
-```
-We hope to be able to offer this again soon in the automatic way.
 
 ## A Note About Versions
 

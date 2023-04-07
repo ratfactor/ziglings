@@ -1,14 +1,12 @@
 const std = @import("std");
 const builtin = @import("builtin");
-const Builder = std.build.Builder;
-const Step = std.build.Step;
+const compat = @import("src/compat.zig");
+
+const Build = compat.Build;
+const Step = compat.build.Step;
+
 const assert = std.debug.assert;
 const print = std.debug.print;
-
-// When changing this version, be sure to also update README.md in two places:
-//     1) Getting Started
-//     2) Version Changes
-const needed_version = std.SemanticVersion.parse("0.11.0-dev.2157") catch unreachable;
 
 const Exercise = struct {
     /// main_file must have the format key_name.zig.
@@ -52,6 +50,11 @@ const Exercise = struct {
         var start_index: usize = 0;
         while (self.main_file[start_index] == '0') start_index += 1;
         return self.main_file[start_index..end_index.?];
+    }
+
+    /// Returns the exercise key as an integer.
+    pub fn number(self: Exercise) usize {
+        return std.fmt.parseInt(usize, self.key(), 10) catch unreachable;
     }
 };
 
@@ -493,44 +496,8 @@ const exercises = [_]Exercise{
     },
 };
 
-/// Check the zig version to make sure it can compile the examples properly.
-/// This will compile with Zig 0.6.0 and later.
-fn checkVersion() bool {
-    if (!@hasDecl(builtin, "zig_version")) {
-        return false;
-    }
-
-    const version = builtin.zig_version;
-    const order = version.order(needed_version);
-    return order != .lt;
-}
-
-pub fn build(b: *Builder) !void {
-    // Use a comptime branch for the version check.
-    // If this fails, code after this block is not compiled.
-    // It is parsed though, so versions of zig from before 0.6.0
-    // cannot do the version check and will just fail to compile.
-    // We could fix this by moving the ziglings code to a separate file,
-    // but 0.5.0 was a long time ago, it is unlikely that anyone who
-    // attempts these exercises is still using it.
-    if (comptime !checkVersion()) {
-        // very old versions of Zig used warn instead of print.
-        const stderrPrintFn = if (@hasDecl(std.debug, "print")) std.debug.print else std.debug.warn;
-        stderrPrintFn(
-            \\ERROR: Sorry, it looks like your version of zig is too old. :-(
-            \\
-            \\Ziglings requires development build
-            \\
-            \\    {}
-            \\
-            \\or higher. Please download a development ("master") build from
-            \\
-            \\    https://ziglang.org/download/
-            \\
-            \\
-        , .{needed_version});
-        std.os.exit(0);
-    }
+pub fn build(b: *Build) !void {
+    if (!compat.is_compatible) compat.die();
 
     use_color_escapes = false;
     if (std.io.getStdErr().supportsAnsiEscapeCodes()) {
@@ -571,51 +538,88 @@ pub fn build(b: *Builder) !void {
         \\
         \\
     ;
-    const header_step = b.step("info", logo);
-    print("{s}\n", .{logo});
-
-    const verify_all = b.step("ziglings", "Check all ziglings");
-    verify_all.dependOn(header_step);
-    b.default_step = verify_all;
-
-    var prev_chain_verify = verify_all;
 
     const use_healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse false;
+    const exno: ?usize = b.option(usize, "n", "Select exercise");
 
-    for (exercises) |ex| {
+    const header_step = PrintStep.create(b, logo, std.io.getStdErr());
+
+    if (exno) |i| {
+        const ex = blk: {
+            for (exercises) |ex| {
+                if (ex.number() == i) break :blk ex;
+            }
+
+            print("unknown exercise number: {}\n", .{i});
+            std.os.exit(1);
+        };
+
         const base_name = ex.baseName();
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
             if (use_healed) "patches/healed" else "exercises", ex.main_file,
         }) catch unreachable;
-        const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
 
+        const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
         build_step.install();
+
+        const run_step = build_step.run();
+
+        const test_step = b.step("test", b.fmt("Run {s} without checking output", .{ex.main_file}));
+        test_step.dependOn(&run_step.step);
+
+        const install_step = b.step("install", b.fmt("Install {s} to prefix path", .{ex.main_file}));
+        install_step.dependOn(b.getInstallStep());
+
+        const uninstall_step = b.step("uninstall", b.fmt("Uninstall {s} from prefix path", .{ex.main_file}));
+        uninstall_step.dependOn(b.getUninstallStep());
 
         const verify_step = ZiglingStep.create(b, ex, use_healed);
 
-        const key = ex.key();
+        const zigling_step = b.step("zigling", b.fmt("Check the solution of {s}", .{ex.main_file}));
+        zigling_step.dependOn(&verify_step.step);
+        b.default_step = zigling_step;
 
-        const named_test = b.step(b.fmt("{s}_test", .{key}), b.fmt("Run {s} without checking output", .{ex.main_file}));
-        const run_step = build_step.run();
-        named_test.dependOn(&run_step.step);
+        const start_step = b.step("start", b.fmt("Check all solutions starting at {s}", .{ex.main_file}));
 
-        const named_install = b.step(b.fmt("{s}_install", .{key}), b.fmt("Install {s} to zig-cache/bin", .{ex.main_file}));
-        named_install.dependOn(&build_step.install_step.?.step);
+        var prev_step = verify_step;
+        for (exercises) |exn| {
+            const n = exn.number();
+            if (n > i) {
+                const verify_stepn = ZiglingStep.create(b, exn, use_healed);
+                verify_stepn.step.dependOn(&prev_step.step);
 
-        const named_verify = b.step(key, b.fmt("Check {s} only", .{ex.main_file}));
-        named_verify.dependOn(&verify_step.step);
+                prev_step = verify_stepn;
+            }
+        }
+        start_step.dependOn(&prev_step.step);
 
-        const chain_verify = b.allocator.create(Step) catch unreachable;
-        chain_verify.* = Step.init(Step.Options{ .id = .custom, .name = b.fmt("chain {s}", .{key}), .owner = b });
-        chain_verify.dependOn(&verify_step.step);
-
-        const named_chain = b.step(b.fmt("{s}_start", .{key}), b.fmt("Check all solutions starting at {s}", .{ex.main_file}));
-        named_chain.dependOn(header_step);
-        named_chain.dependOn(chain_verify);
-
-        prev_chain_verify.dependOn(chain_verify);
-        prev_chain_verify = chain_verify;
+        return;
     }
+
+    const ziglings_step = b.step("ziglings", "Check all ziglings");
+    ziglings_step.dependOn(&header_step.step);
+    b.default_step = ziglings_step;
+
+    var prev_step: *Step = undefined;
+    for (exercises, 0..) |ex, i| {
+        const base_name = ex.baseName();
+        const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
+            if (use_healed) "patches/healed" else "exercises", ex.main_file,
+        }) catch unreachable;
+
+        const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
+        build_step.install();
+
+        const verify_stepn = ZiglingStep.create(b, ex, use_healed);
+        if (i == 0) {
+            prev_step = &verify_stepn.step;
+        } else {
+            verify_stepn.step.dependOn(prev_step);
+
+            prev_step = &verify_stepn.step;
+        }
+    }
+    ziglings_step.dependOn(prev_step);
 }
 
 var use_color_escapes = false;
@@ -627,10 +631,10 @@ var reset_text: []const u8 = "";
 const ZiglingStep = struct {
     step: Step,
     exercise: Exercise,
-    builder: *Builder,
+    builder: *Build,
     use_healed: bool,
 
-    pub fn create(builder: *Builder, exercise: Exercise, use_healed: bool) *@This() {
+    pub fn create(builder: *Build, exercise: Exercise, use_healed: bool) *@This() {
         const self = builder.allocator.create(@This()) catch unreachable;
         self.* = .{
             .step = Step.init(Step.Options{ .id = .custom, .name = exercise.main_file, .owner = builder, .makeFn = make }),
@@ -650,7 +654,7 @@ const ZiglingStep = struct {
             }
 
             print("\n{s}Edit exercises/{s} and run this again.{s}", .{ red_text, self.exercise.main_file, reset_text });
-            print("\n{s}To continue from this zigling, use this command:{s}\n    {s}zig build {s}{s}\n", .{ red_text, reset_text, bold_text, self.exercise.key(), reset_text });
+            print("\n{s}To continue from this zigling, use this command:{s}\n    {s}zig build -Dn={s}{s}\n", .{ red_text, reset_text, bold_text, self.exercise.key(), reset_text });
             std.os.exit(1);
         };
     }
@@ -802,5 +806,35 @@ const ZiglingStep = struct {
         return std.fs.path.join(builder.allocator, &[_][]const u8{
             build_output_dir, file_name,
         });
+    }
+};
+
+// Print a message to a file.
+const PrintStep = struct {
+    step: Step,
+    message: []const u8,
+    file: std.fs.File,
+
+    pub fn create(owner: *Build, message: []const u8, file: std.fs.File) *PrintStep {
+        const self = owner.allocator.create(PrintStep) catch @panic("OOM");
+        self.* = .{
+            .step = Step.init(.{
+                .id = .custom,
+                .name = "Print",
+                .owner = owner,
+                .makeFn = make,
+            }),
+            .message = message,
+            .file = file,
+        };
+
+        return self;
+    }
+
+    fn make(step: *Step, prog_node: *std.Progress.Node) !void {
+        _ = prog_node;
+        const p = @fieldParentPtr(PrintStep, "step", step);
+
+        try p.file.writeAll(p.message);
     }
 };
