@@ -40,7 +40,7 @@ Verify the installation and build number of `zig` like so:
 
 ```bash
 $ zig version
-0.11.0-dev.2157+xxxxxxxxx
+0.11.0-dev.2401+xxxxxxxxx
 ```
 
 Clone this repository with Git:
@@ -80,7 +80,7 @@ about input:
 
 ### Version Changes
 
-Version-0.11.0-dev.2157+xxxxxxxxx
+Version-0.11.0-dev.2401+xxxxxxxxx
 * *2023-02-21* zig 0.11.0-dev.2157 - changes in `build system` - new: parallel processing of the build steps
 * *2023-02-21* zig 0.11.0-dev.1711 - changes in `for loops` - new: Multi-Object For-Loops + Struct-of-Arrays
 * *2023-02-12* zig 0.11.0-dev.1638 - changes in `std.Build` cache_root now returns a directory struct
