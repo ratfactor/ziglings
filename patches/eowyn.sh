@@ -14,7 +14,7 @@
 #
 
 # We check ourselves before we wreck ourselves.
-if [ ! -f 'patches/eowyn.sh' ]
+if [ ! -f patches/eowyn.sh ]
 then
     echo "But I must be run from the project root directory."
     exit 1
@@ -27,18 +27,17 @@ mkdir -p patches/healed
 for broken in exercises/*.zig
 do
     # Remove the dir and extension, rendering the True Name.
-    true_name=$(basename $broken .zig)
+    true_name=$(basename "$broken" .zig)
     patch_name="patches/patches/$true_name.patch"
 
-
-    if [ -f $patch_name ]
+    if [ -f "$patch_name" ]
     then
         # Apply the bandages to the wounds, grow new limbs, let
         # new life spring into the broken bodies of the fallen.
-        echo Healing $true_name...
-        patch --output=patches/healed/$true_name.zig $broken $patch_name
+        echo Healing "$true_name"...
+        patch --output="patches/healed/$true_name.zig" "$broken" "$patch_name"
     else
-        echo Cannot heal $true_name. No patch found.
+        echo Cannot heal "$true_name". No patch found.
     fi
 done
 
