@@ -594,6 +594,28 @@ pub fn build(b: *Build) !void {
         start_step.dependOn(&prev_step.step);
 
         return;
+    } else if (use_healed) {
+        const test_step = b.step("test", "Test the healed exercises");
+        b.default_step = test_step;
+
+        for (exercises) |ex| {
+            const base_name = ex.baseName();
+            const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
+                "patches/healed", ex.main_file,
+            }) catch unreachable;
+
+            const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
+            if (ex.C) {
+                build_step.linkLibC();
+            }
+            build_step.install();
+
+            const run_step = build_step.run();
+
+            test_step.dependOn(&run_step.step);
+        }
+
+        return;
     }
 
     const ziglings_step = b.step("ziglings", "Check all ziglings");
@@ -604,7 +626,7 @@ pub fn build(b: *Build) !void {
     for (exercises, 0..) |ex, i| {
         const base_name = ex.baseName();
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
-            if (use_healed) "patches/healed" else "exercises", ex.main_file,
+            "exercises", ex.main_file,
         }) catch unreachable;
 
         const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
