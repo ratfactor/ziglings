@@ -560,6 +560,9 @@ pub fn build(b: *Build) !void {
         }) catch unreachable;
 
         const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
+        if (ex.C) {
+            build_step.linkLibC();
+        }
         build_step.install();
 
         const run_step = build_step.run();
