@@ -33,6 +33,9 @@ const Exercise = struct {
     /// We need to keep track of this, so we compile with libc
     C: bool = false,
 
+    /// This exercise is not supported by the current Zig compiler.
+    skip: bool = false,
+
     /// Returns the name of the main file with .zig stripped.
     pub fn baseName(self: Exercise) []const u8 {
         assert(std.mem.endsWith(u8, self.main_file, ".zig"));
@@ -425,49 +428,59 @@ const exercises = [_]Exercise{
         .main_file = "083_anonymous_lists.zig",
         .output = "I say hello!",
     },
-    // disabled because of https://github.com/ratfactor/ziglings/issues/163
+
+    // Skipped because of https://github.com/ratfactor/ziglings/issues/163
     // direct link: https://github.com/ziglang/zig/issues/6025
-    // .{
-    //     .main_file = "084_async.zig",
-    //     .output = "foo() A",
-    //     .hint = "Read the facts. Use the facts.",
-    //     .@"async" = true,
-    // },
-    // .{
-    //     .main_file = "085_async2.zig",
-    //     .output = "Hello async!",
-    //     .@"async" = true,
-    // },
-    // .{
-    //     .main_file = "086_async3.zig",
-    //     .output = "5 4 3 2 1",
-    //     .@"async" = true,
-    // },
-    // .{
-    //     .main_file = "087_async4.zig",
-    //     .output = "1 2 3 4 5",
-    //     .@"async" = true,
-    // },
-    // .{
-    //     .main_file = "088_async5.zig",
-    //     .output = "Example Title.",
-    //     .@"async" = true,
-    // },
-    // .{
-    //     .main_file = "089_async6.zig",
-    //     .output = ".com: Example Title, .org: Example Title.",
-    //     .@"async" = true,
-    // },
-    // .{
-    //     .main_file = "090_async7.zig",
-    //     .output = "beef? BEEF!",
-    //     .@"async" = true,
-    // },
-    // .{
-    //     .main_file = "091_async8.zig",
-    //     .output = "ABCDEF",
-    //     .@"async" = true,
-    // },
+    .{
+        .main_file = "084_async.zig",
+        .output = "foo() A",
+        .hint = "Read the facts. Use the facts.",
+        .@"async" = true,
+        .skip = true,
+    },
+    .{
+        .main_file = "085_async2.zig",
+        .output = "Hello async!",
+        .@"async" = true,
+        .skip = true,
+    },
+    .{
+        .main_file = "086_async3.zig",
+        .output = "5 4 3 2 1",
+        .@"async" = true,
+        .skip = true,
+    },
+    .{
+        .main_file = "087_async4.zig",
+        .output = "1 2 3 4 5",
+        .@"async" = true,
+        .skip = true,
+    },
+    .{
+        .main_file = "088_async5.zig",
+        .output = "Example Title.",
+        .@"async" = true,
+        .skip = true,
+    },
+    .{
+        .main_file = "089_async6.zig",
+        .output = ".com: Example Title, .org: Example Title.",
+        .@"async" = true,
+        .skip = true,
+    },
+    .{
+        .main_file = "090_async7.zig",
+        .output = "beef? BEEF!",
+        .@"async" = true,
+        .skip = true,
+    },
+    .{
+        .main_file = "091_async8.zig",
+        .output = "ABCDEF",
+        .@"async" = true,
+        .skip = true,
+    },
+
     .{
         .main_file = "092_interfaces.zig",
         .output = "Daily Insect Report:\nAnt is alive.\nBee visited 17 flowers.\nGrasshopper hopped 32 meters.",
@@ -568,7 +581,12 @@ pub fn build(b: *Build) !void {
         const run_step = build_step.run();
 
         const test_step = b.step("test", b.fmt("Run {s} without checking output", .{ex.main_file}));
-        test_step.dependOn(&run_step.step);
+        if (ex.skip) {
+            const skip_step = SkipStep.create(b, ex);
+            test_step.dependOn(&skip_step.step);
+        } else {
+            test_step.dependOn(&run_step.step);
+        }
 
         const install_step = b.step("install", b.fmt("Install {s} to prefix path", .{ex.main_file}));
         install_step.dependOn(b.getInstallStep());
@@ -614,8 +632,12 @@ pub fn build(b: *Build) !void {
             build_step.install();
 
             const run_step = build_step.run();
-
-            test_step.dependOn(&run_step.step);
+            if (ex.skip) {
+                const skip_step = SkipStep.create(b, ex);
+                test_step.dependOn(&skip_step.step);
+            } else {
+                test_step.dependOn(&run_step.step);
+            }
         }
 
         return;
@@ -673,6 +695,12 @@ const ZiglingStep = struct {
     fn make(step: *Step, prog_node: *std.Progress.Node) anyerror!void {
         _ = prog_node;
         const self = @fieldParentPtr(@This(), "step", step);
+
+        if (self.exercise.skip) {
+            print("Skipping {s}\n\n", .{self.exercise.main_file});
+
+            return;
+        }
         self.makeInternal() catch {
             if (self.exercise.hint.len > 0) {
                 print("\n{s}HINT: {s}{s}", .{ bold_text, self.exercise.hint, reset_text });
@@ -861,5 +889,35 @@ const PrintStep = struct {
         const p = @fieldParentPtr(PrintStep, "step", step);
 
         try p.file.writeAll(p.message);
+    }
+};
+
+// Skip an exercise.
+const SkipStep = struct {
+    step: Step,
+    exercise: Exercise,
+
+    pub fn create(owner: *Build, exercise: Exercise) *SkipStep {
+        const self = owner.allocator.create(SkipStep) catch @panic("OOM");
+        self.* = .{
+            .step = Step.init(.{
+                .id = .custom,
+                .name = "Skip",
+                .owner = owner,
+                .makeFn = make,
+            }),
+            .exercise = exercise,
+        };
+
+        return self;
+    }
+
+    fn make(step: *Step, prog_node: *std.Progress.Node) !void {
+        _ = prog_node;
+        const p = @fieldParentPtr(SkipStep, "step", step);
+
+        if (p.exercise.skip) {
+            print("{s} skipped\n", .{p.exercise.main_file});
+        }
     }
 };
