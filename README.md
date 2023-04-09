@@ -128,7 +128,7 @@ zig build -Dn=19 install
 
 To get a list of all possible options, run:
 
-```bash
+```
 zig build -Dn=19 -l
 
   install                      Install 019_functions2.zig to prefix path
