@@ -109,7 +109,7 @@ const PatchStep = struct {
         self.* = .{
             .step = Step.init(.{
                 .id = .custom,
-                .name = "Patch",
+                .name = owner.fmt("patch {s}", .{exercise.main_file}),
                 .owner = owner,
                 .makeFn = make,
             }),

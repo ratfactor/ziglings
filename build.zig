@@ -875,7 +875,7 @@ const PrintStep = struct {
         self.* = .{
             .step = Step.init(.{
                 .id = .custom,
-                .name = "Print",
+                .name = "print",
                 .owner = owner,
                 .makeFn = make,
             }),
@@ -904,7 +904,7 @@ const SkipStep = struct {
         self.* = .{
             .step = Step.init(.{
                 .id = .custom,
-                .name = "Skip",
+                .name = owner.fmt("skip {s}", .{exercise.main_file}),
                 .owner = owner,
                 .makeFn = make,
             }),
