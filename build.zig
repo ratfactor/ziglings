@@ -1,6 +1,7 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const compat = @import("src/compat.zig");
+const tests = @import("test/tests.zig");
 
 const Build = compat.Build;
 const Step = compat.build.Step;
@@ -8,7 +9,7 @@ const Step = compat.build.Step;
 const assert = std.debug.assert;
 const print = std.debug.print;
 
-const Exercise = struct {
+pub const Exercise = struct {
     /// main_file must have the format key_name.zig.
     /// The key will be used as a shorthand to build
     /// just one example.
@@ -511,6 +512,7 @@ const exercises = [_]Exercise{
 
 pub fn build(b: *Build) !void {
     if (!compat.is_compatible) compat.die();
+    if (!validate_exercises()) std.os.exit(1);
 
     use_color_escapes = false;
     if (std.io.getStdErr().supportsAnsiEscapeCodes()) {
@@ -558,15 +560,12 @@ pub fn build(b: *Build) !void {
     const header_step = PrintStep.create(b, logo, std.io.getStdErr());
 
     if (exno) |i| {
-        const ex = blk: {
-            for (exercises) |ex| {
-                if (ex.number() == i) break :blk ex;
-            }
-
+        if (i == 0 or i > exercises.len - 1) {
             print("unknown exercise number: {}\n", .{i});
             std.os.exit(1);
-        };
+        }
 
+        const ex = exercises[i - 1];
         const base_name = ex.baseName();
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
             if (use_healed) "patches/healed" else "exercises", ex.main_file,
@@ -667,6 +666,9 @@ pub fn build(b: *Build) !void {
         }
     }
     ziglings_step.dependOn(prev_step);
+
+    const test_step = b.step("test", "Run all the tests");
+    test_step.dependOn(tests.addCliTests(b, &exercises));
 }
 
 var use_color_escapes = false;
@@ -921,3 +923,23 @@ const SkipStep = struct {
         }
     }
 };
+
+// Check that each exercise number, excluding the last, forms the sequence `[1, exercise.len)`.
+fn validate_exercises() bool {
+    // Don't use the "multi-object for loop" syntax, in order to avoid a syntax error with old Zig
+    // compilers.
+    var i: usize = 0;
+    for (exercises[0 .. exercises.len - 1]) |ex| {
+        i += 1;
+        if (ex.number() != i) {
+            print(
+                "exercise {s} has an incorrect number: expected {}, got {s}\n",
+                .{ ex.main_file, i, ex.key() },
+            );
+
+            return false;
+        }
+    }
+
+    return true;
+}
