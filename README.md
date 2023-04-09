@@ -102,14 +102,14 @@ It can be handy to check just a single exercise or _start_ from a single
 exercise:
 
 ```bash
-zig build 19
-zig build 19_start
+zig build -Dn=19
+zig build -Dn=19 start
 ```
 
 You can also run without checking for correctness:
 
 ```bash
-zig build 19_test
+zig build -Dn=19 test
 ```
 
 Or skip the build system entirely and interact directly with the compiler
@@ -123,7 +123,18 @@ Calling all wizards: To prepare an executable for debugging, install it
 to zig-cache/bin with:
 
 ```bash
-zig build 19_install
+zig build -Dn=19 install
+```
+
+To get a list of all possible options, run:
+
+```bash
+zig build -Dn=19 -l
+
+  install                      Install 019_functions2.zig to prefix path
+  uninstall                    Uninstall 019_functions2.zig from prefix path
+  test                         Run 019_functions2.zig without checking output
+  ...
 ```
 
 ## What's Covered
@@ -168,6 +179,7 @@ Core Language
 * [X] Interfaces
 * [X] Working with C
 * [ ] String formatting
+* [ ] Bit manipulation
 
 ## Contributing
 
