@@ -557,7 +557,7 @@ pub fn build(b: *Build) !void {
     const use_healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse false;
     const exno: ?usize = b.option(usize, "n", "Select exercise");
 
-    const header_step = PrintStep.create(b, logo, std.io.getStdErr());
+    const header_step = PrintStep.create(b, logo);
 
     if (exno) |n| {
         if (n == 0 or n > exercises.len - 1) {
@@ -861,13 +861,12 @@ const ZiglingStep = struct {
     }
 };
 
-// Print a message to a file.
+// Print a message to stderr.
 const PrintStep = struct {
     step: Step,
     message: []const u8,
-    file: std.fs.File,
 
-    pub fn create(owner: *Build, message: []const u8, file: std.fs.File) *PrintStep {
+    pub fn create(owner: *Build, message: []const u8) *PrintStep {
         const self = owner.allocator.create(PrintStep) catch @panic("OOM");
         self.* = .{
             .step = Step.init(.{
@@ -877,7 +876,6 @@ const PrintStep = struct {
                 .makeFn = make,
             }),
             .message = message,
-            .file = file,
         };
 
         return self;
@@ -887,7 +885,7 @@ const PrintStep = struct {
         _ = prog_node;
         const p = @fieldParentPtr(PrintStep, "step", step);
 
-        try p.file.writeAll(p.message);
+        print("{s}", .{p.message});
     }
 };
 
