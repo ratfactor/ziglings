@@ -559,13 +559,13 @@ pub fn build(b: *Build) !void {
 
     const header_step = PrintStep.create(b, logo, std.io.getStdErr());
 
-    if (exno) |i| {
-        if (i == 0 or i > exercises.len - 1) {
-            print("unknown exercise number: {}\n", .{i});
+    if (exno) |n| {
+        if (n == 0 or n > exercises.len - 1) {
+            print("unknown exercise number: {}\n", .{n});
             std.os.exit(1);
         }
 
-        const ex = exercises[i - 1];
+        const ex = exercises[n - 1];
         const base_name = ex.baseName();
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
             if (use_healed) "patches/healed" else "exercises", ex.main_file,
@@ -603,8 +603,8 @@ pub fn build(b: *Build) !void {
 
         var prev_step = verify_step;
         for (exercises) |exn| {
-            const n = exn.number();
-            if (n > i) {
+            const nth = exn.number();
+            if (nth > n) {
                 const verify_stepn = ZiglingStep.create(b, exn, use_healed);
                 verify_stepn.step.dependOn(&prev_step.step);
 
@@ -646,8 +646,11 @@ pub fn build(b: *Build) !void {
     ziglings_step.dependOn(&header_step.step);
     b.default_step = ziglings_step;
 
+    // Don't use the "multi-object for loop" syntax, in order to avoid a syntax
+    // error with old Zig compilers.
     var prev_step: *Step = undefined;
-    for (exercises, 0..) |ex, i| {
+    for (exercises) |ex| {
+        const n = ex.number();
         const base_name = ex.baseName();
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
             "exercises", ex.main_file,
@@ -657,7 +660,7 @@ pub fn build(b: *Build) !void {
         build_step.install();
 
         const verify_stepn = ZiglingStep.create(b, ex, use_healed);
-        if (i == 0) {
+        if (n == 1) {
             prev_step = &verify_stepn.step;
         } else {
             verify_stepn.step.dependOn(prev_step);
