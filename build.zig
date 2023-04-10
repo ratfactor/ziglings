@@ -643,14 +643,12 @@ pub fn build(b: *Build) !void {
     }
 
     const ziglings_step = b.step("ziglings", "Check all ziglings");
-    ziglings_step.dependOn(&header_step.step);
     b.default_step = ziglings_step;
 
     // Don't use the "multi-object for loop" syntax, in order to avoid a syntax
     // error with old Zig compilers.
-    var prev_step: *Step = undefined;
+    var prev_step = &header_step.step;
     for (exercises) |ex| {
-        const n = ex.number();
         const base_name = ex.baseName();
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
             "exercises", ex.main_file,
@@ -660,13 +658,9 @@ pub fn build(b: *Build) !void {
         build_step.install();
 
         const verify_stepn = ZiglingStep.create(b, ex, use_healed);
-        if (n == 1) {
-            prev_step = &verify_stepn.step;
-        } else {
-            verify_stepn.step.dependOn(prev_step);
+        verify_stepn.step.dependOn(prev_step);
 
-            prev_step = &verify_stepn.step;
-        }
+        prev_step = &verify_stepn.step;
     }
     ziglings_step.dependOn(prev_step);
 
