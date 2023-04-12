@@ -583,9 +583,9 @@ pub fn build(b: *Build) !void {
         if (ex.C) {
             build_step.linkLibC();
         }
-        build_step.install();
+        b.installArtifact(build_step);
 
-        const run_step = build_step.run();
+        const run_step = b.addRunArtifact(build_step);
 
         const test_step = b.step("test", b.fmt("Run {s} without checking output", .{ex.main_file}));
         if (ex.skip) {
@@ -636,9 +636,9 @@ pub fn build(b: *Build) !void {
             if (ex.C) {
                 build_step.linkLibC();
             }
-            build_step.install();
+            b.installArtifact(build_step);
 
-            const run_step = build_step.run();
+            const run_step = b.addRunArtifact(build_step);
             if (ex.skip) {
                 const skip_step = SkipStep.create(b, ex);
                 test_step.dependOn(&skip_step.step);
@@ -663,7 +663,7 @@ pub fn build(b: *Build) !void {
         }) catch unreachable;
 
         const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
-        build_step.install();
+        b.installArtifact(build_step);
 
         const verify_stepn = ZiglingStep.create(b, ex, use_healed);
         verify_stepn.step.dependOn(prev_step);
