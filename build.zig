@@ -505,6 +505,10 @@ const exercises = [_]Exercise{
         .output = "Running Average: 0.30 0.25 0.20 0.18 0.22",
     },
     .{
+        .main_file = "097_bit_manipulation.zig",
+        .output = "x = 0; y = 1",
+    },
+    .{
         .main_file = "999_the_end.zig",
         .output = "\nThis is the end for now!\nWe hope you had fun and were able to learn a lot, so visit us again when the next exercises are available.",
     },
