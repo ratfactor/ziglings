@@ -509,6 +509,10 @@ const exercises = [_]Exercise{
         .output = "x = 0; y = 1",
     },
     .{
+        .main_file = "098_bit_manipulation2.zig",
+        .output = "Is this a pangram? true!",
+    },
+    .{
         .main_file = "999_the_end.zig",
         .output = "\nThis is the end for now!\nWe hope you had fun and were able to learn a lot, so visit us again when the next exercises are available.",
     },
