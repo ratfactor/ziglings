@@ -1,0 +1,4 @@
+62c62
+<     return bits == 0x..???;
+---
+>     return bits == 0x3ffffff;
