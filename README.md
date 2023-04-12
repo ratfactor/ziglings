@@ -81,7 +81,7 @@ about input:
 ### Version Changes
 
 Version-0.11.0-dev.2560+602029bb2
-* *2023-04-07* zig 0.11.0-dev.2401 - fixes of the new build system - #212
+* *2023-04-07* zig 0.11.0-dev.2401 - fixes of the new build system - see [#212](https://github.com/ratfactor/ziglings/pull/212)
 * *2023-02-21* zig 0.11.0-dev.2157 - changes in `build system` - new: parallel processing of the build steps
 * *2023-02-21* zig 0.11.0-dev.1711 - changes in `for loops` - new: Multi-Object For-Loops + Struct-of-Arrays
 * *2023-02-12* zig 0.11.0-dev.1638 - changes in `std.Build` cache_root now returns a directory struct
