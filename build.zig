@@ -1,6 +1,7 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const compat = @import("src/compat.zig");
+const tests = @import("test/tests.zig");
 
 const Build = compat.Build;
 const Step = compat.build.Step;
@@ -8,7 +9,7 @@ const Step = compat.build.Step;
 const assert = std.debug.assert;
 const print = std.debug.print;
 
-const Exercise = struct {
+pub const Exercise = struct {
     /// main_file must have the format key_name.zig.
     /// The key will be used as a shorthand to build
     /// just one example.
@@ -32,6 +33,9 @@ const Exercise = struct {
     /// This exercise makes use of C functions
     /// We need to keep track of this, so we compile with libc
     C: bool = false,
+
+    /// This exercise is not supported by the current Zig compiler.
+    skip: bool = false,
 
     /// Returns the name of the main file with .zig stripped.
     pub fn baseName(self: Exercise) []const u8 {
@@ -425,49 +429,59 @@ const exercises = [_]Exercise{
         .main_file = "083_anonymous_lists.zig",
         .output = "I say hello!",
     },
-    // disabled because of https://github.com/ratfactor/ziglings/issues/163
+
+    // Skipped because of https://github.com/ratfactor/ziglings/issues/163
     // direct link: https://github.com/ziglang/zig/issues/6025
-    // .{
-    //     .main_file = "084_async.zig",
-    //     .output = "foo() A",
-    //     .hint = "Read the facts. Use the facts.",
-    //     .@"async" = true,
-    // },
-    // .{
-    //     .main_file = "085_async2.zig",
-    //     .output = "Hello async!",
-    //     .@"async" = true,
-    // },
-    // .{
-    //     .main_file = "086_async3.zig",
-    //     .output = "5 4 3 2 1",
-    //     .@"async" = true,
-    // },
-    // .{
-    //     .main_file = "087_async4.zig",
-    //     .output = "1 2 3 4 5",
-    //     .@"async" = true,
-    // },
-    // .{
-    //     .main_file = "088_async5.zig",
-    //     .output = "Example Title.",
-    //     .@"async" = true,
-    // },
-    // .{
-    //     .main_file = "089_async6.zig",
-    //     .output = ".com: Example Title, .org: Example Title.",
-    //     .@"async" = true,
-    // },
-    // .{
-    //     .main_file = "090_async7.zig",
-    //     .output = "beef? BEEF!",
-    //     .@"async" = true,
-    // },
-    // .{
-    //     .main_file = "091_async8.zig",
-    //     .output = "ABCDEF",
-    //     .@"async" = true,
-    // },
+    .{
+        .main_file = "084_async.zig",
+        .output = "foo() A",
+        .hint = "Read the facts. Use the facts.",
+        .@"async" = true,
+        .skip = true,
+    },
+    .{
+        .main_file = "085_async2.zig",
+        .output = "Hello async!",
+        .@"async" = true,
+        .skip = true,
+    },
+    .{
+        .main_file = "086_async3.zig",
+        .output = "5 4 3 2 1",
+        .@"async" = true,
+        .skip = true,
+    },
+    .{
+        .main_file = "087_async4.zig",
+        .output = "1 2 3 4 5",
+        .@"async" = true,
+        .skip = true,
+    },
+    .{
+        .main_file = "088_async5.zig",
+        .output = "Example Title.",
+        .@"async" = true,
+        .skip = true,
+    },
+    .{
+        .main_file = "089_async6.zig",
+        .output = ".com: Example Title, .org: Example Title.",
+        .@"async" = true,
+        .skip = true,
+    },
+    .{
+        .main_file = "090_async7.zig",
+        .output = "beef? BEEF!",
+        .@"async" = true,
+        .skip = true,
+    },
+    .{
+        .main_file = "091_async8.zig",
+        .output = "ABCDEF",
+        .@"async" = true,
+        .skip = true,
+    },
+
     .{
         .main_file = "092_interfaces.zig",
         .output = "Daily Insect Report:\nAnt is alive.\nBee visited 17 flowers.\nGrasshopper hopped 32 meters.",
@@ -498,6 +512,7 @@ const exercises = [_]Exercise{
 
 pub fn build(b: *Build) !void {
     if (!compat.is_compatible) compat.die();
+    if (!validate_exercises()) std.os.exit(1);
 
     use_color_escapes = false;
     if (std.io.getStdErr().supportsAnsiEscapeCodes()) {
@@ -542,30 +557,35 @@ pub fn build(b: *Build) !void {
     const use_healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse false;
     const exno: ?usize = b.option(usize, "n", "Select exercise");
 
-    const header_step = PrintStep.create(b, logo, std.io.getStdErr());
+    const header_step = PrintStep.create(b, logo);
 
-    if (exno) |i| {
-        const ex = blk: {
-            for (exercises) |ex| {
-                if (ex.number() == i) break :blk ex;
-            }
-
-            print("unknown exercise number: {}\n", .{i});
+    if (exno) |n| {
+        if (n == 0 or n > exercises.len - 1) {
+            print("unknown exercise number: {}\n", .{n});
             std.os.exit(1);
-        };
+        }
 
+        const ex = exercises[n - 1];
         const base_name = ex.baseName();
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
             if (use_healed) "patches/healed" else "exercises", ex.main_file,
         }) catch unreachable;
 
         const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
+        if (ex.C) {
+            build_step.linkLibC();
+        }
         build_step.install();
 
         const run_step = build_step.run();
 
         const test_step = b.step("test", b.fmt("Run {s} without checking output", .{ex.main_file}));
-        test_step.dependOn(&run_step.step);
+        if (ex.skip) {
+            const skip_step = SkipStep.create(b, ex);
+            test_step.dependOn(&skip_step.step);
+        } else {
+            test_step.dependOn(&run_step.step);
+        }
 
         const install_step = b.step("install", b.fmt("Install {s} to prefix path", .{ex.main_file}));
         install_step.dependOn(b.getInstallStep());
@@ -583,8 +603,8 @@ pub fn build(b: *Build) !void {
 
         var prev_step = verify_step;
         for (exercises) |exn| {
-            const n = exn.number();
-            if (n > i) {
+            const nth = exn.number();
+            if (nth > n) {
                 const verify_stepn = ZiglingStep.create(b, exn, use_healed);
                 verify_stepn.step.dependOn(&prev_step.step);
 
@@ -594,32 +614,58 @@ pub fn build(b: *Build) !void {
         start_step.dependOn(&prev_step.step);
 
         return;
+    } else if (use_healed) {
+        const test_step = b.step("test", "Test the healed exercises");
+        b.default_step = test_step;
+
+        for (exercises) |ex| {
+            const base_name = ex.baseName();
+            const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
+                "patches/healed", ex.main_file,
+            }) catch unreachable;
+
+            const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
+            if (ex.C) {
+                build_step.linkLibC();
+            }
+            build_step.install();
+
+            const run_step = build_step.run();
+            if (ex.skip) {
+                const skip_step = SkipStep.create(b, ex);
+                test_step.dependOn(&skip_step.step);
+            } else {
+                test_step.dependOn(&run_step.step);
+            }
+        }
+
+        return;
     }
 
     const ziglings_step = b.step("ziglings", "Check all ziglings");
-    ziglings_step.dependOn(&header_step.step);
     b.default_step = ziglings_step;
 
-    var prev_step: *Step = undefined;
-    for (exercises, 0..) |ex, i| {
+    // Don't use the "multi-object for loop" syntax, in order to avoid a syntax
+    // error with old Zig compilers.
+    var prev_step = &header_step.step;
+    for (exercises) |ex| {
         const base_name = ex.baseName();
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
-            if (use_healed) "patches/healed" else "exercises", ex.main_file,
+            "exercises", ex.main_file,
         }) catch unreachable;
 
         const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
         build_step.install();
 
         const verify_stepn = ZiglingStep.create(b, ex, use_healed);
-        if (i == 0) {
-            prev_step = &verify_stepn.step;
-        } else {
-            verify_stepn.step.dependOn(prev_step);
+        verify_stepn.step.dependOn(prev_step);
 
-            prev_step = &verify_stepn.step;
-        }
+        prev_step = &verify_stepn.step;
     }
     ziglings_step.dependOn(prev_step);
+
+    const test_step = b.step("test", "Run all the tests");
+    test_step.dependOn(tests.addCliTests(b, &exercises));
 }
 
 var use_color_escapes = false;
@@ -648,6 +694,12 @@ const ZiglingStep = struct {
     fn make(step: *Step, prog_node: *std.Progress.Node) anyerror!void {
         _ = prog_node;
         const self = @fieldParentPtr(@This(), "step", step);
+
+        if (self.exercise.skip) {
+            print("Skipping {s}\n\n", .{self.exercise.main_file});
+
+            return;
+        }
         self.makeInternal() catch {
             if (self.exercise.hint.len > 0) {
                 print("\n{s}HINT: {s}{s}", .{ bold_text, self.exercise.hint, reset_text });
@@ -809,23 +861,21 @@ const ZiglingStep = struct {
     }
 };
 
-// Print a message to a file.
+// Print a message to stderr.
 const PrintStep = struct {
     step: Step,
     message: []const u8,
-    file: std.fs.File,
 
-    pub fn create(owner: *Build, message: []const u8, file: std.fs.File) *PrintStep {
+    pub fn create(owner: *Build, message: []const u8) *PrintStep {
         const self = owner.allocator.create(PrintStep) catch @panic("OOM");
         self.* = .{
             .step = Step.init(.{
                 .id = .custom,
-                .name = "Print",
+                .name = "print",
                 .owner = owner,
                 .makeFn = make,
             }),
             .message = message,
-            .file = file,
         };
 
         return self;
@@ -835,6 +885,56 @@ const PrintStep = struct {
         _ = prog_node;
         const p = @fieldParentPtr(PrintStep, "step", step);
 
-        try p.file.writeAll(p.message);
+        print("{s}", .{p.message});
     }
 };
+
+// Skip an exercise.
+const SkipStep = struct {
+    step: Step,
+    exercise: Exercise,
+
+    pub fn create(owner: *Build, exercise: Exercise) *SkipStep {
+        const self = owner.allocator.create(SkipStep) catch @panic("OOM");
+        self.* = .{
+            .step = Step.init(.{
+                .id = .custom,
+                .name = owner.fmt("skip {s}", .{exercise.main_file}),
+                .owner = owner,
+                .makeFn = make,
+            }),
+            .exercise = exercise,
+        };
+
+        return self;
+    }
+
+    fn make(step: *Step, prog_node: *std.Progress.Node) !void {
+        _ = prog_node;
+        const p = @fieldParentPtr(SkipStep, "step", step);
+
+        if (p.exercise.skip) {
+            print("{s} skipped\n", .{p.exercise.main_file});
+        }
+    }
+};
+
+// Check that each exercise number, excluding the last, forms the sequence `[1, exercise.len)`.
+fn validate_exercises() bool {
+    // Don't use the "multi-object for loop" syntax, in order to avoid a syntax error with old Zig
+    // compilers.
+    var i: usize = 0;
+    for (exercises[0 .. exercises.len - 1]) |ex| {
+        i += 1;
+        if (ex.number() != i) {
+            print(
+                "exercise {s} has an incorrect number: expected {}, got {s}\n",
+                .{ ex.main_file, i, ex.key() },
+            );
+
+            return false;
+        }
+    }
+
+    return true;
+}
