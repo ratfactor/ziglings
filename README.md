@@ -179,7 +179,7 @@ Core Language
 * [X] Interfaces
 * [X] Working with C
 * [ ] String formatting
-* [ ] Bit manipulation
+* [X] Bit manipulation
 
 ## Contributing
 
