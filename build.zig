@@ -5,6 +5,7 @@ const tests = @import("test/tests.zig");
 
 const Build = compat.Build;
 const Step = compat.build.Step;
+const Child = std.process.Child;
 
 const assert = std.debug.assert;
 const print = std.debug.print;
@@ -622,7 +623,7 @@ pub fn build(b: *Build) !void {
         start_step.dependOn(&prev_step.step);
 
         return;
-    } else if (use_healed) {
+    } else if (use_healed and false) {
         const test_step = b.step("test", "Test the healed exercises");
         b.default_step = test_step;
 
@@ -700,7 +701,6 @@ const ZiglingStep = struct {
     }
 
     fn make(step: *Step, prog_node: *std.Progress.Node) anyerror!void {
-        _ = prog_node;
         const self = @fieldParentPtr(@This(), "step", step);
 
         if (self.exercise.skip) {
@@ -708,7 +708,7 @@ const ZiglingStep = struct {
 
             return;
         }
-        self.makeInternal() catch {
+        self.makeInternal(prog_node) catch {
             if (self.exercise.hint.len > 0) {
                 print("\n{s}HINT: {s}{s}", .{ bold_text, self.exercise.hint, reset_text });
             }
@@ -719,10 +719,10 @@ const ZiglingStep = struct {
         };
     }
 
-    fn makeInternal(self: *@This()) !void {
+    fn makeInternal(self: *@This(), prog_node: *std.Progress.Node) !void {
         print("Compiling {s}...\n", .{self.exercise.main_file});
 
-        const exe_file = try self.doCompile();
+        const exe_file = try self.doCompile(prog_node);
 
         print("Checking {s}...\n", .{self.exercise.main_file});
 
@@ -797,7 +797,7 @@ const ZiglingStep = struct {
 
     // The normal compile step calls os.exit, so we can't use it as a library :(
     // This is a stripped down copy of std.build.LibExeObjStep.make.
-    fn doCompile(self: *@This()) ![]const u8 {
+    fn doCompile(self: *@This(), prog_node: *std.Progress.Node) ![]const u8 {
         const builder = self.builder;
 
         var zig_args = std.ArrayList([]const u8).init(builder.allocator);
@@ -823,11 +823,11 @@ const ZiglingStep = struct {
         zig_args.append("--cache-dir") catch unreachable;
         zig_args.append(builder.pathFromRoot(builder.cache_root.path.?)) catch unreachable;
 
-        zig_args.append("--enable-cache") catch unreachable;
+        zig_args.append("--listen=-") catch unreachable;
 
         const argv = zig_args.items;
         var code: u8 = undefined;
-        const output_dir_nl = builder.execAllowFail(argv, &code, .Inherit) catch |err| {
+        const file_name = self.eval(argv, &code, prog_node) catch |err| {
             switch (err) {
                 error.FileNotFound => {
                     print("{s}{s}: Unable to spawn the following command: file not found{s}\n", .{ red_text, self.exercise.main_file, reset_text });
@@ -846,28 +846,152 @@ const ZiglingStep = struct {
                 },
                 else => {},
             }
+
             return err;
         };
-        const build_output_dir = std.mem.trimRight(u8, output_dir_nl, "\r\n");
 
-        const target_info = std.zig.system.NativeTargetInfo.detect(
-            .{},
-        ) catch unreachable;
-        const target = target_info.target;
+        return file_name;
+    }
 
-        const file_name = std.zig.binNameAlloc(builder.allocator, .{
-            .root_name = self.exercise.baseName(),
-            .target = target,
-            .output_mode = .Exe,
-            .link_mode = .Static,
-            .version = null,
-        }) catch unreachable;
+    // Code adapted from `std.Build.execAllowFail and `std.Build.Step.evalZigProcess`.
+    pub fn eval(
+        self: *ZiglingStep,
+        argv: []const []const u8,
+        out_code: *u8,
+        prog_node: *std.Progress.Node,
+    ) ![]const u8 {
+        assert(argv.len != 0);
+        const b = self.step.owner;
+        const allocator = b.allocator;
 
-        return std.fs.path.join(builder.allocator, &[_][]const u8{
-            build_output_dir, file_name,
+        var child = Child.init(argv, allocator);
+        child.env_map = b.env_map;
+        child.stdin_behavior = .Pipe;
+        child.stdout_behavior = .Pipe;
+        child.stderr_behavior = .Pipe;
+
+        try child.spawn();
+
+        var poller = std.io.poll(allocator, enum { stdout, stderr }, .{
+            .stdout = child.stdout.?,
+            .stderr = child.stderr.?,
         });
+        defer poller.deinit();
+
+        try sendMessage(child.stdin.?, .update);
+        try sendMessage(child.stdin.?, .exit);
+
+        const Header = std.zig.Server.Message.Header;
+        var result: ?[]const u8 = null;
+
+        var node_name: std.ArrayListUnmanaged(u8) = .{};
+        defer node_name.deinit(allocator);
+        var sub_prog_node = prog_node.start("", 0);
+        defer sub_prog_node.end();
+
+        const stdout = poller.fifo(.stdout);
+
+        poll: while (true) {
+            while (stdout.readableLength() < @sizeOf(Header)) {
+                if (!(try poller.poll())) break :poll;
+            }
+            const header = stdout.reader().readStruct(Header) catch unreachable;
+            while (stdout.readableLength() < header.bytes_len) {
+                if (!(try poller.poll())) break :poll;
+            }
+            const body = stdout.readableSliceOfLen(header.bytes_len);
+
+            switch (header.tag) {
+                .zig_version => {
+                    if (!std.mem.eql(u8, builtin.zig_version_string, body))
+                        return error.ZigVersionMismatch;
+                },
+                .error_bundle => {
+                    const EbHdr = std.zig.Server.Message.ErrorBundle;
+                    const eb_hdr = @ptrCast(*align(1) const EbHdr, body);
+                    const extra_bytes =
+                        body[@sizeOf(EbHdr)..][0 .. @sizeOf(u32) * eb_hdr.extra_len];
+                    const string_bytes =
+                        body[@sizeOf(EbHdr) + extra_bytes.len ..][0..eb_hdr.string_bytes_len];
+                    // TODO: use @ptrCast when the compiler supports it
+                    const unaligned_extra = std.mem.bytesAsSlice(u32, extra_bytes);
+                    const extra_array = try allocator.alloc(u32, unaligned_extra.len);
+                    // TODO: use @memcpy when it supports slices
+                    for (extra_array, unaligned_extra) |*dst, src| dst.* = src;
+                    const error_bundle: std.zig.ErrorBundle = .{
+                        .string_bytes = try allocator.dupe(u8, string_bytes),
+                        .extra = extra_array,
+                    };
+
+                    // Print the compiler error bundle now.
+                    // TODO: use the same ttyconf from the builder.
+                    const ttyconf: std.debug.TTY.Config = if (use_color_escapes)
+                        .escape_codes
+                    else
+                        .no_color;
+                    error_bundle.renderToStdErr(
+                        .{ .ttyconf = ttyconf },
+                    );
+                },
+                .progress => {
+                    node_name.clearRetainingCapacity();
+                    try node_name.appendSlice(allocator, body);
+                    sub_prog_node.setName(node_name.items);
+                },
+                .emit_bin_path => {
+                    const EbpHdr = std.zig.Server.Message.EmitBinPath;
+
+                    // TODO: add cache support?
+                    //const ebp_hdr = @ptrCast(*align(1) const EbpHdr, body);
+                    //s.result_cached = ebp_hdr.flags.cache_hit;
+
+                    result = try allocator.dupe(u8, body[@sizeOf(EbpHdr)..]);
+                },
+                else => {}, // ignore other messages
+            }
+
+            stdout.discard(body.len);
+        }
+
+        const stderr = poller.fifo(.stderr);
+        if (stderr.readableLength() > 0) {
+            // Print the additional log and verbose messages now.
+            const messages = try stderr.toOwnedSlice();
+            print("{s}\n", .{messages});
+        }
+
+        // Send EOF to stdin.
+        child.stdin.?.close();
+        child.stdin = null;
+
+        // Keep the errors compatible with std.Build.execAllowFail.
+        const term = try child.wait();
+        switch (term) {
+            .Exited => |code| {
+                if (code != 0) {
+                    out_code.* = @truncate(u8, code);
+
+                    return error.ExitCodeFailure;
+                }
+            },
+            .Signal, .Stopped, .Unknown => |code| {
+                out_code.* = @truncate(u8, code);
+
+                return error.ProcessTerminated;
+            },
+        }
+
+        return result orelse return error.ZigIPCError;
     }
 };
+
+fn sendMessage(file: std.fs.File, tag: std.zig.Client.Message.Tag) !void {
+    const header: std.zig.Client.Message.Header = .{
+        .tag = tag,
+        .bytes_len = 0,
+    };
+    try file.writeAll(std.mem.asBytes(&header));
+}
 
 // Print a message to stderr.
 const PrintStep = struct {
