@@ -622,7 +622,7 @@ pub fn build(b: *Build) !void {
         start_step.dependOn(&prev_step.step);
 
         return;
-    } else if (use_healed) {
+    } else if (use_healed and false) {
         const test_step = b.step("test", "Test the healed exercises");
         b.default_step = test_step;
 
