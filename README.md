@@ -38,21 +38,21 @@ Install a [development build](https://ziglang.org/download/) of the Zig compiler
 
 Verify the installation and build number of `zig` like so:
 
-```bash
+```
 $ zig version
 0.11.0-dev.2560+xxxxxxxxx
 ```
 
 Clone this repository with Git:
 
-```bash
+```
 $ git clone https://github.com/ratfactor/ziglings
 $ cd ziglings
 ```
 
 Then run `zig build` and follow the instructions to begin!
 
-```bash
+```
 $ zig build
 ```
 
@@ -102,28 +102,28 @@ Version-0.11.0-dev.2560+602029bb2
 It can be handy to check just a single exercise or _start_ from a single
 exercise:
 
-```bash
+```
 zig build -Dn=19
 zig build -Dn=19 start
 ```
 
 You can also run without checking for correctness:
 
-```bash
+```
 zig build -Dn=19 test
 ```
 
 Or skip the build system entirely and interact directly with the compiler
 if you're into that sort of thing:
 
-```bash
+```
 zig run exercises/001_hello.zig
 ```
 
 Calling all wizards: To prepare an executable for debugging, install it
 to zig-cache/bin with:
 
-```bash
+```
 zig build -Dn=19 install
 ```
 
@@ -191,6 +191,6 @@ the learning resource I wished for. There will be tons of room for improvement:
 * Idiomatic usage of Zig
 * Maybe additional exercises?
 
-Please see CONTRIBUTING.md in this repo for the full details.
+Please see [CONTRIBUTING](https://github.com/ratfactor/ziglings/blob/main/CONTRIBUTING.md) in this repo for the full details.
 
 
