@@ -519,6 +519,35 @@ const exercises = [_]Exercise{
     },
 };
 
+// Read a file named "completed_to.txt" in the current work directory, where the build process writes the number
+// of the last completed exercise as a 3 digit 0-padded string e.g. "001". Will fail if the file doesn't
+// exist or if or the number is formatted incorrectly, so use `catch 0` to default to running all the exercises.
+pub fn filter_exercises(allocator: std.mem.Allocator) !u16 {
+    var buf: [std.fs.MAX_PATH_BYTES]u8 = undefined;
+    const cwd = try std.os.getcwd(&buf);
+
+    const path = try std.fs.path.join(allocator, &[_][]const u8{
+        cwd, "completed_to.txt",
+    });
+    var up_to: [3]u8 = undefined;
+    const number_text_file = try std.fs.openFileAbsolute(path, .{});
+    _ = try number_text_file.read(&up_to);
+    print(
+        \\Starting checks from exercise: {s}
+        \\delete completed_to.txt to check every exercise
+        \\or run `zig build -Dn=19 start` to start from the given exercise
+        \\
+    , .{up_to});
+
+    var start_index: usize = 0;
+    if (std.mem.eql(u8, &up_to, "000")) start_index = 2 else {
+        while (up_to[start_index] == '0') start_index += 1;
+    }
+    var up_to_short = up_to[start_index..3];
+    const up_to_int = std.fmt.parseInt(u16, up_to_short, 10) catch 0;
+    return up_to_int;
+}
+
 pub fn build(b: *Build) !void {
     if (!compat.is_compatible) compat.die();
     if (!validate_exercises()) std.os.exit(1);
@@ -654,10 +683,10 @@ pub fn build(b: *Build) !void {
     const ziglings_step = b.step("ziglings", "Check all ziglings");
     b.default_step = ziglings_step;
 
-    // Don't use the "multi-object for loop" syntax, in order to avoid a syntax
-    // error with old Zig compilers.
     var prev_step = &header_step.step;
-    for (exercises) |ex| {
+
+    const exercises_start = filter_exercises(b.allocator) catch 0;
+    for (exercises[exercises_start..]) |ex| {
         const base_name = ex.baseName();
         const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
             "exercises", ex.main_file,
@@ -793,6 +822,11 @@ const ZiglingStep = struct {
         }
 
         print("{s}PASSED:\n{s}{s}\n", .{ green_text, output, reset_text });
+        const path = try std.fs.path.join(self.builder.allocator, &[_][]const u8{ cwd, "completed_to.txt" });
+        var file = try std.fs.createFileAbsolute(path, .{});
+        defer file.close();
+        var writer = file.writer();
+        try writer.print("{s}", .{self.exercise.main_file[0..3]});
     }
 
     // The normal compile step calls os.exit, so we can't use it as a library :(
