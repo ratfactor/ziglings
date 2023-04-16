@@ -5,6 +5,6 @@
 >         if (err == MyNumberError.TooSmall) {
 >             return 10;
 >         }
->  
+> 
 >         return err;
 >     };

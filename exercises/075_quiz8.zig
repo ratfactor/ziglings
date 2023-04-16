@@ -151,8 +151,8 @@ const HermitsNotebook = struct {
 };
 
 pub fn main() void {
-    const start = &a;        // Archer's Point
-    const destination = &f;  // Fox Pond
+    const start = &a; // Archer's Point
+    const destination = &f; // Fox Pond
 
     // We could either have this:
     //

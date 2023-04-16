@@ -16,7 +16,7 @@ const print = @import("std").debug.print;
 pub fn main() void {
     // Here we declare arrays of three different types and sizes
     // at compile time from a function call. Neat!
-    const s1 = makeSequence(u8, 3);  // creates a [3]u8
+    const s1 = makeSequence(u8, 3); // creates a [3]u8
     const s2 = makeSequence(u32, 5); // creates a [5]u32
     const s3 = makeSequence(i64, 7); // creates a [7]i64
 
