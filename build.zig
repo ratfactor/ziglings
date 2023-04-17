@@ -728,6 +728,7 @@ const ZiglingStep = struct {
 
         const exe_file = try self.doCompile(prog_node);
 
+        resetLine();
         print("Checking {s}...\n", .{self.exercise.main_file});
 
         const cwd = self.builder.build_root.path.?;
@@ -970,6 +971,8 @@ const ZiglingStep = struct {
     }
 
     fn printErrors(self: *ZiglingStep) void {
+        resetLine();
+
         // Print the additional log and verbose messages.
         // TODO: use colors?
         if (self.result_messages.len > 0) print("{s}", .{self.result_messages});
@@ -985,6 +988,12 @@ const ZiglingStep = struct {
         }
     }
 };
+
+// Clear the entire line and move the cursor to column zero.
+// Used for clearing the compiler and build_runner progress messages.
+fn resetLine() void {
+    if (use_color_escapes) print("{s}", .{"\x1b[2K\r"});
+}
 
 // Print a message to stderr.
 const PrintStep = struct {
