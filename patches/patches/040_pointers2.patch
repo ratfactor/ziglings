@@ -1,4 +1,4 @@
-24c24
+26c26
 <     const b: *u8 = &a; // fix this!
 ---
 >     const b: *const u8 = &a; // fix this!

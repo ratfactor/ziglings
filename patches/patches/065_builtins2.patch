@@ -1,39 +1,20 @@
---- exercises/065_builtins2.zig
-+++ answers/065_builtins2.zig
-@@ -58,7 +58,7 @@
-     // Oops! We cannot leave the 'me' and 'myself' fields
-     // undefined. Please set them here:
-     narcissus.me = &narcissus;
--    narcissus.??? = ???;
-+    narcissus.myself = &narcissus;
- 
-     // This determines a "peer type" from three separate
-     // references (they just happen to all be the same object).
-@@ -70,7 +70,7 @@
-     //
-     // The fix for this is very subtle, but it makes a big
-     // difference!
--    const Type2 = narcissus.fetchTheMostBeautifulType();
-+    const Type2 = Narcissus.fetchTheMostBeautifulType();
- 
-     // Now we print a pithy statement about Narcissus.
-     print("A {s} loves all {s}es. ", .{
-@@ -109,15 +109,15 @@
-     // Please complete these 'if' statements so that the field
-     // name will not be printed if the field is of type 'void'
-     // (which is a zero-bit type that takes up no space at all!):
--    if (fields[0].??? != void) {
-+    if (fields[0].type != void) {
-         print(" {s}", .{@typeInfo(Narcissus).Struct.fields[0].name});
-     }
- 
--    if (fields[1].??? != void) {
-+    if (fields[1].type != void) {
-         print(" {s}", .{@typeInfo(Narcissus).Struct.fields[1].name});
-     }
- 
--    if (fields[2].??? != void) {
-+    if (fields[2].type != void) {
-         print(" {s}", .{@typeInfo(Narcissus).Struct.fields[2].name});
-     }
- 
+61c61
+<     narcissus.??? = ???;
+---
+>     narcissus.myself = &narcissus;
+73c73
+<     const Type2 = narcissus.fetchTheMostBeautifulType();
+---
+>     const Type2 = Narcissus.fetchTheMostBeautifulType();
+112c112
+<     if (fields[0].??? != void) {
+---
+>     if (fields[0].type != void) {
+116c116
+<     if (fields[1].??? != void) {
+---
+>     if (fields[1].type != void) {
+120c120
+<     if (fields[2].??? != void) {
+---
+>     if (fields[2].type != void) {

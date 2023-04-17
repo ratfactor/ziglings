@@ -1,8 +1,8 @@
-24c12
+24c24
 <     tail: *Elephant = null, // Hmm... tail needs something...
 ---
 >     tail: ?*Elephant = null, // <---- make this optional!
-54c42
+54c54
 <         if (e.tail == null) ???;
 ---
 >         if (e.tail == null) break;
