@@ -690,6 +690,9 @@ const ZiglingStep = struct {
     builder: *Build,
     use_healed: bool,
 
+    result_messages: []const u8 = "",
+    result_error_bundle: std.zig.ErrorBundle = std.zig.ErrorBundle.empty,
+
     pub fn create(builder: *Build, exercise: Exercise, use_healed: bool) *@This() {
         const self = builder.allocator.create(@This()) catch unreachable;
         self.* = .{
@@ -829,6 +832,8 @@ const ZiglingStep = struct {
         const argv = zig_args.items;
         var code: u8 = undefined;
         const file_name = self.eval(argv, &code, prog_node) catch |err| {
+            self.printErrors();
+
             switch (err) {
                 error.FileNotFound => {
                     print("{s}{s}: Unable to spawn the following command: file not found{s}\n", .{ red_text, self.exercise.main_file, reset_text });
@@ -845,11 +850,21 @@ const ZiglingStep = struct {
                     for (argv) |v| print("{s} ", .{v});
                     print("\n", .{});
                 },
+                error.ZigIPCError => {
+                    print("{s}{s}: The following command failed to communicate the compilation result:{s}\n", .{
+                        red_text,
+                        self.exercise.main_file,
+                        reset_text,
+                    });
+                    for (argv) |v| print("{s} ", .{v});
+                    print("\n", .{});
+                },
                 else => {},
             }
 
             return err;
         };
+        self.printErrors();
 
         return file_name;
     }
@@ -908,17 +923,7 @@ const ZiglingStep = struct {
                         return error.ZigVersionMismatch;
                 },
                 .error_bundle => {
-                    const error_bundle = try ipc.parseErrorBundle(allocator, body);
-
-                    // Print the compiler error bundle now.
-                    // TODO: use the same ttyconf from the builder.
-                    const ttyconf: std.debug.TTY.Config = if (use_color_escapes)
-                        .escape_codes
-                    else
-                        .no_color;
-                    error_bundle.renderToStdErr(
-                        .{ .ttyconf = ttyconf },
-                    );
+                    self.result_error_bundle = try ipc.parseErrorBundle(allocator, body);
                 },
                 .progress => {
                     node_name.clearRetainingCapacity();
@@ -937,9 +942,7 @@ const ZiglingStep = struct {
 
         const stderr = poller.fifo(.stderr);
         if (stderr.readableLength() > 0) {
-            // Print the additional log and verbose messages now.
-            const messages = try stderr.toOwnedSlice();
-            print("{s}\n", .{messages});
+            self.result_messages = try stderr.toOwnedSlice();
         }
 
         // Send EOF to stdin.
@@ -964,6 +967,22 @@ const ZiglingStep = struct {
         }
 
         return result orelse return error.ZigIPCError;
+    }
+
+    fn printErrors(self: *ZiglingStep) void {
+        // Print the additional log and verbose messages.
+        // TODO: use colors?
+        if (self.result_messages.len > 0) print("{s}", .{self.result_messages});
+
+        // Print the compiler errors.
+        // TODO: use the same ttyconf from the builder.
+        const ttyconf: std.debug.TTY.Config = if (use_color_escapes)
+            .escape_codes
+        else
+            .no_color;
+        if (self.result_error_bundle.errorMessageCount() > 0) {
+            self.result_error_bundle.renderToStdErr(.{ .ttyconf = ttyconf });
+        }
     }
 };
 
