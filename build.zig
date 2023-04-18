@@ -1,6 +1,7 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const compat = @import("src/compat.zig");
+const ipc = @import("src/ipc.zig");
 const tests = @import("test/tests.zig");
 
 const Build = compat.Build;
@@ -878,8 +879,8 @@ const ZiglingStep = struct {
         });
         defer poller.deinit();
 
-        try sendMessage(child.stdin.?, .update);
-        try sendMessage(child.stdin.?, .exit);
+        try ipc.sendMessage(child.stdin.?, .update);
+        try ipc.sendMessage(child.stdin.?, .exit);
 
         const Header = std.zig.Server.Message.Header;
         var result: ?[]const u8 = null;
@@ -907,21 +908,7 @@ const ZiglingStep = struct {
                         return error.ZigVersionMismatch;
                 },
                 .error_bundle => {
-                    const EbHdr = std.zig.Server.Message.ErrorBundle;
-                    const eb_hdr = @ptrCast(*align(1) const EbHdr, body);
-                    const extra_bytes =
-                        body[@sizeOf(EbHdr)..][0 .. @sizeOf(u32) * eb_hdr.extra_len];
-                    const string_bytes =
-                        body[@sizeOf(EbHdr) + extra_bytes.len ..][0..eb_hdr.string_bytes_len];
-                    // TODO: use @ptrCast when the compiler supports it
-                    const unaligned_extra = std.mem.bytesAsSlice(u32, extra_bytes);
-                    const extra_array = try allocator.alloc(u32, unaligned_extra.len);
-                    // TODO: use @memcpy when it supports slices
-                    for (extra_array, unaligned_extra) |*dst, src| dst.* = src;
-                    const error_bundle: std.zig.ErrorBundle = .{
-                        .string_bytes = try allocator.dupe(u8, string_bytes),
-                        .extra = extra_array,
-                    };
+                    const error_bundle = try ipc.parseErrorBundle(allocator, body);
 
                     // Print the compiler error bundle now.
                     // TODO: use the same ttyconf from the builder.
@@ -939,13 +926,8 @@ const ZiglingStep = struct {
                     sub_prog_node.setName(node_name.items);
                 },
                 .emit_bin_path => {
-                    const EbpHdr = std.zig.Server.Message.EmitBinPath;
-
-                    // TODO: add cache support?
-                    //const ebp_hdr = @ptrCast(*align(1) const EbpHdr, body);
-                    //s.result_cached = ebp_hdr.flags.cache_hit;
-
-                    result = try allocator.dupe(u8, body[@sizeOf(EbpHdr)..]);
+                    const emit_bin = try ipc.parseEmitBinPath(allocator, body);
+                    result = emit_bin.path;
                 },
                 else => {}, // ignore other messages
             }
@@ -984,14 +966,6 @@ const ZiglingStep = struct {
         return result orelse return error.ZigIPCError;
     }
 };
-
-fn sendMessage(file: std.fs.File, tag: std.zig.Client.Message.Tag) !void {
-    const header: std.zig.Client.Message.Header = .{
-        .tag = tag,
-        .bytes_len = 0,
-    };
-    try file.writeAll(std.mem.asBytes(&header));
-}
 
 // Print a message to stderr.
 const PrintStep = struct {
