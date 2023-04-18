@@ -1,6 +1,7 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const compat = @import("src/compat.zig");
+const ipc = @import("src/ipc.zig");
 const tests = @import("test/tests.zig");
 
 const Build = compat.Build;
@@ -689,6 +690,9 @@ const ZiglingStep = struct {
     builder: *Build,
     use_healed: bool,
 
+    result_messages: []const u8 = "",
+    result_error_bundle: std.zig.ErrorBundle = std.zig.ErrorBundle.empty,
+
     pub fn create(builder: *Build, exercise: Exercise, use_healed: bool) *@This() {
         const self = builder.allocator.create(@This()) catch unreachable;
         self.* = .{
@@ -724,6 +728,7 @@ const ZiglingStep = struct {
 
         const exe_file = try self.doCompile(prog_node);
 
+        resetLine();
         print("Checking {s}...\n", .{self.exercise.main_file});
 
         const cwd = self.builder.build_root.path.?;
@@ -828,6 +833,8 @@ const ZiglingStep = struct {
         const argv = zig_args.items;
         var code: u8 = undefined;
         const file_name = self.eval(argv, &code, prog_node) catch |err| {
+            self.printErrors();
+
             switch (err) {
                 error.FileNotFound => {
                     print("{s}{s}: Unable to spawn the following command: file not found{s}\n", .{ red_text, self.exercise.main_file, reset_text });
@@ -844,11 +851,21 @@ const ZiglingStep = struct {
                     for (argv) |v| print("{s} ", .{v});
                     print("\n", .{});
                 },
+                error.ZigIPCError => {
+                    print("{s}{s}: The following command failed to communicate the compilation result:{s}\n", .{
+                        red_text,
+                        self.exercise.main_file,
+                        reset_text,
+                    });
+                    for (argv) |v| print("{s} ", .{v});
+                    print("\n", .{});
+                },
                 else => {},
             }
 
             return err;
         };
+        self.printErrors();
 
         return file_name;
     }
@@ -878,8 +895,8 @@ const ZiglingStep = struct {
         });
         defer poller.deinit();
 
-        try sendMessage(child.stdin.?, .update);
-        try sendMessage(child.stdin.?, .exit);
+        try ipc.sendMessage(child.stdin.?, .update);
+        try ipc.sendMessage(child.stdin.?, .exit);
 
         const Header = std.zig.Server.Message.Header;
         var result: ?[]const u8 = null;
@@ -907,31 +924,7 @@ const ZiglingStep = struct {
                         return error.ZigVersionMismatch;
                 },
                 .error_bundle => {
-                    const EbHdr = std.zig.Server.Message.ErrorBundle;
-                    const eb_hdr = @ptrCast(*align(1) const EbHdr, body);
-                    const extra_bytes =
-                        body[@sizeOf(EbHdr)..][0 .. @sizeOf(u32) * eb_hdr.extra_len];
-                    const string_bytes =
-                        body[@sizeOf(EbHdr) + extra_bytes.len ..][0..eb_hdr.string_bytes_len];
-                    // TODO: use @ptrCast when the compiler supports it
-                    const unaligned_extra = std.mem.bytesAsSlice(u32, extra_bytes);
-                    const extra_array = try allocator.alloc(u32, unaligned_extra.len);
-                    // TODO: use @memcpy when it supports slices
-                    for (extra_array, unaligned_extra) |*dst, src| dst.* = src;
-                    const error_bundle: std.zig.ErrorBundle = .{
-                        .string_bytes = try allocator.dupe(u8, string_bytes),
-                        .extra = extra_array,
-                    };
-
-                    // Print the compiler error bundle now.
-                    // TODO: use the same ttyconf from the builder.
-                    const ttyconf: std.debug.TTY.Config = if (use_color_escapes)
-                        .escape_codes
-                    else
-                        .no_color;
-                    error_bundle.renderToStdErr(
-                        .{ .ttyconf = ttyconf },
-                    );
+                    self.result_error_bundle = try ipc.parseErrorBundle(allocator, body);
                 },
                 .progress => {
                     node_name.clearRetainingCapacity();
@@ -939,13 +932,8 @@ const ZiglingStep = struct {
                     sub_prog_node.setName(node_name.items);
                 },
                 .emit_bin_path => {
-                    const EbpHdr = std.zig.Server.Message.EmitBinPath;
-
-                    // TODO: add cache support?
-                    //const ebp_hdr = @ptrCast(*align(1) const EbpHdr, body);
-                    //s.result_cached = ebp_hdr.flags.cache_hit;
-
-                    result = try allocator.dupe(u8, body[@sizeOf(EbpHdr)..]);
+                    const emit_bin = try ipc.parseEmitBinPath(allocator, body);
+                    result = emit_bin.path;
                 },
                 else => {}, // ignore other messages
             }
@@ -955,9 +943,7 @@ const ZiglingStep = struct {
 
         const stderr = poller.fifo(.stderr);
         if (stderr.readableLength() > 0) {
-            // Print the additional log and verbose messages now.
-            const messages = try stderr.toOwnedSlice();
-            print("{s}\n", .{messages});
+            self.result_messages = try stderr.toOwnedSlice();
         }
 
         // Send EOF to stdin.
@@ -983,14 +969,30 @@ const ZiglingStep = struct {
 
         return result orelse return error.ZigIPCError;
     }
+
+    fn printErrors(self: *ZiglingStep) void {
+        resetLine();
+
+        // Print the additional log and verbose messages.
+        // TODO: use colors?
+        if (self.result_messages.len > 0) print("{s}", .{self.result_messages});
+
+        // Print the compiler errors.
+        // TODO: use the same ttyconf from the builder.
+        const ttyconf: std.debug.TTY.Config = if (use_color_escapes)
+            .escape_codes
+        else
+            .no_color;
+        if (self.result_error_bundle.errorMessageCount() > 0) {
+            self.result_error_bundle.renderToStdErr(.{ .ttyconf = ttyconf });
+        }
+    }
 };
 
-fn sendMessage(file: std.fs.File, tag: std.zig.Client.Message.Tag) !void {
-    const header: std.zig.Client.Message.Header = .{
-        .tag = tag,
-        .bytes_len = 0,
-    };
-    try file.writeAll(std.mem.asBytes(&header));
+// Clear the entire line and move the cursor to column zero.
+// Used for clearing the compiler and build_runner progress messages.
+fn resetLine() void {
+    if (use_color_escapes) print("{s}", .{"\x1b[2K\r"});
 }
 
 // Print a message to stderr.
