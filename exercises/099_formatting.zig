@@ -41,7 +41,7 @@
 // Since we basically write to debug output in Ziglings, our output usually
 // looks like this:
 //
-// std.debug.print("Text {placeholder} another text \n", .{variable});
+//      print("Text {placeholder} another text \n", .{variable});
 //
 // But how is the statement just shown formatted?
 //
