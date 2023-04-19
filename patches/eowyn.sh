@@ -42,5 +42,8 @@ do
     fi
 done
 
+# Check the healed exercises formatting.
+zig fmt --check patches/healed
+
 # Test the healed exercises. May the compiler have mercy upon us.
 zig build -Dhealed

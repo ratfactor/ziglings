@@ -1,4 +1,4 @@
 23c23
-<     const hello = .{'h', 'e', 'l', 'l', 'o'};
+<     const hello = .{ 'h', 'e', 'l', 'l', 'o' };
 ---
->     const hello: [5]u8 = .{'h', 'e', 'l', 'l', 'o'};
+>     const hello: [5]u8 = .{ 'h', 'e', 'l', 'l', 'o' };

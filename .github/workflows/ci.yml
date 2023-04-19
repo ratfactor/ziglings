@@ -1,0 +1,25 @@
+name: CI
+on:
+  pull_request:
+    branches: [ main ]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  compat:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        zig: [ 0.6.0, 0.7.0, 0.8.0, 0.9.0, 0.10.0 ]
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Zig
+      uses: goto-bus-stop/setup-zig@v2
+      with:
+        version: ${{ matrix.zig }}
+
+    - name: Check compatibility with old Zig compilers
+      run: ci/compat.sh
