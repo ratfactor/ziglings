@@ -179,7 +179,7 @@ Core Language
 * [ ] Async <--- IN PROGRESS!
 * [X] Interfaces
 * [X] Working with C
-* [ ] String formatting
+* [X] String formatting
 * [X] Bit manipulation
 
 ## Contributing
