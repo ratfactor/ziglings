@@ -7,8 +7,8 @@ const fs = std.fs;
 
 const Allocator = std.mem.Allocator;
 const Build = std.build;
-const Step = Build.Step;
 const RunStep = std.Build.RunStep;
+const Step = Build.Step;
 
 const Exercise = root.Exercise;
 
@@ -27,9 +27,9 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
     };
 
     {
+        // Test that `zig build -Dn=n -Dhealed test` selects the nth exercise.
         const case_step = createCase(b, "case-1");
 
-        // Test that `zig build -Dn=n -Dhealed test` selects the nth exercise.
         var i: usize = 0;
         for (exercises[0 .. exercises.len - 1]) |ex| {
             i += 1;
@@ -54,9 +54,9 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
     }
 
     {
+        // Test that `zig build -Dn=n -Dhealed test` skips disabled esercises.
         const case_step = createCase(b, "case-2");
 
-        // Test that `zig build -Dn=n -Dhealed test` skips disabled esercises.
         var i: usize = 0;
         for (exercises[0 .. exercises.len - 1]) |ex| {
             i += 1;
@@ -76,8 +76,10 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         step.dependOn(case_step);
     }
 
-    const cleanup = b.addRemoveDirTree(outdir);
-    step.dependOn(&cleanup.step);
+    // Don't add the cleanup step, since it may delete outdir while a test case
+    // is running.
+    //const cleanup = b.addRemoveDirTree(outdir);
+    //step.dependOn(&cleanup.step);
 
     return step;
 }
