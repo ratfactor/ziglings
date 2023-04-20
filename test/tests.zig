@@ -2,8 +2,10 @@ const std = @import("std");
 const root = @import("../build.zig");
 
 const debug = std.debug;
+const fmt = std.fmt;
 const fs = std.fs;
 
+const Allocator = std.mem.Allocator;
 const Build = std.build;
 const Step = Build.Step;
 const RunStep = std.Build.RunStep;
@@ -18,9 +20,10 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
     const outdir = "patches/healed";
 
     fs.cwd().makePath(outdir) catch |err| {
-        debug.print("unable to make '{s}': {s}\n", .{ outdir, @errorName(err) });
-
-        return step;
+        return fail(step, "unable to make '{s}': {s}\n", .{ outdir, @errorName(err) });
+    };
+    heal(b.allocator, exercises, outdir) catch |err| {
+        return fail(step, "unable to heal exercises: {s}\n", .{@errorName(err)});
     };
 
     {
@@ -32,14 +35,11 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
             i += 1;
             if (ex.skip) continue;
 
-            const patch = PatchStep.create(b, ex, outdir);
-
             const cmd = b.addSystemCommand(
                 &.{ b.zig_exe, "build", b.fmt("-Dn={}", .{i}), "-Dhealed", "test" },
             );
             cmd.setName(b.fmt("zig build -D={} -Dhealed test", .{i}));
             cmd.expectExitCode(0);
-            cmd.step.dependOn(&patch.step);
 
             // Some exercise output has an extra space character.
             if (ex.check_stdout)
@@ -93,28 +93,21 @@ fn createCase(b: *Build, name: []const u8) *Step {
     return case_step;
 }
 
-// Apply a patch to the specified exercise.
-const PatchStep = struct {
-    const join = fs.path.join;
-
-    const exercises_path = "exercises";
-    const patches_path = "patches/patches";
-
+// A step that will fail.
+const FailStep = struct {
     step: Step,
-    exercise: Exercise,
-    outdir: []const u8,
+    error_msg: []const u8,
 
-    pub fn create(owner: *Build, exercise: Exercise, outdir: []const u8) *PatchStep {
-        const self = owner.allocator.create(PatchStep) catch @panic("OOM");
+    pub fn create(owner: *Build, error_msg: []const u8) *FailStep {
+        const self = owner.allocator.create(FailStep) catch @panic("OOM");
         self.* = .{
             .step = Step.init(.{
                 .id = .custom,
-                .name = owner.fmt("patch {s}", .{exercise.main_file}),
+                .name = "fail",
                 .owner = owner,
                 .makeFn = make,
             }),
-            .exercise = exercise,
-            .outdir = outdir,
+            .error_msg = error_msg,
         };
 
         return self;
@@ -122,25 +115,50 @@ const PatchStep = struct {
 
     fn make(step: *Step, _: *std.Progress.Node) !void {
         const b = step.owner;
-        const self = @fieldParentPtr(PatchStep, "step", step);
-        const exercise = self.exercise;
-        const name = exercise.baseName();
+        const self = @fieldParentPtr(FailStep, "step", step);
+
+        try step.result_error_msgs.append(b.allocator, self.error_msg);
+        return error.MakeFailed;
+    }
+};
+
+// A variant of `std.Build.Step.fail` that does not return an error so that it
+// can be used in the configuration phase.  It returns a FailStep, so that the
+// error will be cleanly handled by the build runner.
+fn fail(step: *Step, comptime format: []const u8, args: anytype) *Step {
+    const b = step.owner;
+
+    const fail_step = FailStep.create(b, b.fmt(format, args));
+    step.dependOn(&fail_step.step);
+
+    return step;
+}
+
+// Heals all the exercises.
+fn heal(allocator: Allocator, exercises: []const Exercise, outdir: []const u8) !void {
+    const join = fs.path.join;
+
+    const exercises_path = "exercises";
+    const patches_path = "patches/patches";
+
+    for (exercises) |ex| {
+        const name = ex.baseName();
 
         // Use the POSIX patch variant.
-        const file = join(b.allocator, &.{ exercises_path, exercise.main_file }) catch
-            @panic("OOM");
-        const patch = join(b.allocator, &.{ patches_path, b.fmt("{s}.patch", .{name}) }) catch
-            @panic("OOM");
-        const output = join(b.allocator, &.{ self.outdir, exercise.main_file }) catch
-            @panic("OOM");
+        const file = try join(allocator, &.{ exercises_path, ex.main_file });
+        const patch = b: {
+            const patch_name = try fmt.allocPrint(allocator, "{s}.patch", .{name});
+            break :b try join(allocator, &.{ patches_path, patch_name });
+        };
+        const output = try join(allocator, &.{ outdir, ex.main_file });
 
         const argv = &.{ "patch", "-i", patch, "-o", output, file };
 
-        var child = std.process.Child.init(argv, b.allocator);
+        var child = std.process.Child.init(argv, allocator);
         child.stdout_behavior = .Ignore; // the POSIX standard says that stdout is not used
         _ = try child.spawnAndWait();
     }
-};
+}
 
 //
 // Missing functions from std.Build.RunStep
