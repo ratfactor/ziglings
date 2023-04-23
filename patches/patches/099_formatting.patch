@@ -1,5 +1,4 @@
-108,109c108
-<             // what formatting is needed here?
+134c134
 <             print("{???} ", .{(a + 1) * (b + 1)});
 ---
 >             print("{d:>3} ", .{(a + 1) * (b + 1)});
