@@ -140,11 +140,23 @@ zig build -Dn=19 -l
 
 ## What's Covered
 
-I've decide to limit Ziglings to the core language and not
-attempt coverage of the Standard Library. Perhaps you can change
-my mind?
+The primary goal for Ziglings is to cover the core Zig language.
 
-Core Language
+It would be nice to cover the Standard Library as well, but this
+is currently challenging because the stdlib is evolving even
+faster than the core language (and that's saying something!).
+Not only would stdlib coverage change very rapidly, some exercises might even cease to be relevant entirely.
+
+Having said that, there are some stdlib features that are probably here
+to stay or are so important to understand that they are worth the
+extra effort to keep current.
+
+Conspicuously absent from Ziglings are a lot of string
+manipulation exercises. This is because Zig itself largely avoids
+dealing with strings. Hopefully there will be an obvious way to
+address this in the future. The Ziglings crew loves strings!
+
+Zig Core Language
 
 * [x] Hello world (main needs to be public)
 * [x] Importing standard library
@@ -178,6 +190,9 @@ Core Language
 * [x] Anonymous structs/tuples/lists
 * [ ] Async <--- IN PROGRESS!
 * [X] Interfaces
+
+Zig Standard Library
+
 * [X] Working with C
 * [X] String formatting
 * [X] Bit manipulation
@@ -189,7 +204,7 @@ the learning resource I wished for. There will be tons of room for improvement:
 
 * Wording of explanations
 * Idiomatic usage of Zig
-* Maybe additional exercises?
+* Additional exercises
 
 Please see [CONTRIBUTING](https://github.com/ratfactor/ziglings/blob/main/CONTRIBUTING.md) in this repo for the full details.
 

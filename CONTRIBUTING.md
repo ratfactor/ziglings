@@ -34,10 +34,9 @@ No mistake is too small. The Ziglings must be perfect. :-)
 If you have ideas for new lessons or a way Ziglings could be
 improved, don't hesitate to file an issue.
 
-I prefer to write the bulk of the content myself at this time
-(part of the reason I'm building Ziglings is to learn Zig
-myself!), but I'm always open to ideas.
-
+Feel free to submit new exercises but please understand that they
+may be heavily edited or rejected entirely if we feel they don't
+fit for one reason or another.
 
 ## Platforms and Zig Versions
 
@@ -50,7 +49,7 @@ downloads page.
 
 If you run into an error in Ziglings caused by breaking changes
 in the latest development build of Zig, that's a new bug in
-Ziglings.  Please file an issue...or make a pull request!
+Ziglings. Please file an issue...or make a pull request!
 
 
 ## Formatting
@@ -71,9 +70,8 @@ interface.  Specifically:
 * When your changes are ready for review, push your branch:
       `git push origin my-branch`
 * Create a pull request from your branch to `ziglings/main`
-* Your faithful Ziglings maintainer "ratfactor" (that's me!) will
-  take a look at your request ASAP (we don't talk about May-July
-  2022, LOL)
+* Your faithful Ziglings maintainers will take a look at your
+  request ASAP (we don't talk about May-July 2022, LOL)
 * Once the changes are reviewed, your request will be merged and
   eternal Ziglings contributor glory is yours!
 
