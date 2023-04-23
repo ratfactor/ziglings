@@ -188,14 +188,14 @@ Zig Core Language
 * [x] Sentinel termination
 * [x] Quoted identifiers @""
 * [x] Anonymous structs/tuples/lists
-* [ ] Async <--- IN PROGRESS!
+* [ ] Async <--- ironically awaiting upstream Zig updates
 * [X] Interfaces
+* [X] Bit manipulation
 
 Zig Standard Library
 
 * [X] Working with C
 * [X] String formatting
-* [X] Bit manipulation
 
 ## Contributing
 
