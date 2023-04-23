@@ -191,10 +191,10 @@ Zig Core Language
 * [ ] Async <--- ironically awaiting upstream Zig updates
 * [X] Interfaces
 * [X] Bit manipulation
+* [X] Working with C
 
 Zig Standard Library
 
-* [X] Working with C
 * [X] String formatting
 
 ## Contributing
