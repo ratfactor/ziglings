@@ -18,7 +18,8 @@ pub const Exercise = struct {
     main_file: []const u8,
 
     /// This is the desired output of the program.
-    /// A program passes if its output ends with this string.
+    /// A program passes if its output, excluding trailing whitespace, is equal
+    /// to this string.
     output: []const u8,
 
     /// This is an optional hint to give if the program does not succeed.
@@ -365,7 +366,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "068_comptime3.zig",
-        .output = "Minnow (1:32, 4 x 2)\nShark (1:16, 8 x 5)\nWhale (1:1, 143 x 95)\n",
+        .output = "Minnow (1:32, 4 x 2)\nShark (1:16, 8 x 5)\nWhale (1:1, 143 x 95)",
     },
     .{
         .main_file = "069_comptime4.zig",
@@ -516,7 +517,7 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "099_formatting.zig",
-        .output = "\n X |  1   2   3   4   5   6   7   8   9  10  11  12  13  14  15 \n---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+\n 1 |  1   2   3   4   5   6   7   8   9  10  11  12  13  14  15 \n\n 2 |  2   4   6   8  10  12  14  16  18  20  22  24  26  28  30 \n\n 3 |  3   6   9  12  15  18  21  24  27  30  33  36  39  42  45 \n\n 4 |  4   8  12  16  20  24  28  32  36  40  44  48  52  56  60 \n\n 5 |  5  10  15  20  25  30  35  40  45  50  55  60  65  70  75 \n\n 6 |  6  12  18  24  30  36  42  48  54  60  66  72  78  84  90 \n\n 7 |  7  14  21  28  35  42  49  56  63  70  77  84  91  98 105 \n\n 8 |  8  16  24  32  40  48  56  64  72  80  88  96 104 112 120 \n\n 9 |  9  18  27  36  45  54  63  72  81  90  99 108 117 126 135 \n\n10 | 10  20  30  40  50  60  70  80  90 100 110 120 130 140 150 \n\n11 | 11  22  33  44  55  66  77  88  99 110 121 132 143 154 165 \n\n12 | 12  24  36  48  60  72  84  96 108 120 132 144 156 168 180 \n\n13 | 13  26  39  52  65  78  91 104 117 130 143 156 169 182 195 \n\n14 | 14  28  42  56  70  84  98 112 126 140 154 168 182 196 210 \n\n15 | 15  30  45  60  75  90 105 120 135 150 165 180 195 210 225 \n\n",
+        .output = "\n X |  1   2   3   4   5   6   7   8   9  10  11  12  13  14  15 \n---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+\n 1 |  1   2   3   4   5   6   7   8   9  10  11  12  13  14  15 \n\n 2 |  2   4   6   8  10  12  14  16  18  20  22  24  26  28  30 \n\n 3 |  3   6   9  12  15  18  21  24  27  30  33  36  39  42  45 \n\n 4 |  4   8  12  16  20  24  28  32  36  40  44  48  52  56  60 \n\n 5 |  5  10  15  20  25  30  35  40  45  50  55  60  65  70  75 \n\n 6 |  6  12  18  24  30  36  42  48  54  60  66  72  78  84  90 \n\n 7 |  7  14  21  28  35  42  49  56  63  70  77  84  91  98 105 \n\n 8 |  8  16  24  32  40  48  56  64  72  80  88  96 104 112 120 \n\n 9 |  9  18  27  36  45  54  63  72  81  90  99 108 117 126 135 \n\n10 | 10  20  30  40  50  60  70  80  90 100 110 120 130 140 150 \n\n11 | 11  22  33  44  55  66  77  88  99 110 121 132 143 154 165 \n\n12 | 12  24  36  48  60  72  84  96 108 120 132 144 156 168 180 \n\n13 | 13  26  39  52  65  78  91 104 117 130 143 156 169 182 195 \n\n14 | 14  28  42  56  70  84  98 112 126 140 154 168 182 196 210 \n\n15 | 15  30  45  60  75  90 105 120 135 150 165 180 195 210 225",
     },
     .{
         .main_file = "999_the_end.zig",
@@ -758,20 +759,20 @@ const ZiglingStep = struct {
             return err;
         };
 
-        // Allow up to 1 MB of stdout capture
+        // Allow up to 1 MB of stdout capture.
         const max_output_len = 1 * 1024 * 1024;
         const output = if (self.exercise.check_stdout)
             try child.stdout.?.reader().readAllAlloc(self.builder.allocator, max_output_len)
         else
             try child.stderr.?.reader().readAllAlloc(self.builder.allocator, max_output_len);
 
-        // at this point stdout is closed, wait for the process to terminate
+        // At this point stdout is closed, wait for the process to terminate.
         const term = child.wait() catch |err| {
             print("{s}Unable to spawn {s}: {s}{s}\n", .{ red_text, argv[0], @errorName(err), reset_text });
             return err;
         };
 
-        // make sure it exited cleanly.
+        // Make sure it exited cleanly.
         switch (term) {
             .Exited => |code| {
                 if (code != 0) {
@@ -785,10 +786,10 @@ const ZiglingStep = struct {
             },
         }
 
-        // validate the output
+        // Validate the output.
         const trimOutput = std.mem.trimRight(u8, output, " \r\n");
         const trimExerciseOutput = std.mem.trimRight(u8, self.exercise.output, " \r\n");
-        if (std.mem.indexOf(u8, trimOutput, trimExerciseOutput) == null or trimOutput.len != trimExerciseOutput.len) {
+        if (!std.mem.eql(u8, trimOutput, trimExerciseOutput)) {
             print(
                 \\
                 \\{s}----------- Expected this output -----------{s}
@@ -801,7 +802,7 @@ const ZiglingStep = struct {
             return error.InvalidOutput;
         }
 
-        print("{s}PASSED:\n{s}{s}\n", .{ green_text, output, reset_text });
+        print("{s}PASSED:\n{s}{s}\n\n", .{ green_text, trimOutput, reset_text });
     }
 
     // The normal compile step calls os.exit, so we can't use it as a library :(
@@ -1057,18 +1058,31 @@ const SkipStep = struct {
     }
 };
 
-// Check that each exercise number, excluding the last, forms the sequence `[1, exercise.len)`.
+// Check that each exercise number, excluding the last, forms the sequence
+// `[1, exercise.len)`.
+//
+// Additionally check that the output field does not contain trailing whitespace.
 fn validate_exercises() bool {
-    // Don't use the "multi-object for loop" syntax, in order to avoid a syntax error with old Zig
-    // compilers.
+    // Don't use the "multi-object for loop" syntax, in order to avoid a syntax
+    // error with old Zig compilers.
     var i: usize = 0;
     for (exercises[0 .. exercises.len - 1]) |ex| {
         i += 1;
         if (ex.number() != i) {
-            print(
-                "exercise {s} has an incorrect number: expected {}, got {s}\n",
-                .{ ex.main_file, i, ex.key() },
-            );
+            print("exercise {s} has an incorrect number: expected {}, got {s}\n", .{
+                ex.main_file,
+                i,
+                ex.key(),
+            });
+
+            return false;
+        }
+
+        const output = std.mem.trimRight(u8, ex.output, " \r\n");
+        if (output.len != ex.output.len) {
+            print("exercise {s} output field has extra trailing whitespace\n", .{
+                ex.main_file,
+            });
 
             return false;
         }
