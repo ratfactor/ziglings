@@ -12,6 +12,7 @@
 # using the patches in this directory and convey them
 # to convalesce in the healed directory.
 #
+set -e
 
 # We check ourselves before we wreck ourselves.
 if [ ! -f patches/eowyn.sh ]
@@ -41,7 +42,7 @@ do
     fi
 done
 
-# Check the healed exercises formatting.
+echo "Looking for non-conforming code formatting..."
 zig fmt --check patches/healed
 
 # Test the healed exercises. May the compiler have mercy upon us.
