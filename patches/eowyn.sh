@@ -12,6 +12,7 @@
 # using the patches in this directory and convey them
 # to convalesce in the healed directory.
 #
+set -e
 
 # We check ourselves before we wreck ourselves.
 if [ ! -f patches/eowyn.sh ]
