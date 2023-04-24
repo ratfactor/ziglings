@@ -30,7 +30,7 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
     };
 
     {
-        // Test that `zig build -Dn=n -Dhealed test` selects the nth exercise.
+        // Test that `zig build -Dhealed -Dn=n test` selects the nth exercise.
         const case_step = createCase(b, "case-1");
 
         var i: usize = 0;
@@ -39,12 +39,11 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
             if (ex.skip) continue;
 
             const cmd = b.addSystemCommand(
-                &.{ b.zig_exe, "build", b.fmt("-Dn={}", .{i}), "-Dhealed", "test" },
+                &.{ b.zig_exe, "build", "-Dhealed", b.fmt("-Dn={}", .{i}), "test" },
             );
-            cmd.setName(b.fmt("zig build -D={} -Dhealed test", .{i}));
+            cmd.setName(b.fmt("zig build -Dhealed -Dn={} test", .{i}));
             cmd.expectExitCode(0);
 
-            // Some exercise output has an extra space character.
             if (ex.check_stdout)
                 expectStdOutMatch(cmd, ex.output)
             else
@@ -57,7 +56,7 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
     }
 
     {
-        // Test that `zig build -Dn=n -Dhealed test` skips disabled esercises.
+        // Test that `zig build -Dhealed -Dn=n test` skips disabled esercises.
         const case_step = createCase(b, "case-2");
 
         var i: usize = 0;
@@ -66,9 +65,9 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
             if (!ex.skip) continue;
 
             const cmd = b.addSystemCommand(
-                &.{ b.zig_exe, "build", b.fmt("-Dn={}", .{i}), "-Dhealed", "test" },
+                &.{ b.zig_exe, "build", "-Dhealed", b.fmt("-Dn={}", .{i}), "test" },
             );
-            cmd.setName(b.fmt("zig build -D={} -Dhealed test", .{i}));
+            cmd.setName(b.fmt("zig build -Dhealed -Dn={} test", .{i}));
             cmd.expectExitCode(0);
             cmd.expectStdOutEqual("");
             expectStdErrMatch(cmd, b.fmt("{s} skipped", .{ex.main_file}));
