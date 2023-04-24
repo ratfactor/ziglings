@@ -117,6 +117,20 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         step.dependOn(case_step);
     }
 
+    {
+        // Test that `zig build -Dn=1` prints the hint.
+        const case_step = createCase(b, "case-5");
+
+        const cmd = b.addSystemCommand(&.{ b.zig_exe, "build", "-Dn=1" });
+        cmd.setName("zig build -Dn=1");
+        cmd.expectExitCode(1);
+        expectStdErrMatch(cmd, exercises[0].hint);
+
+        case_step.dependOn(&cmd.step);
+
+        step.dependOn(case_step);
+    }
+
     // Don't add the cleanup step, since it may delete outdir while a test case
     // is running.
     //const cleanup = b.addRemoveDirTree(outdir);
