@@ -21,6 +21,9 @@ then
     exit 1
 fi
 
+# Which version we have?
+echo "I am in version 23.4.25.1, let's try our magic power."
+
 # Create directory of healing if it doesn't already exist.
 mkdir -p patches/healed
 
