@@ -1,5 +1,4 @@
-*~
-*.swp
-zig-cache/
-answers/
-patches/healed/
+/zig-cache/
+/zig-out/
+/answers/
+/patches/healed/

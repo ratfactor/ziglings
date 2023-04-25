@@ -4,13 +4,6 @@
 # Default behavior, if core.autocrlf is unset.
 * text=auto
 
-# Files to be converted to native line endings on checkout.
-*.cpp text
-*.h text
-
-# Text files to always have CRLF (dos) line endings on checkout.
-*.bat text eol=crlf
-
 # Text files to always have LF (unix) line endings on checkout.
 *.sh text eol=lf
 *.zig text eol=lf
