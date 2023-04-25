@@ -42,8 +42,13 @@ do
     fi
 done
 
+# Test the correct formatting of the healed exercises.
 echo "Looking for non-conforming code formatting..."
-zig fmt --check patches/healed
+for healed in patches/healed/*.zig
+do
+	echo Check $(basename "$healed")
+	zig fmt --check "$healed"
+done
 
 # Test the healed exercises. May the compiler have mercy upon us.
 zig build -Dhealed
