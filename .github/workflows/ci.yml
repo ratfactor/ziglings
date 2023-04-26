@@ -6,16 +6,16 @@ on:
 defaults:
   run:
     shell: bash
-  strategy:
-    fail-fast: false
-  timeout-minutes: 30
 
 jobs:
   compat:
+    name: Compatibility Test
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         zig: [ 0.6.0, 0.7.0, 0.8.0, 0.9.0, 0.10.0 ]
+    timeout-minutes: 30
     steps:
     - uses: actions/checkout@v3
 
@@ -27,17 +27,20 @@ jobs:
     - name: Check compatibility with old Zig compilers
       run: ci/compat.sh
   test:
+    name: Unit Test
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Setup Zig
       uses: goto-bus-stop/setup-zig@v2
       with:
         version: master
 
-    - name: Unit Test
+    - name: Run unit tests
       run: zig build test
