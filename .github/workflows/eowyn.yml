@@ -1,4 +1,6 @@
-name: Eowyn
+name: 'Eowyn'
+# Tests all exercises
+
 on:
   pull_request:
     branches: [ main ]
@@ -18,10 +20,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup Zig
-      uses: goto-bus-stop/setup-zig@v2
-      with:
-        version: master
-
-    - run: patches/eowyn.sh
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Setup Zig
+        uses: goto-bus-stop/setup-zig@v2
+        with:
+          version: master
+          
+      - name: Start Eowyn
+        run: patches/eowyn.sh
