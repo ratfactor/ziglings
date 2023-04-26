@@ -13,6 +13,7 @@
 # to convalesce in the healed directory.
 #
 set -e
+set -x
 
 # We check ourselves before we wreck ourselves.
 if [ ! -f patches/eowyn.sh ]
@@ -45,13 +46,8 @@ do
     fi
 done
 
-# Test the correct formatting of the healed exercises.
 echo "Looking for non-conforming code formatting..."
-for healed in patches/healed/*.zig
-do
-	echo Check $(basename "$healed")
-	zig fmt --check "$healed"
-done
+zig fmt --check patches/healed
 
 # Test the healed exercises. May the compiler have mercy upon us.
 zig build -Dhealed
