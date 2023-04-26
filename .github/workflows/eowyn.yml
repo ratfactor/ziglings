@@ -19,8 +19,9 @@ jobs:
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v3
+
     - name: Setup Zig
-      uses: goto-bus-stop/setup-zig@v2
+      uses: korandoru/setup-zig@v1
       with:
         version: master
 
