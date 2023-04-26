@@ -1,7 +1,8 @@
 //
 // Zig has support for IEEE-754 floating-point numbers in these
 // specific sizes: f16, f32, f64, f80, and f128. Floating point
-// literals may be written in scientific notation:
+// literals may be written in the same ways as integers but also
+// in scientific notation:
 //
 //     const a1: f32 = 1200.0;     // 1,200
 //     const a2: f32 = 1.2e+3;     // 1,200
@@ -26,7 +27,10 @@
 // operations with numeric literals, ensure the types match. Zig
 // does not perform unsafe type coercions behind your back:
 //
-//     var foo: f16 = 13.5 * 5;   // ERROR!
+//     fn foo(bar: u16) f16 { return 13.5 * bar; } // ERROR!
+//     var foo: f16 = 13.5 * @as(u8, 5); // ERROR!
+//     var foo: f16 = 13.5 * 5; // This is a safe compile-time
+//                              // conversion, so no problem!
 //     var foo: f16 = 13.5 * 5.0; // No problem, both are floats
 //
 // Please fix the two float problems with this program and
