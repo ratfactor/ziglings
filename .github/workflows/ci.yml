@@ -35,7 +35,7 @@ jobs:
     - name: Setup Zig
       uses: korandoru/setup-zig@v1
       with:
-        version: master
+        zig-version: master
 
     - name: Unit Test
       run: zig build test

@@ -23,6 +23,6 @@ jobs:
     - name: Setup Zig
       uses: korandoru/setup-zig@v1
       with:
-        version: master
+        zig-version: master
 
     - run: patches/eowyn.sh
