@@ -14,7 +14,7 @@ jobs:
       matrix:
         zig: [ 0.6.0, 0.7.0, 0.8.0, 0.9.0, 0.10.0 ]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
 
     - name: Setup Zig
       uses: goto-bus-stop/setup-zig@v2
@@ -30,12 +30,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
 
     - name: Setup Zig
-      uses: korandoru/setup-zig@v1
+      uses: goto-bus-stop/setup-zig@v2
       with:
-        zig-version: master
+        version: master
 
     - name: Unit Test
       run: zig build test
