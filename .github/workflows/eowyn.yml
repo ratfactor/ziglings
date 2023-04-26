@@ -9,6 +9,9 @@ on:
 defaults:
   run:
     shell: bash
+  strategy:
+    fail-fast: false
+  timeout-minutes: 30
 
 jobs:
   build:
@@ -16,9 +19,9 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
     steps:
     - uses: actions/checkout@v3
+
     - name: Setup Zig
       uses: goto-bus-stop/setup-zig@v2
       with:
