@@ -1,17 +1,22 @@
 //
-// For loops also let you use the "index" of the iteration, a number
-// that counts up with each iteration. To access the index of iteration,
-// specify a second condition as well as a second capture value.
+// For-loops can iterate over multiple things at the same time as
+// long as they are the same length:
 //
-//     for (items, 0..) |item, index| {
+//   - Error: for ([3]u8{ 1, 0, 1 }, [2]u8{ 1, 0 }) |_, _| {}
+//   - Compiles: for ([2]u8{ 1, 0 }, [2]u8{ 1, 0 }) |_, _| {}
 //
-//         // Do something with item and index
 //
-//     }
+// A range of numbers is represented with a starting integer and an
+// (excluded) ending integer.
 //
-// You can name "item" and "index" anything you want. "i" is a popular
-// shortening of "index". The item name is often the singular form of
-// the items you're looping through.
+//     0..10, in a for loop, behaves like this array
+//     [10]usize{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+//
+// The ending integer can be left out when it can be infered by the
+// length of the array it is paired with. This can be used to capture
+// the current index of your iteration.
+//
+//     for ([2]u8{ 1, 0 }, 0..) |bit, index| {}
 //
 const std = @import("std");
 
