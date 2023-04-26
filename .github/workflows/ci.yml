@@ -1,13 +1,14 @@
-name: CI
+name: 'CI'
+# Makes some checks
+
 on:
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 defaults:
   run:
     shell: bash
-  strategy:
-    fail-fast: false
   timeout-minutes: 30
 
 jobs:
@@ -17,27 +18,32 @@ jobs:
       matrix:
         zig: [ 0.6.0, 0.7.0, 0.8.0, 0.9.0, 0.10.0 ]
     steps:
-    - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Setup Zig
-      uses: goto-bus-stop/setup-zig@v2
-      with:
-        version: ${{ matrix.zig }}
+      - name: Setup Zig
+        uses: goto-bus-stop/setup-zig@v2
+        with:
+          version: ${{ matrix.zig }}
 
-    - name: Check compatibility with old Zig compilers
-      run: ci/compat.sh
+      - name: Check compatibility with old Zig compilers
+        run: ci/compat.sh
+      
   test:
+    name: Unit Test
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Setup Zig
-      uses: goto-bus-stop/setup-zig@v2
-      with:
-        version: master
+      - name: Setup Zig
+        uses: goto-bus-stop/setup-zig@v2
+        with:
+          version: master
 
-    - name: Unit Test
-      run: zig build test
+      - name: Run unit tests
+        run: zig build test
