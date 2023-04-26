@@ -28,5 +28,5 @@ jobs:
         with:
           version: master
           
-      - name: Start Eowyn
+      - name: Run Eowyn
         run: patches/eowyn.sh
