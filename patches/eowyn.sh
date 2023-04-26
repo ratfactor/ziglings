@@ -13,6 +13,7 @@
 # to convalesce in the healed directory.
 #
 set -e
+set -x
 
 # We check ourselves before we wreck ourselves.
 if [ ! -f patches/eowyn.sh ]
