@@ -28,7 +28,7 @@ jobs:
       - name: Check compatibility with old Zig compilers
         run: ci/compat.sh
       
-  test:
+  test-linux_mac:
     name: Unit Tests
     strategy:
       matrix:
@@ -47,6 +47,7 @@ jobs:
       - name: Run unit tests
         run: zig build test
         
+  test-windows:
     name: Unit Test Windows
     strategy:
       matrix:
