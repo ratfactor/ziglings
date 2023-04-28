@@ -23,15 +23,12 @@
 //     const pi: f16 = 3.1415926535;   // rounds to 3.140625
 //     const av: f16 = 6.02214076e+23; // Avogadro's inf(inity)!
 //
-// A float literal has a decimal point. When performing math
+// A float literal doesn't need a decimal point. When performing math
 // operations with numeric literals, ensure the types match. Zig
 // does not perform unsafe type coercions behind your back:
 //
-//     fn foo(bar: u16) f16 { return 13.5 * bar; } // ERROR!
-//     var foo: f16 = 13.5 * @as(u8, 5); // ERROR!
-//     var foo: f16 = 13.5 * 5; // This is a safe compile-time
-//                              // conversion, so no problem!
-//     var foo: f16 = 13.5 * 5.0; // No problem, both are floats
+//    var foo: f16 = 5; // NO ERROR
+//    var foo: f16 = @as(u16, 5); // ERROR
 //
 // Please fix the two float problems with this program and
 // display the result as a whole number.
