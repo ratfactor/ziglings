@@ -62,4 +62,3 @@ jobs:
 
       - name: Run unit tests
         run: zig build test
-        shell: pwsh
