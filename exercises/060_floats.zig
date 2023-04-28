@@ -4,8 +4,8 @@
 // literals may be written in the same ways as integers but also
 // in scientific notation:
 //
-//     const a1: f32 = 1200.0;     // 1,200
-//     const a2: f32 = 1.2e+3;     // 1,200
+//     const a1: f32 = 1200;       //    1,200
+//     const a2: f32 = 1.2e+3;     //    1,200
 //     const b1: f32 = -500_000.0; // -500,000
 //     const b2: f32 = -5.0e+5;    // -500,000
 //
@@ -23,12 +23,14 @@
 //     const pi: f16 = 3.1415926535;   // rounds to 3.140625
 //     const av: f16 = 6.02214076e+23; // Avogadro's inf(inity)!
 //
-// A float literal doesn't need a decimal point. When performing math
-// operations with numeric literals, ensure the types match. Zig
-// does not perform unsafe type coercions behind your back:
+// When performing math operations with numeric literals, ensure
+// the types match. Zig does not perform unsafe type coercions
+// behind your back:
 //
 //    var foo: f16 = 5; // NO ERROR
-//    var foo: f16 = @as(u16, 5); // ERROR
+//
+//    var foo: u16 = 5; // A literal of a different type
+//    var bar: f16 = foo; // ERROR
 //
 // Please fix the two float problems with this program and
 // display the result as a whole number.
