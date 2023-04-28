@@ -18,14 +18,14 @@
 //
 //     Foo.hello();
 //
-// 3. The NEAT feature of these functions is that if they take either
-//    an instance of the struct or a pointer to an instance of the struct
-//    then they have some syntax sugar:
+// 3. The NEAT feature of these functions is that if their first argument
+//    is an instance of the struct (or a pointer to one) then we can use
+//    the instance as the namespace instead of the type:
 //
 //     const Bar = struct{
-//         pub fn a(self: Bar) void { _ = self; }
-//         pub fn b(this: *Bar, other: u8) void { _ = this; _ = other; }
-//         pub fn c(bar: *const Bar) void { _ = bar; }
+//         pub fn a(self: Bar) void {}
+//         pub fn b(this: *Bar, other: u8) void {}
+//         pub fn c(bar: *const Bar) void {}
 //     };
 //
 //    var bar = Bar{};
@@ -36,10 +36,6 @@
 //    Notice that the name of the parameter doesn't matter. Some use
 //    self, others use a lowercase version of the type name, but feel
 //    free to use whatever is most appropriate.
-//
-//    Effectively, the method syntax sugar just does this transformation:
-//        thing.function(args);
-//        @TypeOf(thing).function(thing, args);
 //
 // Okay, you're armed.
 //
@@ -66,9 +62,7 @@ const HeatRay = struct {
 
     // We love this method:
     pub fn zap(self: HeatRay, alien: *Alien) void {
-        alien.health -|= self.damage; // Saturating inplace substraction
-                                      // It subtracts but doesn't go below the
-                                      // lowest value for our type (in this case 0)
+        alien.health -= if (self.damage >= alien.health) alien.health else self.damage;
     }
 };
 
