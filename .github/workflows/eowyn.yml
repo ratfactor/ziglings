@@ -45,4 +45,3 @@ jobs:
           
       - name: Run Eowyn
         run: patches/eowyn.sh
-        shell: pwsh
