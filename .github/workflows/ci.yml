@@ -49,7 +49,7 @@ jobs:
         
   test-windows:
     name: Unit Test Windows
-    on: windows-latest
+    runs-on: windows-latest
     timeout-minutes: 30
     steps:
       - name: Checkout
