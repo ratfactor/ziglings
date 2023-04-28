@@ -49,10 +49,7 @@ jobs:
         
   test-windows:
     name: Unit Test Windows
-    strategy:
-      matrix:
-        os: [windows-latest]
-      runs-on: ${{ matrix.os }}
+    on: windows-latest
     timeout-minutes: 30
     steps:
       - name: Checkout
