@@ -336,7 +336,6 @@ fn heal(allocator: Allocator, exercises: []const Exercise, outdir: []const u8) !
         const argv = &.{ "patch", "-i", patch, "-o", output, file };
 
         var child = std.process.Child.init(argv, allocator);
-        child.stdout_behavior = .Ignore; // the POSIX standard says that stdout is not used
         _ = try child.spawnAndWait();
     }
 }
