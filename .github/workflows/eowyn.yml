@@ -1,5 +1,5 @@
-name: 'Eowyn'
-# Tests all exercises
+# Test that exercises work with the latest Zig compiler.
+name: Eowyn
 
 on:
   pull_request:
@@ -13,35 +13,20 @@ defaults:
     shell: bash
 
 jobs:
-  build-linux_mac:
+  build:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        
+
       - name: Setup Zig
         uses: goto-bus-stop/setup-zig@v2
         with:
           version: master
-          
-      - name: Run Eowyn
-        run: patches/eowyn.sh
-        
-  build-windows:
-    runs-on: windows-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        
-      - name: Setup Zig
-        uses: goto-bus-stop/setup-zig@v2
-        with:
-          version: master
-          
+
       - name: Run Eowyn
         run: patches/eowyn.sh

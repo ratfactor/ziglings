@@ -333,10 +333,9 @@ fn heal(allocator: Allocator, exercises: []const Exercise, outdir: []const u8) !
         };
         const output = try join(allocator, &.{ outdir, ex.main_file });
 
-        const argv = &.{ "patch", "-i", patch, "-o", output, file };
+        const argv = &.{ "patch", "-i", patch, "-o", output, "-s", file };
 
         var child = std.process.Child.init(argv, allocator);
-        child.stdout_behavior = .Ignore; // the POSIX standard says that stdout is not used
         _ = try child.spawnAndWait();
     }
 }

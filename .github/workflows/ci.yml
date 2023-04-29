@@ -1,5 +1,4 @@
-name: 'CI'
-# Makes some checks
+name: CI
 
 on:
   pull_request:
@@ -27,29 +26,13 @@ jobs:
 
       - name: Check compatibility with old Zig compilers
         run: ci/compat.sh
-      
-  test-linux_mac:
+
+  test:
     name: Unit Tests
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Zig
-        uses: goto-bus-stop/setup-zig@v2
-        with:
-          version: master
-
-      - name: Run unit tests
-        run: zig build test
-        
-  test-windows:
-    name: Unit Test Windows
-    runs-on: windows-latest
     timeout-minutes: 30
     steps:
       - name: Checkout
