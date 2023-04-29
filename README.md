@@ -196,6 +196,7 @@ Zig Core Language
 Zig Standard Library
 
 * [X] String formatting
+* [ ] Testing
 
 ## Contributing
 
