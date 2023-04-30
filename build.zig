@@ -500,7 +500,7 @@ const exercises = [_]Exercise{
         .C = true,
     },
     .{
-        .main_file = "095_for_loops.zig",
+        .main_file = "095_for3.zig",
         .output = "1 2 4 7 8 11 13 14 16 17 19",
     },
     .{
