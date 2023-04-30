@@ -74,9 +74,6 @@ Once you have a build of the Zig compiler that works with Ziglings, they'll
 continue to work together. But keep in mind that if you update one, you may
 need to also update the other.
 
-Also note that the current "stage 1" Zig compiler is very strict
-about input: 
-[no tab characters or Windows CR/LF newlines are allowed](https://github.com/ziglang/zig/issues/544).
 
 ### Version Changes
 

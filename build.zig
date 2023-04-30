@@ -29,10 +29,6 @@ pub const Exercise = struct {
     /// Set this to true to check stdout instead.
     check_stdout: bool = false,
 
-    /// This exercise makes use of the async feature.
-    /// We need to keep track of this, so we compile without the self hosted compiler
-    @"async": bool = false,
-
     /// This exercise makes use of C functions
     /// We need to keep track of this, so we compile with libc
     C: bool = false,
@@ -355,12 +351,6 @@ const ZiglingStep = struct {
 
         zig_args.append(builder.zig_exe) catch unreachable;
         zig_args.append("build-exe") catch unreachable;
-
-        // Enable the stage 1 compiler if using the async feature
-        // disabled because of https://github.com/ratfactor/ziglings/issues/163
-        // if (self.exercise.@"async") {
-        //     zig_args.append("-fstage1") catch unreachable;
-        // }
 
         // Enable C support for exercises that use C functions
         if (self.exercise.C) {
@@ -1005,49 +995,41 @@ const exercises = [_]Exercise{
         .main_file = "084_async.zig",
         .output = "foo() A",
         .hint = "Read the facts. Use the facts.",
-        .@"async" = true,
         .skip = true,
     },
     .{
         .main_file = "085_async2.zig",
         .output = "Hello async!",
-        .@"async" = true,
         .skip = true,
     },
     .{
         .main_file = "086_async3.zig",
         .output = "5 4 3 2 1",
-        .@"async" = true,
         .skip = true,
     },
     .{
         .main_file = "087_async4.zig",
         .output = "1 2 3 4 5",
-        .@"async" = true,
         .skip = true,
     },
     .{
         .main_file = "088_async5.zig",
         .output = "Example Title.",
-        .@"async" = true,
         .skip = true,
     },
     .{
         .main_file = "089_async6.zig",
         .output = ".com: Example Title, .org: Example Title.",
-        .@"async" = true,
         .skip = true,
     },
     .{
         .main_file = "090_async7.zig",
         .output = "beef? BEEF!",
-        .@"async" = true,
         .skip = true,
     },
     .{
         .main_file = "091_async8.zig",
         .output = "ABCDEF",
-        .@"async" = true,
         .skip = true,
     },
 
