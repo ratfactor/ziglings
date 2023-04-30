@@ -9,6 +9,7 @@ const Step = compat.build.Step;
 const Child = std.process.Child;
 
 const assert = std.debug.assert;
+const join = std.fs.path.join;
 const print = std.debug.print;
 
 pub const Exercise = struct {
@@ -108,6 +109,9 @@ pub fn build(b: *Build) !void {
     const use_healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse false;
     const exno: ?usize = b.option(usize, "n", "Select exercise");
 
+    const healed_path = "patches/healed";
+    const work_path = if (use_healed) healed_path else "exercises";
+
     const header_step = PrintStep.create(b, logo);
 
     if (exno) |n| {
@@ -118,9 +122,8 @@ pub fn build(b: *Build) !void {
 
         const ex = exercises[n - 1];
         const base_name = ex.baseName();
-        const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
-            if (use_healed) "patches/healed" else "exercises", ex.main_file,
-        }) catch unreachable;
+        const file_path = join(b.allocator, &.{ work_path, ex.main_file }) catch
+            @panic("OOM");
 
         const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
         if (ex.C) {
@@ -144,7 +147,7 @@ pub fn build(b: *Build) !void {
         const uninstall_step = b.step("uninstall", b.fmt("Uninstall {s} from prefix path", .{ex.main_file}));
         uninstall_step.dependOn(b.getUninstallStep());
 
-        const verify_step = ZiglingStep.create(b, ex, use_healed);
+        const verify_step = ZiglingStep.create(b, ex, work_path);
 
         const zigling_step = b.step("zigling", b.fmt("Check the solution of {s}", .{ex.main_file}));
         zigling_step.dependOn(&verify_step.step);
@@ -156,7 +159,7 @@ pub fn build(b: *Build) !void {
         for (exercises) |exn| {
             const nth = exn.number();
             if (nth > n) {
-                const verify_stepn = ZiglingStep.create(b, exn, use_healed);
+                const verify_stepn = ZiglingStep.create(b, exn, work_path);
                 verify_stepn.step.dependOn(&prev_step.step);
 
                 prev_step = verify_stepn;
@@ -166,14 +169,18 @@ pub fn build(b: *Build) !void {
 
         return;
     } else if (use_healed and false) {
+        // Special case when healed by the eowyn script, where we can make the
+        // code more efficient.
+        //
+        // TODO: this branch is disabled because it prevents the normal case to
+        // be executed.
         const test_step = b.step("test", "Test the healed exercises");
         b.default_step = test_step;
 
         for (exercises) |ex| {
             const base_name = ex.baseName();
-            const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
-                "patches/healed", ex.main_file,
-            }) catch unreachable;
+            const file_path = join(b.allocator, &.{ healed_path, ex.main_file }) catch
+                @panic("OOM");
 
             const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
             if (ex.C) {
@@ -201,14 +208,13 @@ pub fn build(b: *Build) !void {
     var prev_step = &header_step.step;
     for (exercises) |ex| {
         const base_name = ex.baseName();
-        const file_path = std.fs.path.join(b.allocator, &[_][]const u8{
-            "exercises", ex.main_file,
-        }) catch unreachable;
+        const file_path = join(b.allocator, &.{ "exercises", ex.main_file }) catch
+            @panic("OOM");
 
         const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
         b.installArtifact(build_step);
 
-        const verify_stepn = ZiglingStep.create(b, ex, use_healed);
+        const verify_stepn = ZiglingStep.create(b, ex, work_path);
         verify_stepn.step.dependOn(prev_step);
 
         prev_step = &verify_stepn.step;
@@ -229,18 +235,18 @@ const ZiglingStep = struct {
     step: Step,
     exercise: Exercise,
     builder: *Build,
-    use_healed: bool,
+    work_path: []const u8,
 
     result_messages: []const u8 = "",
     result_error_bundle: std.zig.ErrorBundle = std.zig.ErrorBundle.empty,
 
-    pub fn create(builder: *Build, exercise: Exercise, use_healed: bool) *@This() {
+    pub fn create(builder: *Build, exercise: Exercise, work_path: []const u8) *@This() {
         const self = builder.allocator.create(@This()) catch unreachable;
         self.* = .{
             .step = Step.init(Step.Options{ .id = .custom, .name = exercise.main_file, .owner = builder, .makeFn = make }),
             .exercise = exercise,
             .builder = builder,
-            .use_healed = use_healed,
+            .work_path = work_path,
         };
         return self;
     }
@@ -357,7 +363,7 @@ const ZiglingStep = struct {
             zig_args.append("-lc") catch unreachable;
         }
 
-        const zig_file = std.fs.path.join(builder.allocator, &[_][]const u8{ if (self.use_healed) "patches/healed" else "exercises", self.exercise.main_file }) catch unreachable;
+        const zig_file = join(builder.allocator, &.{ self.work_path, self.exercise.main_file }) catch unreachable;
         zig_args.append(builder.pathFromRoot(zig_file)) catch unreachable;
 
         zig_args.append("--cache-dir") catch unreachable;
