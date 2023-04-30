@@ -32,7 +32,7 @@ pub const Exercise = struct {
 
     /// This exercise makes use of C functions
     /// We need to keep track of this, so we compile with libc
-    C: bool = false,
+    link_libc: bool = false,
 
     /// This exercise is not supported by the current Zig compiler.
     skip: bool = false,
@@ -126,7 +126,7 @@ pub fn build(b: *Build) !void {
             @panic("OOM");
 
         const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
-        if (ex.C) {
+        if (ex.link_libc) {
             build_step.linkLibC();
         }
         b.installArtifact(build_step);
@@ -183,7 +183,7 @@ pub fn build(b: *Build) !void {
                 @panic("OOM");
 
             const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
-            if (ex.C) {
+            if (ex.link_libc) {
                 build_step.linkLibC();
             }
             b.installArtifact(build_step);
@@ -359,7 +359,7 @@ const ZiglingStep = struct {
         zig_args.append("build-exe") catch unreachable;
 
         // Enable C support for exercises that use C functions
-        if (self.exercise.C) {
+        if (self.exercise.link_libc) {
             zig_args.append("-lc") catch unreachable;
         }
 
@@ -1046,12 +1046,12 @@ const exercises = [_]Exercise{
     .{
         .main_file = "093_hello_c.zig",
         .output = "Hello C from Zig! - C result is 17 chars written.",
-        .C = true,
+        .link_libc = true,
     },
     .{
         .main_file = "094_c_math.zig",
         .output = "The normalized angle of 765.2 degrees is 45.2 degrees.",
-        .C = true,
+        .link_libc = true,
     },
     .{
         .main_file = "095_for3.zig",
