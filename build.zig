@@ -5,6 +5,7 @@ const ipc = @import("src/ipc.zig");
 const tests = @import("test/tests.zig");
 
 const Build = compat.Build;
+const CompileStep = compat.build.CompileStep;
 const Step = compat.build.Step;
 const Child = std.process.Child;
 
@@ -59,6 +60,18 @@ pub const Exercise = struct {
     /// Returns the exercise key as an integer.
     pub fn number(self: Exercise) usize {
         return std.fmt.parseInt(usize, self.key(), 10) catch unreachable;
+    }
+
+    /// Returns the CompileStep for this exercise.
+    pub fn addExecutable(self: Exercise, b: *Build, work_path: []const u8) *CompileStep {
+        const file_path = join(b.allocator, &.{ work_path, self.main_file }) catch
+            @panic("OOM");
+
+        return b.addExecutable(.{
+            .name = self.baseName(),
+            .root_source_file = .{ .path = file_path },
+            .link_libc = self.link_libc,
+        });
     }
 };
 
@@ -121,14 +134,8 @@ pub fn build(b: *Build) !void {
         }
 
         const ex = exercises[n - 1];
-        const base_name = ex.baseName();
-        const file_path = join(b.allocator, &.{ work_path, ex.main_file }) catch
-            @panic("OOM");
 
-        const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
-        if (ex.link_libc) {
-            build_step.linkLibC();
-        }
+        const build_step = ex.addExecutable(b, work_path);
         b.installArtifact(build_step);
 
         const run_step = b.addRunArtifact(build_step);
@@ -178,14 +185,7 @@ pub fn build(b: *Build) !void {
         b.default_step = test_step;
 
         for (exercises) |ex| {
-            const base_name = ex.baseName();
-            const file_path = join(b.allocator, &.{ healed_path, ex.main_file }) catch
-                @panic("OOM");
-
-            const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
-            if (ex.link_libc) {
-                build_step.linkLibC();
-            }
+            const build_step = ex.addExecutable(b, healed_path);
             b.installArtifact(build_step);
 
             const run_step = b.addRunArtifact(build_step);
@@ -207,11 +207,7 @@ pub fn build(b: *Build) !void {
     // error with old Zig compilers.
     var prev_step = &header_step.step;
     for (exercises) |ex| {
-        const base_name = ex.baseName();
-        const file_path = join(b.allocator, &.{ "exercises", ex.main_file }) catch
-            @panic("OOM");
-
-        const build_step = b.addExecutable(.{ .name = base_name, .root_source_file = .{ .path = file_path } });
+        const build_step = ex.addExecutable(b, "exercises");
         b.installArtifact(build_step);
 
         const verify_stepn = ZiglingStep.create(b, ex, work_path);

@@ -40,7 +40,7 @@ Verify the installation and build number of `zig` like so:
 
 ```
 $ zig version
-0.11.0-dev.2560+xxxxxxxxx
+0.11.0-dev.2704+xxxxxxxxx
 ```
 
 Clone this repository with Git:
@@ -77,7 +77,9 @@ need to also update the other.
 
 ### Version Changes
 
-Version-0.11.0-dev.2560+602029bb2
+Version-0.11.0-dev.2704+83970b6d9
+* *2023-04-30* zig 0.11.0-dev.2704 - use of the new `std.Build.ExecutableOptions.link_libc` field
+* *2023-04-12* zig 0.11.0-dev.2560 - changes in `std.Build` - remove run() and install()
 * *2023-04-07* zig 0.11.0-dev.2401 - fixes of the new build system - see [#212](https://github.com/ratfactor/ziglings/pull/212)
 * *2023-02-21* zig 0.11.0-dev.2157 - changes in `build system` - new: parallel processing of the build steps
 * *2023-02-21* zig 0.11.0-dev.1711 - changes in `for loops` - new: Multi-Object For-Loops + Struct-of-Arrays
