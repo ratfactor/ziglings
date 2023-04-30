@@ -323,7 +323,7 @@ fn heal(allocator: Allocator, exercises: []const Exercise, outdir: []const u8) !
     const patches_path = "patches/patches";
 
     for (exercises) |ex| {
-        const name = ex.baseName();
+        const name = ex.name();
 
         // Use the POSIX patch variant.
         const file = try join(allocator, &.{ exercises_path, ex.main_file });

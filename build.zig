@@ -39,9 +39,8 @@ pub const Exercise = struct {
     skip: bool = false,
 
     /// Returns the name of the main file with .zig stripped.
-    pub fn baseName(self: Exercise) []const u8 {
-        assert(std.mem.endsWith(u8, self.main_file, ".zig"));
-        return self.main_file[0 .. self.main_file.len - 4];
+    pub fn name(self: Exercise) []const u8 {
+        return std.fs.path.stem(self.main_file);
     }
 
     /// Returns the key of the main file, the string before the '_' with
@@ -68,7 +67,7 @@ pub const Exercise = struct {
             @panic("OOM");
 
         return b.addExecutable(.{
-            .name = self.baseName(),
+            .name = self.name(),
             .root_source_file = .{ .path = file_path },
             .link_libc = self.link_libc,
         });
@@ -598,9 +597,12 @@ fn validate_exercises() bool {
     // Don't use the "multi-object for loop" syntax, in order to avoid a syntax
     // error with old Zig compilers.
     var i: usize = 0;
-    for (exercises[0 .. exercises.len - 1]) |ex| {
+    for (exercises[0..]) |ex| {
+        const exno = ex.number();
+        const last = 999;
         i += 1;
-        if (ex.number() != i) {
+
+        if (exno != i and exno != last) {
             print("exercise {s} has an incorrect number: expected {}, got {s}\n", .{
                 ex.main_file,
                 i,
@@ -615,6 +617,12 @@ fn validate_exercises() bool {
             print("exercise {s} output field has extra trailing whitespace\n", .{
                 ex.main_file,
             });
+
+            return false;
+        }
+
+        if (!std.mem.endsWith(u8, ex.main_file, ".zig")) {
+            print("exercise {s} is not a zig source file\n", .{ex.main_file});
 
             return false;
         }
