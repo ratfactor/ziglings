@@ -1,47 +1,55 @@
 //
-// The Zig language is in rapid development and continuously improves
-// the language constructs steadily.
+// The Zig language is in rapid development and continuously
+// improves the language constructs. Ziglings evolves with it.
 //
-// Since version 0.11, the "for-loops" widely used in other languages
-// such as C, e.g. "for (int i = 0; i < 10..." can now also be formed
-// similarly in Zig, which previously required a "while" construct.
-// Similar in this case actually means better, just as Zig generally
-// tries to make everything simple and "better".
+// Until version 0.11, Zig's 'for' loops did not directly
+// replicate the functionality of the C-style: "for(a;b;c)"
+// which are so well suited for iterating over a numeric
+// sequence.
 //
-// These new "for-loops" look like the following in Zig:
+// Instead, 'while' loops with counters clumsily stood in their
+// place:
 //
-//           for (0..10) |idx| {
-//               // In this case 'idx' takes all values from 0 to 9.
-//           }
+//     var i: usize = 0;
+//     while (i < 10) : (i += 1) {
+//         // Here variable 'i' will have each value 0 to 9.
+//     }
 //
-// This is really simple and can replace the previous, somewhat bulky:
+// But here we are in the glorious future and Zig's 'for' loops
+// can now take this form:
 //
-//           var idx: usize = 0;
-//           while (idx < 10) : (idx += 1) {
-//               // Again, idx takes all values from 0 to 9.
-//           }
+//     for (0..10) |i| {
+//         // Here variable 'i' will have each value 0 to 9.
+//     }
 //
-// This would also simplify exercise 13, for example.
-// The best way to try this out is to use this exercise, which in the
-// original looks like this:
+// The key to understanding this example is to know that '0..9'
+// uses the new range syntax:
 //
-//            ...
-//            var n: u32 = 1;
+//     0..10 is a range from 0 to 9
+//     1..4  is a range from 1 to 3
 //
-//            // I want to print every number between 1 and 20 that is NOT
-//            // divisible by 3 or 5.
-//            while (n <= 20) : (n += 1) {
-//                // The '%' symbol is the "modulo" operator and it
-//                // returns the remainder after division.
-//                if (n % 3 == 0) continue;
-//                if (n % 5 == 0) continue;
-//                std.debug.print("{} ", .{n});
-//            }
-//            ...
+// At the moment, ranges are only supported in 'for' loops.
+//
+// Perhaps you recall Exercise 13? We were printing a numeric
+// sequence like so:
+//
+//     var n: u32 = 1;
+//
+//     // I want to print every number between 1 and 20 that is NOT
+//     // divisible by 3 or 5.
+//     while (n <= 20) : (n += 1) {
+//         // The '%' symbol is the "modulo" operator and it
+//         // returns the remainder after division.
+//         if (n % 3 == 0) continue;
+//         if (n % 5 == 0) continue;
+//         std.debug.print("{} ", .{n});
+//     }
+//
+//  Let's try out the new form of 'for' to re-implement that
+//  exercise:
 //
 const std = @import("std");
 
-// And now with the new "for-loop".
 pub fn main() void {
 
     // I want to print every number between 1 and 20 that is NOT
@@ -57,8 +65,9 @@ pub fn main() void {
 
     std.debug.print("\n", .{});
 }
-
-// Is actually a little easier. The interesting thing here is that the other
-// previous 'while' exercises (11,12, 14) cannot be simplified by this
-// new "for-loop". Therefore it is good to be able to use both variations
-// accordingly.
+//
+// That's a bit nicer, right?
+//
+// Of course, both 'while' and 'for' have different advantages.
+// Exercises 11, 12, and 14 would NOT be simplified by switching
+// a 'while' for a 'for'.

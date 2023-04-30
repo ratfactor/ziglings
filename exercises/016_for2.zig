@@ -35,3 +35,9 @@ pub fn main() void {
 
     std.debug.print("The value of bits '1101': {}.\n", .{value});
 }
+//
+// As mentioned in the previous exercise, 'for' loops have gained
+// additional flexibility since these early exercises were
+// written. As we'll see in later exercises, the above syntax for
+// capturing the index is part of a more general ability. hang in
+// there!

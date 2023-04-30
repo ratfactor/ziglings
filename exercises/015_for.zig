@@ -23,5 +23,9 @@ pub fn main() void {
 
     std.debug.print("The End.\n", .{});
 }
-// Note that "for" loops also work on things called "slices"
+// Note that 'for' loops also work on things called "slices"
 // which we'll see later.
+//
+// Also note that 'for' loops have recently become more flexible
+// and powerful (two years after this exercise was written).
+// More about that in a moment.
