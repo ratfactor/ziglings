@@ -272,44 +272,31 @@ const ZiglingStep = struct {
         resetLine();
         print("Checking {s}...\n", .{self.exercise.main_file});
 
-        const cwd = self.builder.build_root.path.?;
-
-        const argv = [_][]const u8{exe_path};
-
-        var child = std.ChildProcess.init(&argv, self.builder.allocator);
-
-        child.cwd = cwd;
-        child.env_map = self.builder.env_map;
-
-        child.stdin_behavior = .Inherit;
-        if (self.exercise.check_stdout) {
-            child.stdout_behavior = .Pipe;
-            child.stderr_behavior = .Inherit;
-        } else {
-            child.stdout_behavior = .Inherit;
-            child.stderr_behavior = .Pipe;
-        }
-
-        child.spawn() catch |err| {
-            print("{s}Unable to spawn {s}: {s}{s}\n", .{ red_text, argv[0], @errorName(err), reset_text });
-            return err;
-        };
+        const b = self.step.owner;
 
         // Allow up to 1 MB of stdout capture.
-        const max_output_len = 1 * 1024 * 1024;
-        const output = if (self.exercise.check_stdout)
-            try child.stdout.?.reader().readAllAlloc(self.builder.allocator, max_output_len)
-        else
-            try child.stderr.?.reader().readAllAlloc(self.builder.allocator, max_output_len);
+        const max_output_bytes = 1 * 1024 * 1024;
 
-        // At this point stdout is closed, wait for the process to terminate.
-        const term = child.wait() catch |err| {
-            print("{s}Unable to spawn {s}: {s}{s}\n", .{ red_text, argv[0], @errorName(err), reset_text });
+        var result = Child.exec(.{
+            .allocator = b.allocator,
+            .argv = &.{exe_path},
+            .cwd = b.build_root.path.?,
+            .cwd_dir = b.build_root.handle,
+            .max_output_bytes = max_output_bytes,
+        }) catch |err| {
+            print("{s}Unable to spawn {s}: {s}{s}\n", .{
+                red_text, exe_path, @errorName(err), reset_text,
+            });
             return err;
         };
 
+        const output = if (self.exercise.check_stdout)
+            result.stdout
+        else
+            result.stderr;
+
         // Make sure it exited cleanly.
-        switch (term) {
+        switch (result.term) {
             .Exited => |code| {
                 if (code != 0) {
                     print("{s}{s} exited with error code {d} (expected {d}){s}\n", .{ red_text, self.exercise.main_file, code, 0, reset_text });
