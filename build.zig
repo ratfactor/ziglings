@@ -147,12 +147,6 @@ pub fn build(b: *Build) !void {
             test_step.dependOn(&run_step.step);
         }
 
-        const install_step = b.step("install", b.fmt("Install {s} to prefix path", .{ex.main_file}));
-        install_step.dependOn(b.getInstallStep());
-
-        const uninstall_step = b.step("uninstall", b.fmt("Uninstall {s} from prefix path", .{ex.main_file}));
-        uninstall_step.dependOn(b.getUninstallStep());
-
         const verify_step = ZiglingStep.create(b, ex, work_path);
 
         const zigling_step = b.step("zigling", b.fmt("Check the solution of {s}", .{ex.main_file}));
