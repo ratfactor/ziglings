@@ -395,7 +395,16 @@ const ZiglingStep = struct {
                     for (argv) |v| print("{s} ", .{v});
                     print("\n", .{});
                 },
-                else => {},
+                else => {
+                    print("{s}{s}: Unexpected error: {s}{s}\n", .{
+                        red_text,
+                        self.exercise.main_file,
+                        @errorName(err),
+                        reset_text,
+                    });
+                    for (argv) |v| print("{s} ", .{v});
+                    print("\n", .{});
+                },
             }
 
             return err;
