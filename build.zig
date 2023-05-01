@@ -240,7 +240,7 @@ const ZiglingStep = struct {
         return self;
     }
 
-    fn make(step: *Step, prog_node: *std.Progress.Node) anyerror!void {
+    fn make(step: *Step, prog_node: *std.Progress.Node) !void {
         const self = @fieldParentPtr(@This(), "step", step);
 
         if (self.exercise.skip) {
@@ -248,28 +248,33 @@ const ZiglingStep = struct {
 
             return;
         }
-        self.makeInternal(prog_node) catch {
+
+        const exe_path = self.compile(prog_node) catch {
             if (self.exercise.hint.len > 0) {
                 print("\n{s}HINT: {s}{s}", .{ bold_text, self.exercise.hint, reset_text });
             }
 
-            print("\n{s}Edit exercises/{s} and run this again.{s}", .{ red_text, self.exercise.main_file, reset_text });
-            print("\n{s}To continue from this zigling, use this command:{s}\n    {s}zig build -Dn={s}{s}\n", .{ red_text, reset_text, bold_text, self.exercise.key(), reset_text });
+            self.help();
+            std.os.exit(1);
+        };
+
+        self.run(exe_path, prog_node) catch {
+            if (self.exercise.hint.len > 0) {
+                print("\n{s}HINT: {s}{s}", .{ bold_text, self.exercise.hint, reset_text });
+            }
+
+            self.help();
             std.os.exit(1);
         };
     }
 
-    fn makeInternal(self: *@This(), prog_node: *std.Progress.Node) !void {
-        print("Compiling {s}...\n", .{self.exercise.main_file});
-
-        const exe_file = try self.doCompile(prog_node);
-
+    fn run(self: *@This(), exe_path: []const u8, _: *std.Progress.Node) !void {
         resetLine();
         print("Checking {s}...\n", .{self.exercise.main_file});
 
         const cwd = self.builder.build_root.path.?;
 
-        const argv = [_][]const u8{exe_file};
+        const argv = [_][]const u8{exe_path};
 
         var child = std.ChildProcess.init(&argv, self.builder.allocator);
 
@@ -336,9 +341,9 @@ const ZiglingStep = struct {
         print("{s}PASSED:\n{s}{s}\n\n", .{ green_text, trimOutput, reset_text });
     }
 
-    // The normal compile step calls os.exit, so we can't use it as a library :(
-    // This is a stripped down copy of std.build.LibExeObjStep.make.
-    fn doCompile(self: *@This(), prog_node: *std.Progress.Node) ![]const u8 {
+    fn compile(self: *@This(), prog_node: *std.Progress.Node) ![]const u8 {
+        print("Compiling {s}...\n", .{self.exercise.main_file});
+
         const builder = self.builder;
 
         var zig_args = std.ArrayList([]const u8).init(builder.allocator);
@@ -362,7 +367,7 @@ const ZiglingStep = struct {
 
         const argv = zig_args.items;
         var code: u8 = undefined;
-        const file_name = self.eval(argv, &code, prog_node) catch |err| {
+        const exe_path = self.eval(argv, &code, prog_node) catch |err| {
             self.printErrors();
 
             switch (err) {
@@ -397,7 +402,7 @@ const ZiglingStep = struct {
         };
         self.printErrors();
 
-        return file_name;
+        return exe_path;
     }
 
     // Code adapted from `std.Build.execAllowFail and `std.Build.Step.evalZigProcess`.
@@ -498,6 +503,23 @@ const ZiglingStep = struct {
         }
 
         return result orelse return error.ZigIPCError;
+    }
+
+    fn help(self: *ZiglingStep) void {
+        const path = self.exercise.main_file;
+        const key = self.exercise.key();
+
+        print("\n{s}Edit exercises/{s} and run this again.{s}", .{
+            red_text, path, reset_text,
+        });
+
+        const format =
+            \\
+            \\{s}To continue from this zigling, use this command:{s}
+            \\    {s}zig build -Dn={s}{s}
+            \\
+        ;
+        print(format, .{ red_text, reset_text, bold_text, key, reset_text });
     }
 
     fn printErrors(self: *ZiglingStep) void {
