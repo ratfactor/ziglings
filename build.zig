@@ -210,6 +210,7 @@ pub fn build(b: *Build) !void {
     }
     ziglings_step.dependOn(prev_step);
 
+    // Disabled, see issue 272
     // const test_step = b.step("test", "Run all the tests");
     // // test_step.dependOn(tests.addCliTests(b, &exercises));
 }
