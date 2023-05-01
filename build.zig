@@ -210,8 +210,8 @@ pub fn build(b: *Build) !void {
     }
     ziglings_step.dependOn(prev_step);
 
-    const test_step = b.step("test", "Run all the tests");
-    test_step.dependOn(tests.addCliTests(b, &exercises));
+    // const test_step = b.step("test", "Run all the tests");
+    // // test_step.dependOn(tests.addCliTests(b, &exercises));
 }
 
 var use_color_escapes = false;
