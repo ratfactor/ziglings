@@ -40,7 +40,7 @@ Verify the installation and build number of `zig` like so:
 
 ```
 $ zig version
-0.11.0-dev.2560+xxxxxxxxx
+0.11.0-dev.2704+xxxxxxxxx
 ```
 
 Clone this repository with Git:
@@ -74,13 +74,12 @@ Once you have a build of the Zig compiler that works with Ziglings, they'll
 continue to work together. But keep in mind that if you update one, you may
 need to also update the other.
 
-Also note that the current "stage 1" Zig compiler is very strict
-about input: 
-[no tab characters or Windows CR/LF newlines are allowed](https://github.com/ziglang/zig/issues/544).
 
 ### Version Changes
 
-Version-0.11.0-dev.2560+602029bb2
+Version-0.11.0-dev.2704+83970b6d9
+* *2023-04-30* zig 0.11.0-dev.2704 - use of the new `std.Build.ExecutableOptions.link_libc` field
+* *2023-04-12* zig 0.11.0-dev.2560 - changes in `std.Build` - remove run() and install()
 * *2023-04-07* zig 0.11.0-dev.2401 - fixes of the new build system - see [#212](https://github.com/ratfactor/ziglings/pull/212)
 * *2023-02-21* zig 0.11.0-dev.2157 - changes in `build system` - new: parallel processing of the build steps
 * *2023-02-21* zig 0.11.0-dev.1711 - changes in `for loops` - new: Multi-Object For-Loops + Struct-of-Arrays
