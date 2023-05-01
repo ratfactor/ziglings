@@ -333,7 +333,8 @@ fn heal(allocator: Allocator, exercises: []const Exercise, outdir: []const u8) !
         };
         const output = try join(allocator, &.{ outdir, ex.main_file });
 
-        const argv = &.{ "patch", "-i", patch, "-o", output, "-s", file };
+        // `-N` flag passed to address UX issue #272.
+        const argv = &.{ "patch", "-i", patch, "-o", output, "-s", "-N", file };
 
         var child = std.process.Child.init(argv, allocator);
         _ = try child.spawnAndWait();
