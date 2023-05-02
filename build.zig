@@ -1077,6 +1077,10 @@ const exercises = [_]Exercise{
         .output = "Arrays match!",
     },
     .{
+        .main_file = "101_for5.zig",
+        .output = "1. Wizard (Gold: 25, XP: 40)\n2. Bard (Gold: 11, XP: 17)\n3. Bard (Gold: 5, XP: 55)\n4. Warrior (Gold: 7392, XP: 21)",
+    },
+    .{
         .main_file = "999_the_end.zig",
         .output = "\nThis is the end for now!\nWe hope you had fun and were able to learn a lot, so visit us again when the next exercises are available.",
     },

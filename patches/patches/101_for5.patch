@@ -1,0 +1,4 @@
+54c54
+<     for (classes, gold, experience, ???) |c, g, e, i| {
+---
+>     for (classes, gold, experience, 1..) |c, g, e, i| {
