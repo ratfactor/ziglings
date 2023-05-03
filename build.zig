@@ -35,6 +35,10 @@ pub const Exercise = struct {
     /// We need to keep track of this, so we compile with libc
     link_libc: bool = false,
 
+    /// This exercise doesn't have a main function.
+    /// We only call the test.
+    run_test: bool = false,
+
     /// This exercise is not supported by the current Zig compiler.
     skip: bool = false,
 
@@ -1078,6 +1082,11 @@ const exercises = [_]Exercise{
     .{
         .main_file = "101_for5.zig",
         .output = "1. Wizard (Gold: 25, XP: 40)\n2. Bard (Gold: 11, XP: 17)\n3. Bard (Gold: 5, XP: 55)\n4. Warrior (Gold: 7392, XP: 21)",
+    },
+    .{
+        .main_file = "102_testing.zig",
+        .output = "All 1 tests passed.",
+        .run_test = true,
     },
     .{
         .main_file = "999_the_end.zig",
