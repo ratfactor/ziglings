@@ -228,10 +228,15 @@ const ZiglingStep = struct {
     result_messages: []const u8 = "",
     result_error_bundle: std.zig.ErrorBundle = std.zig.ErrorBundle.empty,
 
-    pub fn create(builder: *Build, exercise: Exercise, work_path: []const u8) *ZiglingStep {
-        const self = builder.allocator.create(ZiglingStep) catch @panic("OOM");
+    pub fn create(b: *Build, exercise: Exercise, work_path: []const u8) *ZiglingStep {
+        const self = b.allocator.create(ZiglingStep) catch @panic("OOM");
         self.* = .{
-            .step = Step.init(Step.Options{ .id = .custom, .name = exercise.main_file, .owner = builder, .makeFn = make }),
+            .step = Step.init(.{
+                .id = .custom,
+                .name = exercise.main_file,
+                .owner = b,
+                .makeFn = make,
+            }),
             .exercise = exercise,
             .work_path = work_path,
         };
@@ -249,7 +254,9 @@ const ZiglingStep = struct {
 
         const exe_path = self.compile(prog_node) catch {
             if (self.exercise.hint.len > 0) {
-                print("\n{s}HINT: {s}{s}", .{ bold_text, self.exercise.hint, reset_text });
+                print("\n{s}HINT: {s}{s}", .{
+                    bold_text, self.exercise.hint, reset_text,
+                });
             }
 
             self.help();
@@ -258,7 +265,9 @@ const ZiglingStep = struct {
 
         self.run(exe_path, prog_node) catch {
             if (self.exercise.hint.len > 0) {
-                print("\n{s}HINT: {s}{s}", .{ bold_text, self.exercise.hint, reset_text });
+                print("\n{s}HINT: {s}{s}", .{
+                    bold_text, self.exercise.hint, reset_text,
+                });
             }
 
             self.help();
@@ -288,7 +297,7 @@ const ZiglingStep = struct {
             return err;
         };
 
-        const output = if (self.exercise.check_stdout)
+        const raw_output = if (self.exercise.check_stdout)
             result.stdout
         else
             result.stderr;
@@ -297,20 +306,27 @@ const ZiglingStep = struct {
         switch (result.term) {
             .Exited => |code| {
                 if (code != 0) {
-                    print("{s}{s} exited with error code {d} (expected {d}){s}\n", .{ red_text, self.exercise.main_file, code, 0, reset_text });
+                    print("{s}{s} exited with error code {d} (expected {d}){s}\n", .{
+                        red_text, self.exercise.main_file, code, 0, reset_text,
+                    });
                     return error.BadExitCode;
                 }
             },
             else => {
-                print("{s}{s} terminated unexpectedly{s}\n", .{ red_text, self.exercise.main_file, reset_text });
+                print("{s}{s} terminated unexpectedly{s}\n", .{
+                    red_text, self.exercise.main_file, reset_text,
+                });
                 return error.UnexpectedTermination;
             },
         }
 
         // Validate the output.
-        const trimOutput = std.mem.trimRight(u8, output, " \r\n");
-        const trimExerciseOutput = std.mem.trimRight(u8, self.exercise.output, " \r\n");
-        if (!std.mem.eql(u8, trimOutput, trimExerciseOutput)) {
+        const output = std.mem.trimRight(u8, raw_output, " \r\n");
+        const exercise_output = std.mem.trimRight(u8, self.exercise.output, " \r\n");
+        if (!std.mem.eql(u8, output, exercise_output)) {
+            const red = red_text;
+            const reset = reset_text;
+
             print(
                 \\
                 \\{s}========= expected this output: =========={s}
@@ -319,17 +335,20 @@ const ZiglingStep = struct {
                 \\{s}
                 \\{s}=========================================={s}
                 \\
-            , .{ red_text, reset_text, trimExerciseOutput, red_text, reset_text, trimOutput, red_text, reset_text });
+            , .{ red, reset, exercise_output, red, reset, output, red, reset });
             return error.InvalidOutput;
         }
 
-        print("{s}PASSED:\n{s}{s}\n\n", .{ green_text, trimOutput, reset_text });
+        print("{s}PASSED:\n{s}{s}\n\n", .{ green_text, output, reset_text });
     }
 
     fn compile(self: *ZiglingStep, prog_node: *std.Progress.Node) ![]const u8 {
         print("Compiling {s}...\n", .{self.exercise.main_file});
 
         const b = self.step.owner;
+        const exercise_path = self.exercise.main_file;
+        const path = join(b.allocator, &.{ self.work_path, exercise_path }) catch
+            @panic("OOM");
 
         var zig_args = std.ArrayList([]const u8).init(b.allocator);
         defer zig_args.deinit();
@@ -337,13 +356,12 @@ const ZiglingStep = struct {
         zig_args.append(b.zig_exe) catch @panic("OOM");
         zig_args.append("build-exe") catch @panic("OOM");
 
-        // Enable C support for exercises that use C functions
+        // Enable C support for exercises that use C functions.
         if (self.exercise.link_libc) {
             zig_args.append("-lc") catch @panic("OOM");
         }
 
-        const zig_file = join(b.allocator, &.{ self.work_path, self.exercise.main_file }) catch @panic("OOM");
-        zig_args.append(b.pathFromRoot(zig_file)) catch @panic("OOM");
+        zig_args.append(b.pathFromRoot(path)) catch @panic("OOM");
 
         zig_args.append("--cache-dir") catch @panic("OOM");
         zig_args.append(b.pathFromRoot(b.cache_root.path.?)) catch @panic("OOM");
@@ -357,35 +375,36 @@ const ZiglingStep = struct {
 
             switch (err) {
                 error.FileNotFound => {
-                    print("{s}{s}: Unable to spawn the following command: file not found{s}\n", .{ red_text, self.exercise.main_file, reset_text });
+                    print("{s}{s}: Unable to spawn the following command: file not found{s}\n", .{
+                        red_text, self.exercise.main_file, reset_text,
+                    });
                     for (argv) |v| print("{s} ", .{v});
                     print("\n", .{});
                 },
                 error.ExitCodeFailure => {
-                    print("{s}{s}: The following command exited with error code {}:{s}\n", .{ red_text, self.exercise.main_file, code, reset_text });
+                    print("{s}{s}: The following command exited with error code {}:{s}\n", .{
+                        red_text, self.exercise.main_file, code, reset_text,
+                    });
                     for (argv) |v| print("{s} ", .{v});
                     print("\n", .{});
                 },
                 error.ProcessTerminated => {
-                    print("{s}{s}: The following command terminated unexpectedly:{s}\n", .{ red_text, self.exercise.main_file, reset_text });
+                    print("{s}{s}: The following command terminated unexpectedly:{s}\n", .{
+                        red_text, self.exercise.main_file, reset_text,
+                    });
                     for (argv) |v| print("{s} ", .{v});
                     print("\n", .{});
                 },
                 error.ZigIPCError => {
                     print("{s}{s}: The following command failed to communicate the compilation result:{s}\n", .{
-                        red_text,
-                        self.exercise.main_file,
-                        reset_text,
+                        red_text, self.exercise.main_file, reset_text,
                     });
                     for (argv) |v| print("{s} ", .{v});
                     print("\n", .{});
                 },
                 else => {
                     print("{s}{s}: Unexpected error: {s}{s}\n", .{
-                        red_text,
-                        self.exercise.main_file,
-                        @errorName(err),
-                        reset_text,
+                        red_text, self.exercise.main_file, @errorName(err), reset_text,
                     });
                     for (argv) |v| print("{s} ", .{v});
                     print("\n", .{});
