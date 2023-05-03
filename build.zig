@@ -223,7 +223,6 @@ var reset_text: []const u8 = "";
 const ZiglingStep = struct {
     step: Step,
     exercise: Exercise,
-    builder: *Build,
     work_path: []const u8,
 
     result_messages: []const u8 = "",
@@ -234,7 +233,6 @@ const ZiglingStep = struct {
         self.* = .{
             .step = Step.init(Step.Options{ .id = .custom, .name = exercise.main_file, .owner = builder, .makeFn = make }),
             .exercise = exercise,
-            .builder = builder,
             .work_path = work_path,
         };
         return self;
@@ -331,12 +329,12 @@ const ZiglingStep = struct {
     fn compile(self: *@This(), prog_node: *std.Progress.Node) ![]const u8 {
         print("Compiling {s}...\n", .{self.exercise.main_file});
 
-        const builder = self.builder;
+        const b = self.step.owner;
 
-        var zig_args = std.ArrayList([]const u8).init(builder.allocator);
+        var zig_args = std.ArrayList([]const u8).init(b.allocator);
         defer zig_args.deinit();
 
-        zig_args.append(builder.zig_exe) catch unreachable;
+        zig_args.append(b.zig_exe) catch unreachable;
         zig_args.append("build-exe") catch unreachable;
 
         // Enable C support for exercises that use C functions
@@ -344,11 +342,11 @@ const ZiglingStep = struct {
             zig_args.append("-lc") catch unreachable;
         }
 
-        const zig_file = join(builder.allocator, &.{ self.work_path, self.exercise.main_file }) catch unreachable;
-        zig_args.append(builder.pathFromRoot(zig_file)) catch unreachable;
+        const zig_file = join(b.allocator, &.{ self.work_path, self.exercise.main_file }) catch unreachable;
+        zig_args.append(b.pathFromRoot(zig_file)) catch unreachable;
 
         zig_args.append("--cache-dir") catch unreachable;
-        zig_args.append(builder.pathFromRoot(builder.cache_root.path.?)) catch unreachable;
+        zig_args.append(b.pathFromRoot(b.cache_root.path.?)) catch unreachable;
 
         zig_args.append("--listen=-") catch unreachable;
 
