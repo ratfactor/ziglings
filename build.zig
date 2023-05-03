@@ -228,8 +228,8 @@ const ZiglingStep = struct {
     result_messages: []const u8 = "",
     result_error_bundle: std.zig.ErrorBundle = std.zig.ErrorBundle.empty,
 
-    pub fn create(builder: *Build, exercise: Exercise, work_path: []const u8) *@This() {
-        const self = builder.allocator.create(@This()) catch unreachable;
+    pub fn create(builder: *Build, exercise: Exercise, work_path: []const u8) *ZiglingStep {
+        const self = builder.allocator.create(ZiglingStep) catch unreachable;
         self.* = .{
             .step = Step.init(Step.Options{ .id = .custom, .name = exercise.main_file, .owner = builder, .makeFn = make }),
             .exercise = exercise,
@@ -239,7 +239,7 @@ const ZiglingStep = struct {
     }
 
     fn make(step: *Step, prog_node: *std.Progress.Node) !void {
-        const self = @fieldParentPtr(@This(), "step", step);
+        const self = @fieldParentPtr(ZiglingStep, "step", step);
 
         if (self.exercise.skip) {
             print("Skipping {s}\n\n", .{self.exercise.main_file});
@@ -266,7 +266,7 @@ const ZiglingStep = struct {
         };
     }
 
-    fn run(self: *@This(), exe_path: []const u8, _: *std.Progress.Node) !void {
+    fn run(self: *ZiglingStep, exe_path: []const u8, _: *std.Progress.Node) !void {
         resetLine();
         print("Checking {s}...\n", .{self.exercise.main_file});
 
@@ -326,7 +326,7 @@ const ZiglingStep = struct {
         print("{s}PASSED:\n{s}{s}\n\n", .{ green_text, trimOutput, reset_text });
     }
 
-    fn compile(self: *@This(), prog_node: *std.Progress.Node) ![]const u8 {
+    fn compile(self: *ZiglingStep, prog_node: *std.Progress.Node) ![]const u8 {
         print("Compiling {s}...\n", .{self.exercise.main_file});
 
         const b = self.step.owner;
