@@ -229,7 +229,7 @@ const ZiglingStep = struct {
     result_error_bundle: std.zig.ErrorBundle = std.zig.ErrorBundle.empty,
 
     pub fn create(builder: *Build, exercise: Exercise, work_path: []const u8) *ZiglingStep {
-        const self = builder.allocator.create(ZiglingStep) catch unreachable;
+        const self = builder.allocator.create(ZiglingStep) catch @panic("OOM");
         self.* = .{
             .step = Step.init(Step.Options{ .id = .custom, .name = exercise.main_file, .owner = builder, .makeFn = make }),
             .exercise = exercise,
@@ -334,21 +334,21 @@ const ZiglingStep = struct {
         var zig_args = std.ArrayList([]const u8).init(b.allocator);
         defer zig_args.deinit();
 
-        zig_args.append(b.zig_exe) catch unreachable;
-        zig_args.append("build-exe") catch unreachable;
+        zig_args.append(b.zig_exe) catch @panic("OOM");
+        zig_args.append("build-exe") catch @panic("OOM");
 
         // Enable C support for exercises that use C functions
         if (self.exercise.link_libc) {
-            zig_args.append("-lc") catch unreachable;
+            zig_args.append("-lc") catch @panic("OOM");
         }
 
-        const zig_file = join(b.allocator, &.{ self.work_path, self.exercise.main_file }) catch unreachable;
-        zig_args.append(b.pathFromRoot(zig_file)) catch unreachable;
+        const zig_file = join(b.allocator, &.{ self.work_path, self.exercise.main_file }) catch @panic("OOM");
+        zig_args.append(b.pathFromRoot(zig_file)) catch @panic("OOM");
 
-        zig_args.append("--cache-dir") catch unreachable;
-        zig_args.append(b.pathFromRoot(b.cache_root.path.?)) catch unreachable;
+        zig_args.append("--cache-dir") catch @panic("OOM");
+        zig_args.append(b.pathFromRoot(b.cache_root.path.?)) catch @panic("OOM");
 
-        zig_args.append("--listen=-") catch unreachable;
+        zig_args.append("--listen=-") catch @panic("OOM");
 
         const argv = zig_args.items;
         var code: u8 = undefined;
