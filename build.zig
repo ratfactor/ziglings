@@ -313,11 +313,11 @@ const ZiglingStep = struct {
         if (!std.mem.eql(u8, trimOutput, trimExerciseOutput)) {
             print(
                 \\
-                \\{s}----------- Expected this output -----------{s}
-                \\"{s}"
-                \\{s}----------- but found -----------{s}
-                \\"{s}"
-                \\{s}-----------{s}
+                \\{s}========= expected this output: =========={s}
+                \\{s}
+                \\{s}========= but found: ====================={s}
+                \\{s}
+                \\{s}=========================================={s}
                 \\
             , .{ red_text, reset_text, trimExerciseOutput, red_text, reset_text, trimOutput, red_text, reset_text });
             return error.InvalidOutput;
