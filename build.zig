@@ -223,181 +223,199 @@ var reset_text: []const u8 = "";
 const ZiglingStep = struct {
     step: Step,
     exercise: Exercise,
-    builder: *Build,
     work_path: []const u8,
 
     result_messages: []const u8 = "",
     result_error_bundle: std.zig.ErrorBundle = std.zig.ErrorBundle.empty,
 
-    pub fn create(builder: *Build, exercise: Exercise, work_path: []const u8) *@This() {
-        const self = builder.allocator.create(@This()) catch unreachable;
+    pub fn create(b: *Build, exercise: Exercise, work_path: []const u8) *ZiglingStep {
+        const self = b.allocator.create(ZiglingStep) catch @panic("OOM");
         self.* = .{
-            .step = Step.init(Step.Options{ .id = .custom, .name = exercise.main_file, .owner = builder, .makeFn = make }),
+            .step = Step.init(.{
+                .id = .custom,
+                .name = exercise.main_file,
+                .owner = b,
+                .makeFn = make,
+            }),
             .exercise = exercise,
-            .builder = builder,
             .work_path = work_path,
         };
         return self;
     }
 
-    fn make(step: *Step, prog_node: *std.Progress.Node) anyerror!void {
-        const self = @fieldParentPtr(@This(), "step", step);
+    fn make(step: *Step, prog_node: *std.Progress.Node) !void {
+        const self = @fieldParentPtr(ZiglingStep, "step", step);
 
         if (self.exercise.skip) {
             print("Skipping {s}\n\n", .{self.exercise.main_file});
 
             return;
         }
-        self.makeInternal(prog_node) catch {
+
+        const exe_path = self.compile(prog_node) catch {
             if (self.exercise.hint.len > 0) {
-                print("\n{s}HINT: {s}{s}", .{ bold_text, self.exercise.hint, reset_text });
+                print("\n{s}HINT: {s}{s}", .{
+                    bold_text, self.exercise.hint, reset_text,
+                });
             }
 
-            print("\n{s}Edit exercises/{s} and run this again.{s}", .{ red_text, self.exercise.main_file, reset_text });
-            print("\n{s}To continue from this zigling, use this command:{s}\n    {s}zig build -Dn={s}{s}\n", .{ red_text, reset_text, bold_text, self.exercise.key(), reset_text });
+            self.help();
+            std.os.exit(1);
+        };
+
+        self.run(exe_path, prog_node) catch {
+            if (self.exercise.hint.len > 0) {
+                print("\n{s}HINT: {s}{s}", .{
+                    bold_text, self.exercise.hint, reset_text,
+                });
+            }
+
+            self.help();
             std.os.exit(1);
         };
     }
 
-    fn makeInternal(self: *@This(), prog_node: *std.Progress.Node) !void {
-        print("Compiling {s}...\n", .{self.exercise.main_file});
-
-        const exe_file = try self.doCompile(prog_node);
-
+    fn run(self: *ZiglingStep, exe_path: []const u8, _: *std.Progress.Node) !void {
         resetLine();
         print("Checking {s}...\n", .{self.exercise.main_file});
 
-        const cwd = self.builder.build_root.path.?;
-
-        const argv = [_][]const u8{exe_file};
-
-        var child = std.ChildProcess.init(&argv, self.builder.allocator);
-
-        child.cwd = cwd;
-        child.env_map = self.builder.env_map;
-
-        child.stdin_behavior = .Inherit;
-        if (self.exercise.check_stdout) {
-            child.stdout_behavior = .Pipe;
-            child.stderr_behavior = .Inherit;
-        } else {
-            child.stdout_behavior = .Inherit;
-            child.stderr_behavior = .Pipe;
-        }
-
-        child.spawn() catch |err| {
-            print("{s}Unable to spawn {s}: {s}{s}\n", .{ red_text, argv[0], @errorName(err), reset_text });
-            return err;
-        };
+        const b = self.step.owner;
 
         // Allow up to 1 MB of stdout capture.
-        const max_output_len = 1 * 1024 * 1024;
-        const output = if (self.exercise.check_stdout)
-            try child.stdout.?.reader().readAllAlloc(self.builder.allocator, max_output_len)
-        else
-            try child.stderr.?.reader().readAllAlloc(self.builder.allocator, max_output_len);
+        const max_output_bytes = 1 * 1024 * 1024;
 
-        // At this point stdout is closed, wait for the process to terminate.
-        const term = child.wait() catch |err| {
-            print("{s}Unable to spawn {s}: {s}{s}\n", .{ red_text, argv[0], @errorName(err), reset_text });
+        var result = Child.exec(.{
+            .allocator = b.allocator,
+            .argv = &.{exe_path},
+            .cwd = b.build_root.path.?,
+            .cwd_dir = b.build_root.handle,
+            .max_output_bytes = max_output_bytes,
+        }) catch |err| {
+            print("{s}Unable to spawn {s}: {s}{s}\n", .{
+                red_text, exe_path, @errorName(err), reset_text,
+            });
             return err;
         };
 
+        const raw_output = if (self.exercise.check_stdout)
+            result.stdout
+        else
+            result.stderr;
+
         // Make sure it exited cleanly.
-        switch (term) {
+        switch (result.term) {
             .Exited => |code| {
                 if (code != 0) {
-                    print("{s}{s} exited with error code {d} (expected {d}){s}\n", .{ red_text, self.exercise.main_file, code, 0, reset_text });
+                    print("{s}{s} exited with error code {d} (expected {d}){s}\n", .{
+                        red_text, self.exercise.main_file, code, 0, reset_text,
+                    });
                     return error.BadExitCode;
                 }
             },
             else => {
-                print("{s}{s} terminated unexpectedly{s}\n", .{ red_text, self.exercise.main_file, reset_text });
+                print("{s}{s} terminated unexpectedly{s}\n", .{
+                    red_text, self.exercise.main_file, reset_text,
+                });
                 return error.UnexpectedTermination;
             },
         }
 
         // Validate the output.
-        const trimOutput = std.mem.trimRight(u8, output, " \r\n");
-        const trimExerciseOutput = std.mem.trimRight(u8, self.exercise.output, " \r\n");
-        if (!std.mem.eql(u8, trimOutput, trimExerciseOutput)) {
+        const output = std.mem.trimRight(u8, raw_output, " \r\n");
+        const exercise_output = std.mem.trimRight(u8, self.exercise.output, " \r\n");
+        if (!std.mem.eql(u8, output, exercise_output)) {
+            const red = red_text;
+            const reset = reset_text;
+
             print(
                 \\
-                \\{s}----------- Expected this output -----------{s}
-                \\"{s}"
-                \\{s}----------- but found -----------{s}
-                \\"{s}"
-                \\{s}-----------{s}
+                \\{s}========= expected this output: =========={s}
+                \\{s}
+                \\{s}========= but found: ====================={s}
+                \\{s}
+                \\{s}=========================================={s}
                 \\
-            , .{ red_text, reset_text, trimExerciseOutput, red_text, reset_text, trimOutput, red_text, reset_text });
+            , .{ red, reset, exercise_output, red, reset, output, red, reset });
             return error.InvalidOutput;
         }
 
-        print("{s}PASSED:\n{s}{s}\n\n", .{ green_text, trimOutput, reset_text });
+        print("{s}PASSED:\n{s}{s}\n\n", .{ green_text, output, reset_text });
     }
 
-    // The normal compile step calls os.exit, so we can't use it as a library :(
-    // This is a stripped down copy of std.build.LibExeObjStep.make.
-    fn doCompile(self: *@This(), prog_node: *std.Progress.Node) ![]const u8 {
-        const builder = self.builder;
+    fn compile(self: *ZiglingStep, prog_node: *std.Progress.Node) ![]const u8 {
+        print("Compiling {s}...\n", .{self.exercise.main_file});
 
-        var zig_args = std.ArrayList([]const u8).init(builder.allocator);
+        const b = self.step.owner;
+        const exercise_path = self.exercise.main_file;
+        const path = join(b.allocator, &.{ self.work_path, exercise_path }) catch
+            @panic("OOM");
+
+        var zig_args = std.ArrayList([]const u8).init(b.allocator);
         defer zig_args.deinit();
 
-        zig_args.append(builder.zig_exe) catch unreachable;
-        zig_args.append("build-exe") catch unreachable;
+        zig_args.append(b.zig_exe) catch @panic("OOM");
+        zig_args.append("build-exe") catch @panic("OOM");
 
-        // Enable C support for exercises that use C functions
+        // Enable C support for exercises that use C functions.
         if (self.exercise.link_libc) {
-            zig_args.append("-lc") catch unreachable;
+            zig_args.append("-lc") catch @panic("OOM");
         }
 
-        const zig_file = join(builder.allocator, &.{ self.work_path, self.exercise.main_file }) catch unreachable;
-        zig_args.append(builder.pathFromRoot(zig_file)) catch unreachable;
+        zig_args.append(b.pathFromRoot(path)) catch @panic("OOM");
 
-        zig_args.append("--cache-dir") catch unreachable;
-        zig_args.append(builder.pathFromRoot(builder.cache_root.path.?)) catch unreachable;
+        zig_args.append("--cache-dir") catch @panic("OOM");
+        zig_args.append(b.pathFromRoot(b.cache_root.path.?)) catch @panic("OOM");
 
-        zig_args.append("--listen=-") catch unreachable;
+        zig_args.append("--listen=-") catch @panic("OOM");
 
         const argv = zig_args.items;
         var code: u8 = undefined;
-        const file_name = self.eval(argv, &code, prog_node) catch |err| {
+        const exe_path = self.eval(argv, &code, prog_node) catch |err| {
             self.printErrors();
 
             switch (err) {
                 error.FileNotFound => {
-                    print("{s}{s}: Unable to spawn the following command: file not found{s}\n", .{ red_text, self.exercise.main_file, reset_text });
+                    print("{s}{s}: Unable to spawn the following command: file not found{s}\n", .{
+                        red_text, self.exercise.main_file, reset_text,
+                    });
                     for (argv) |v| print("{s} ", .{v});
                     print("\n", .{});
                 },
                 error.ExitCodeFailure => {
-                    print("{s}{s}: The following command exited with error code {}:{s}\n", .{ red_text, self.exercise.main_file, code, reset_text });
+                    print("{s}{s}: The following command exited with error code {}:{s}\n", .{
+                        red_text, self.exercise.main_file, code, reset_text,
+                    });
                     for (argv) |v| print("{s} ", .{v});
                     print("\n", .{});
                 },
                 error.ProcessTerminated => {
-                    print("{s}{s}: The following command terminated unexpectedly:{s}\n", .{ red_text, self.exercise.main_file, reset_text });
+                    print("{s}{s}: The following command terminated unexpectedly:{s}\n", .{
+                        red_text, self.exercise.main_file, reset_text,
+                    });
                     for (argv) |v| print("{s} ", .{v});
                     print("\n", .{});
                 },
                 error.ZigIPCError => {
                     print("{s}{s}: The following command failed to communicate the compilation result:{s}\n", .{
-                        red_text,
-                        self.exercise.main_file,
-                        reset_text,
+                        red_text, self.exercise.main_file, reset_text,
                     });
                     for (argv) |v| print("{s} ", .{v});
                     print("\n", .{});
                 },
-                else => {},
+                else => {
+                    print("{s}{s}: Unexpected error: {s}{s}\n", .{
+                        red_text, self.exercise.main_file, @errorName(err), reset_text,
+                    });
+                    for (argv) |v| print("{s} ", .{v});
+                    print("\n", .{});
+                },
             }
 
             return err;
         };
         self.printErrors();
 
-        return file_name;
+        return exe_path;
     }
 
     // Code adapted from `std.Build.execAllowFail and `std.Build.Step.evalZigProcess`.
@@ -498,6 +516,23 @@ const ZiglingStep = struct {
         }
 
         return result orelse return error.ZigIPCError;
+    }
+
+    fn help(self: *ZiglingStep) void {
+        const path = self.exercise.main_file;
+        const key = self.exercise.key();
+
+        print("\n{s}Edit exercises/{s} and run this again.{s}", .{
+            red_text, path, reset_text,
+        });
+
+        const format =
+            \\
+            \\{s}To continue from this zigling, use this command:{s}
+            \\    {s}zig build -Dn={s}{s}
+            \\
+        ;
+        print(format, .{ red_text, reset_text, bold_text, key, reset_text });
     }
 
     fn printErrors(self: *ZiglingStep) void {
