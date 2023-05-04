@@ -158,7 +158,7 @@ fn createCase(b: *Build, name: []const u8) *Step {
     return case_step;
 }
 
-// Check the output of `zig build` or `zig build -Dn=1 start`.
+/// Checks the output of `zig build` or `zig build -Dn=1 start`.
 const CheckStep = struct {
     step: Step,
     exercises: []const Exercise,
@@ -282,7 +282,7 @@ const CheckStep = struct {
     }
 };
 
-// A step that will fail.
+/// Fails with a custom error message.
 const FailStep = struct {
     step: Step,
     error_msg: []const u8,
@@ -311,9 +311,9 @@ const FailStep = struct {
     }
 };
 
-// A variant of `std.Build.Step.fail` that does not return an error so that it
-// can be used in the configuration phase.  It returns a FailStep, so that the
-// error will be cleanly handled by the build runner.
+/// A variant of `std.Build.Step.fail` that does not return an error so that it
+/// can be used in the configuration phase.  It returns a FailStep, so that the
+/// error will be cleanly handled by the build runner.
 fn fail(step: *Step, comptime format: []const u8, args: anytype) *Step {
     const b = step.owner;
 
@@ -323,7 +323,7 @@ fn fail(step: *Step, comptime format: []const u8, args: anytype) *Step {
     return step;
 }
 
-// A step that heals exercises.
+/// Heals the exercises.
 const HealStep = struct {
     step: Step,
     exercises: []const Exercise,
@@ -353,7 +353,7 @@ const HealStep = struct {
     }
 };
 
-// Heals all the exercises.
+/// Heals all the exercises.
 fn heal(allocator: Allocator, exercises: []const Exercise, work_path: []const u8) !void {
     const join = fs.path.join;
 
