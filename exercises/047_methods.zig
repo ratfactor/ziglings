@@ -2,9 +2,9 @@
 // Help! Evil alien creatures have hidden eggs all over the Earth
 // and they're starting to hatch!
 //
-// Before you jump into battle, you'll need to know four things:
+// Before you jump into battle, you'll need to know three things:
 //
-// 1. You can attach functions to structs:
+// 1. You can attach functions to structs (and other "type definitions"):
 //
 //     const Foo = struct{
 //         pub fn hello() void {
@@ -12,31 +12,30 @@
 //         }
 //     };
 //
-// 2. A function that is a member of a struct is a "method" and is
-//    called with the "dot syntax" like so:
+// 2. A function that is a member of a struct is "namespaced" within
+//    that struct and is called by specifying the "namespace" and then
+//    using the "dot syntax":
 //
 //     Foo.hello();
 //
-// 3. The NEAT feature of methods is the special parameter named
-//    "self" that takes an instance of that type of struct:
+// 3. The NEAT feature of these functions is that if their first argument
+//    is an instance of the struct (or a pointer to one) then we can use
+//    the instance as the namespace instead of the type:
 //
 //     const Bar = struct{
-//         number: u32,
-//
-//         pub fn printMe(self: Bar) void {
-//             std.debug.print("{}\n", .{self.number});
-//         }
+//         pub fn a(self: Bar) void {}
+//         pub fn b(this: *Bar, other: u8) void {}
+//         pub fn c(bar: *const Bar) void {}
 //     };
 //
-//    (Actually, you can name the first parameter anything, but
-//    please follow convention and use "self".)
+//    var bar = Bar{};
+//    bar.a() // is equivalent to Bar.a(bar)
+//    bar.b(3) // is equivalent to Bar.b(&bar, 3)
+//    bar.c() // is equivalent to Bar.c(&bar)
 //
-// 4. Now when you call the method on an INSTANCE of that struct
-//    with the "dot syntax", the instance will be automatically
-//    passed as the "self" parameter:
-//
-//     var my_bar = Bar{ .number = 2000 };
-//     my_bar.printMe(); // prints "2000"
+//    Notice that the name of the parameter doesn't matter. Some use
+//    self, others use a lowercase version of the type name, but feel
+//    free to use whatever is most appropriate.
 //
 // Okay, you're armed.
 //

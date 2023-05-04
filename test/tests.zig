@@ -20,14 +20,13 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
 
     // We should use a temporary path, but it will make the implementation of
     // `build.zig` more complex.
-    const outdir = "patches/healed";
+    const work_path = "patches/healed";
 
-    fs.cwd().makePath(outdir) catch |err| {
-        return fail(step, "unable to make '{s}': {s}\n", .{ outdir, @errorName(err) });
+    fs.cwd().makePath(work_path) catch |err| {
+        return fail(step, "unable to make '{s}': {s}\n", .{ work_path, @errorName(err) });
     };
-    heal(b.allocator, exercises, outdir) catch |err| {
-        return fail(step, "unable to heal exercises: {s}\n", .{@errorName(err)});
-    };
+
+    const heal_step = HealStep.create(b, exercises, work_path);
 
     {
         // Test that `zig build -Dhealed -Dn=n test` selects the nth exercise.
@@ -48,6 +47,8 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
                 expectStdOutMatch(cmd, ex.output)
             else
                 expectStdErrMatch(cmd, ex.output);
+
+            cmd.step.dependOn(&heal_step.step);
 
             case_step.dependOn(&cmd.step);
         }
@@ -72,6 +73,8 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
             cmd.expectStdOutEqual("");
             expectStdErrMatch(cmd, b.fmt("{s} skipped", .{ex.main_file}));
 
+            cmd.step.dependOn(&heal_step.step);
+
             case_step.dependOn(&cmd.step);
         }
 
@@ -86,6 +89,7 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         const cmd = b.addSystemCommand(&.{ b.zig_exe, "build", "-Dhealed" });
         cmd.setName("zig build -Dhealed");
         cmd.expectExitCode(0);
+        cmd.step.dependOn(&heal_step.step);
 
         const stderr = cmd.captureStdErr();
         const verify = CheckStep.create(b, exercises, stderr, true);
@@ -107,6 +111,7 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         );
         cmd.setName("zig build -Dhealed -Dn=1 start");
         cmd.expectExitCode(0);
+        cmd.step.dependOn(&heal_step.step);
 
         const stderr = cmd.captureStdErr();
         const verify = CheckStep.create(b, exercises, stderr, false);
@@ -126,14 +131,16 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         cmd.expectExitCode(1);
         expectStdErrMatch(cmd, exercises[0].hint);
 
+        cmd.step.dependOn(&heal_step.step);
+
         case_step.dependOn(&cmd.step);
 
         step.dependOn(case_step);
     }
 
-    // Don't add the cleanup step, since it may delete outdir while a test case
-    // is running.
-    //const cleanup = b.addRemoveDirTree(outdir);
+    // Don't add the cleanup step, since it may delete work_path while a test
+    // case is running.
+    //const cleanup = b.addRemoveDirTree(work_path);
     //step.dependOn(&cleanup.step);
 
     return step;
@@ -315,8 +322,38 @@ fn fail(step: *Step, comptime format: []const u8, args: anytype) *Step {
     return step;
 }
 
+// A step that heals exercises.
+const HealStep = struct {
+    step: Step,
+    exercises: []const Exercise,
+    work_path: []const u8,
+
+    pub fn create(owner: *Build, exercises: []const Exercise, work_path: []const u8) *HealStep {
+        const self = owner.allocator.create(HealStep) catch @panic("OOM");
+        self.* = .{
+            .step = Step.init(.{
+                .id = .custom,
+                .name = "heal",
+                .owner = owner,
+                .makeFn = make,
+            }),
+            .exercises = exercises,
+            .work_path = work_path,
+        };
+
+        return self;
+    }
+
+    fn make(step: *Step, _: *std.Progress.Node) !void {
+        const b = step.owner;
+        const self = @fieldParentPtr(HealStep, "step", step);
+
+        return heal(b.allocator, self.exercises, self.work_path);
+    }
+};
+
 // Heals all the exercises.
-fn heal(allocator: Allocator, exercises: []const Exercise, outdir: []const u8) !void {
+fn heal(allocator: Allocator, exercises: []const Exercise, work_path: []const u8) !void {
     const join = fs.path.join;
 
     const exercises_path = "exercises";
@@ -331,7 +368,7 @@ fn heal(allocator: Allocator, exercises: []const Exercise, outdir: []const u8) !
             const patch_name = try fmt.allocPrint(allocator, "{s}.patch", .{name});
             break :b try join(allocator, &.{ patches_path, patch_name });
         };
-        const output = try join(allocator, &.{ outdir, ex.main_file });
+        const output = try join(allocator, &.{ work_path, ex.main_file });
 
         const argv = &.{ "patch", "-i", patch, "-o", output, "-s", file };
 
