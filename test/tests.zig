@@ -32,21 +32,23 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         // Test that `zig build -Dhealed -Dn=n test` selects the nth exercise.
         const case_step = createCase(b, "case-1");
 
-        var i: usize = 0;
         for (exercises[0 .. exercises.len - 1]) |ex| {
-            i += 1;
+            const n = ex.number();
             if (ex.skip) continue;
 
             const cmd = b.addSystemCommand(
-                &.{ b.zig_exe, "build", "-Dhealed", b.fmt("-Dn={}", .{i}), "test" },
+                &.{ b.zig_exe, "build", "-Dhealed", b.fmt("-Dn={}", .{n}), "test" },
             );
-            cmd.setName(b.fmt("zig build -Dhealed -Dn={} test", .{i}));
+            cmd.setName(b.fmt("zig build -Dhealed -Dn={} test", .{n}));
             cmd.expectExitCode(0);
 
-            if (ex.check_stdout)
-                expectStdOutMatch(cmd, ex.output)
-            else
+            if (ex.check_stdout) {
+                expectStdOutMatch(cmd, ex.output);
+                cmd.expectStdErrEqual("");
+            } else {
                 expectStdErrMatch(cmd, ex.output);
+                cmd.expectStdOutEqual("");
+            }
 
             cmd.step.dependOn(&heal_step.step);
 
@@ -60,15 +62,14 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         // Test that `zig build -Dhealed -Dn=n test` skips disabled esercises.
         const case_step = createCase(b, "case-2");
 
-        var i: usize = 0;
         for (exercises[0 .. exercises.len - 1]) |ex| {
-            i += 1;
+            const n = ex.number();
             if (!ex.skip) continue;
 
             const cmd = b.addSystemCommand(
-                &.{ b.zig_exe, "build", "-Dhealed", b.fmt("-Dn={}", .{i}), "test" },
+                &.{ b.zig_exe, "build", "-Dhealed", b.fmt("-Dn={}", .{n}), "test" },
             );
-            cmd.setName(b.fmt("zig build -Dhealed -Dn={} test", .{i}));
+            cmd.setName(b.fmt("zig build -Dhealed -Dn={} test", .{n}));
             cmd.expectExitCode(0);
             cmd.expectStdOutEqual("");
             expectStdErrMatch(cmd, b.fmt("{s} skipped", .{ex.main_file}));
