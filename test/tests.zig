@@ -7,6 +7,7 @@ const fs = std.fs;
 const mem = std.mem;
 
 const Allocator = std.mem.Allocator;
+const Child = std.process.Child;
 const Build = std.build;
 const FileSource = std.Build.FileSource;
 const Reader = fs.File.Reader;
@@ -363,7 +364,6 @@ fn heal(allocator: Allocator, exercises: []const Exercise, work_path: []const u8
     for (exercises) |ex| {
         const name = ex.name();
 
-        // Use the POSIX patch variant.
         const file = try join(allocator, &.{ exercises_path, ex.main_file });
         const patch = b: {
             const patch_name = try fmt.allocPrint(allocator, "{s}.patch", .{name});
@@ -373,7 +373,7 @@ fn heal(allocator: Allocator, exercises: []const Exercise, work_path: []const u8
 
         const argv = &.{ "patch", "-i", patch, "-o", output, "-s", file };
 
-        var child = std.process.Child.init(argv, allocator);
+        var child = Child.init(argv, allocator);
         _ = try child.spawnAndWait();
     }
 }
