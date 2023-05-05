@@ -79,19 +79,19 @@ pub fn main() void {
 // all about:
 //
 // Let's say you've been tasked with grabbing three glass
-// marbles, three spoons, and three feathers from a bucket. But
-// you can't use your hands to grab them. Instead, you have a
-// special marble scoop, spoon magnet, and feather tongs to grab
+// marbles, three spoons, and three feathers from a magic bag.
+// But you can't use your hands to grab them. Instead, you must
+// use a marble scoop, spoon magnet, and feather tongs to grab
 // each type of object.
 //
-// Now, would you rather have:
+// Now, would you rather the magic bag:
 //
-// A. The items layered so you have to pick up one marble, then
-//    one spoon, then one feather?
+// A. Grouped the items in clusters so you have to pick up one
+//    marble, then one spoon, then one feather?
 //
 //    OR
 //
-// B. The items separated by type so you can pick up all of the
+// B. Grouped the items by type so you can pick up all of the
 //    marbles at once, then all the spoons, then all of the
 //    feathers?
 //
@@ -103,14 +103,16 @@ pub fn main() void {
 // efficient for modern CPUs.
 //
 // Decades of OOP practices have steered people towards grouping
-// different data types together into "objects" with the hope
-// that it would be friendlier to the human mind. But
-// data-oriented design groups data in a way that is more
-// efficient for the computer.
+// different data types together into mixed-type "objects" with
+// the intent that these are easier on the human mind.
+// Data-oriented design groups data by type in a way that is
+// easier on the computer.
 //
-// In Zig terminology, the difference in groupings is sometimes
-// known as "Array of Structs" (AoS) versus "Struct of Arrays"
-// (SoA).
+// With clever language design, maybe we can have both.
+//
+// In the Zig community, you may see the difference in groupings
+// presented with the terms "Array of Structs" (AoS) versus
+// "Struct of Arrays" (SoA).
 //
 // To envision these two designs in action, imagine an array of
 // RPG character structs, each containing three different data
