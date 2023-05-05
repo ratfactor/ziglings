@@ -7,6 +7,7 @@ const fs = std.fs;
 const mem = std.mem;
 
 const Allocator = std.mem.Allocator;
+const Child = std.process.Child;
 const Build = std.build;
 const FileSource = std.Build.FileSource;
 const Reader = fs.File.Reader;
@@ -18,57 +19,73 @@ const Exercise = root.Exercise;
 pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
     const step = b.step("test-cli", "Test the command line interface");
 
-    // We should use a temporary path, but it will make the implementation of
-    // `build.zig` more complex.
-    const work_path = "patches/healed";
-
-    fs.cwd().makePath(work_path) catch |err| {
-        return fail(step, "unable to make '{s}': {s}\n", .{ work_path, @errorName(err) });
-    };
-
-    const heal_step = HealStep.create(b, exercises, work_path);
-
     {
         // Test that `zig build -Dhealed -Dn=n test` selects the nth exercise.
         const case_step = createCase(b, "case-1");
 
-        var i: usize = 0;
+        const tmp_path = makeTempPath(b) catch |err| {
+            return fail(step, "unable to make tmp path: {s}\n", .{@errorName(err)});
+        };
+
+        const heal_step = HealStep.create(b, exercises, tmp_path);
+
         for (exercises[0 .. exercises.len - 1]) |ex| {
-            i += 1;
+            const n = ex.number();
             if (ex.skip) continue;
 
-            const cmd = b.addSystemCommand(
-                &.{ b.zig_exe, "build", "-Dhealed", b.fmt("-Dn={}", .{i}), "test" },
-            );
-            cmd.setName(b.fmt("zig build -Dhealed -Dn={} test", .{i}));
+            const cmd = b.addSystemCommand(&.{
+                b.zig_exe,
+                "build",
+                "-Dhealed",
+                b.fmt("-Dhealed-path={s}", .{tmp_path}),
+                b.fmt("-Dn={}", .{n}),
+                "test",
+            });
+            cmd.setName(b.fmt("zig build -Dhealed -Dn={} test", .{n}));
             cmd.expectExitCode(0);
 
-            if (ex.check_stdout)
-                expectStdOutMatch(cmd, ex.output)
-            else
+            if (ex.check_stdout) {
+                expectStdOutMatch(cmd, ex.output);
+                cmd.expectStdErrEqual("");
+            } else {
                 expectStdErrMatch(cmd, ex.output);
+                cmd.expectStdOutEqual("");
+            }
 
             cmd.step.dependOn(&heal_step.step);
 
             case_step.dependOn(&cmd.step);
         }
 
-        step.dependOn(case_step);
+        const cleanup = b.addRemoveDirTree(tmp_path);
+        cleanup.step.dependOn(case_step);
+
+        step.dependOn(&cleanup.step);
     }
 
     {
         // Test that `zig build -Dhealed -Dn=n test` skips disabled esercises.
         const case_step = createCase(b, "case-2");
 
-        var i: usize = 0;
+        const tmp_path = makeTempPath(b) catch |err| {
+            return fail(step, "unable to make tmp path: {s}\n", .{@errorName(err)});
+        };
+
+        const heal_step = HealStep.create(b, exercises, tmp_path);
+
         for (exercises[0 .. exercises.len - 1]) |ex| {
-            i += 1;
+            const n = ex.number();
             if (!ex.skip) continue;
 
-            const cmd = b.addSystemCommand(
-                &.{ b.zig_exe, "build", "-Dhealed", b.fmt("-Dn={}", .{i}), "test" },
-            );
-            cmd.setName(b.fmt("zig build -Dhealed -Dn={} test", .{i}));
+            const cmd = b.addSystemCommand(&.{
+                b.zig_exe,
+                "build",
+                "-Dhealed",
+                b.fmt("-Dhealed-path={s}", .{tmp_path}),
+                b.fmt("-Dn={}", .{n}),
+                "test",
+            });
+            cmd.setName(b.fmt("zig build -Dhealed -Dn={} test", .{n}));
             cmd.expectExitCode(0);
             cmd.expectStdOutEqual("");
             expectStdErrMatch(cmd, b.fmt("{s} skipped", .{ex.main_file}));
@@ -78,15 +95,30 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
             case_step.dependOn(&cmd.step);
         }
 
-        step.dependOn(case_step);
+        const cleanup = b.addRemoveDirTree(tmp_path);
+        cleanup.step.dependOn(case_step);
+
+        step.dependOn(&cleanup.step);
     }
 
     {
         // Test that `zig build -Dhealed` process all the exercises in order.
         const case_step = createCase(b, "case-3");
 
+        const tmp_path = makeTempPath(b) catch |err| {
+            return fail(step, "unable to make tmp path: {s}\n", .{@errorName(err)});
+        };
+
+        const heal_step = HealStep.create(b, exercises, tmp_path);
+        heal_step.step.dependOn(case_step);
+
         // TODO: when an exercise is modified, the cache is not invalidated.
-        const cmd = b.addSystemCommand(&.{ b.zig_exe, "build", "-Dhealed" });
+        const cmd = b.addSystemCommand(&.{
+            b.zig_exe,
+            "build",
+            "-Dhealed",
+            b.fmt("-Dhealed-path={s}", .{tmp_path}),
+        });
         cmd.setName("zig build -Dhealed");
         cmd.expectExitCode(0);
         cmd.step.dependOn(&heal_step.step);
@@ -95,9 +127,10 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         const verify = CheckStep.create(b, exercises, stderr, true);
         verify.step.dependOn(&cmd.step);
 
-        case_step.dependOn(&verify.step);
+        const cleanup = b.addRemoveDirTree(tmp_path);
+        cleanup.step.dependOn(&verify.step);
 
-        step.dependOn(case_step);
+        step.dependOn(&cleanup.step);
     }
 
     {
@@ -105,10 +138,22 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         // in order.
         const case_step = createCase(b, "case-4");
 
+        const tmp_path = makeTempPath(b) catch |err| {
+            return fail(step, "unable to make tmp path: {s}\n", .{@errorName(err)});
+        };
+
+        const heal_step = HealStep.create(b, exercises, tmp_path);
+        heal_step.step.dependOn(case_step);
+
         // TODO: when an exercise is modified, the cache is not invalidated.
-        const cmd = b.addSystemCommand(
-            &.{ b.zig_exe, "build", "-Dhealed", "-Dn=1", "start" },
-        );
+        const cmd = b.addSystemCommand(&.{
+            b.zig_exe,
+            "build",
+            "-Dhealed",
+            b.fmt("-Dhealed-path={s}", .{tmp_path}),
+            "-Dn=1",
+            "start",
+        });
         cmd.setName("zig build -Dhealed -Dn=1 start");
         cmd.expectExitCode(0);
         cmd.step.dependOn(&heal_step.step);
@@ -117,9 +162,10 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         const verify = CheckStep.create(b, exercises, stderr, false);
         verify.step.dependOn(&cmd.step);
 
-        case_step.dependOn(&verify.step);
+        const cleanup = b.addRemoveDirTree(tmp_path);
+        cleanup.step.dependOn(&verify.step);
 
-        step.dependOn(case_step);
+        step.dependOn(&cleanup.step);
     }
 
     {
@@ -131,17 +177,10 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         cmd.expectExitCode(1);
         expectStdErrMatch(cmd, exercises[0].hint);
 
-        cmd.step.dependOn(&heal_step.step);
+        cmd.step.dependOn(case_step);
 
-        case_step.dependOn(&cmd.step);
-
-        step.dependOn(case_step);
+        step.dependOn(&cmd.step);
     }
-
-    // Don't add the cleanup step, since it may delete work_path while a test
-    // case is running.
-    //const cleanup = b.addRemoveDirTree(work_path);
-    //step.dependOn(&cleanup.step);
 
     return step;
 }
@@ -157,7 +196,7 @@ fn createCase(b: *Build, name: []const u8) *Step {
     return case_step;
 }
 
-// Check the output of `zig build` or `zig build -Dn=1 start`.
+/// Checks the output of `zig build` or `zig build -Dn=1 start`.
 const CheckStep = struct {
     step: Step,
     exercises: []const Exercise,
@@ -281,7 +320,7 @@ const CheckStep = struct {
     }
 };
 
-// A step that will fail.
+/// Fails with a custom error message.
 const FailStep = struct {
     step: Step,
     error_msg: []const u8,
@@ -310,9 +349,9 @@ const FailStep = struct {
     }
 };
 
-// A variant of `std.Build.Step.fail` that does not return an error so that it
-// can be used in the configuration phase.  It returns a FailStep, so that the
-// error will be cleanly handled by the build runner.
+/// A variant of `std.Build.Step.fail` that does not return an error so that it
+/// can be used in the configuration phase.  It returns a FailStep, so that the
+/// error will be cleanly handled by the build runner.
 fn fail(step: *Step, comptime format: []const u8, args: anytype) *Step {
     const b = step.owner;
 
@@ -322,7 +361,7 @@ fn fail(step: *Step, comptime format: []const u8, args: anytype) *Step {
     return step;
 }
 
-// A step that heals exercises.
+/// Heals the exercises.
 const HealStep = struct {
     step: Step,
     exercises: []const Exercise,
@@ -352,7 +391,7 @@ const HealStep = struct {
     }
 };
 
-// Heals all the exercises.
+/// Heals all the exercises.
 fn heal(allocator: Allocator, exercises: []const Exercise, work_path: []const u8) !void {
     const join = fs.path.join;
 
@@ -362,7 +401,6 @@ fn heal(allocator: Allocator, exercises: []const Exercise, work_path: []const u8
     for (exercises) |ex| {
         const name = ex.name();
 
-        // Use the POSIX patch variant.
         const file = try join(allocator, &.{ exercises_path, ex.main_file });
         const patch = b: {
             const patch_name = try fmt.allocPrint(allocator, "{s}.patch", .{name});
@@ -372,9 +410,21 @@ fn heal(allocator: Allocator, exercises: []const Exercise, work_path: []const u8
 
         const argv = &.{ "patch", "-i", patch, "-o", output, "-s", file };
 
-        var child = std.process.Child.init(argv, allocator);
+        var child = Child.init(argv, allocator);
         _ = try child.spawnAndWait();
     }
+}
+
+/// This function is the same as the one in std.Build.makeTempPath, with the
+/// difference that returns an error when the temp path cannot be created.
+pub fn makeTempPath(b: *Build) ![]const u8 {
+    const rand_int = std.crypto.random.int(u64);
+    const tmp_dir_sub_path = "tmp" ++ fs.path.sep_str ++ Build.hex64(rand_int);
+    const path = b.cache_root.join(b.allocator, &.{tmp_dir_sub_path}) catch
+        @panic("OOM");
+    try b.cache_root.handle.makePath(tmp_dir_sub_path);
+
+    return path;
 }
 
 //
