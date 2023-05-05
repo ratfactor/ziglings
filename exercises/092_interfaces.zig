@@ -40,7 +40,7 @@
 //
 //   switch (thing) {
 //       .a => |a| special(a),
-//       inline else |t| => normal(t),
+//       inline else => |t| normal(t),
 //   }
 //
 // We can have special handling of some cases and then Zig
