@@ -122,11 +122,12 @@ pub fn build(b: *Build) !void {
         \\
     ;
 
-    const use_healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse false;
+    const healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse false;
+    const override_healed_path = b.option([]const u8, "healed-path", "Override healed path");
     const exno: ?usize = b.option(usize, "n", "Select exercise");
 
-    const healed_path = "patches/healed";
-    const work_path = if (use_healed) healed_path else "exercises";
+    const healed_path = if (override_healed_path) |path| path else "patches/healed";
+    const work_path = if (healed) healed_path else "exercises";
 
     const header_step = PrintStep.create(b, logo);
 
@@ -172,7 +173,7 @@ pub fn build(b: *Build) !void {
         start_step.dependOn(&prev_step.step);
 
         return;
-    } else if (use_healed and false) {
+    } else if (healed and false) {
         // Special case when healed by the eowyn script, where we can make the
         // code more efficient.
         //

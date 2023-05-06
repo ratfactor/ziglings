@@ -1,18 +1,18 @@
 //
-// Oh no! This program is supposed to print "Hello world!" but it needs
-// your help!
+// Oh no, this is supposed to print "Hello world!" but it needs
+// your help.
 //
+// Zig functions are private by default but the main() function
+// should be public.
 //
-// Zig functions are private by default but the main() function should
-// be public.
-//
-// A function is declared public with the "pub" statement like so:
+// A function is made public with the "pub" statement like so:
 //
 //     pub fn foo() void {
 //         ...
 //     }
 //
-// Try to fix the program and run `ziglings` to see if it works!
+// Perhaps knowing this well help solve the errors we're getting
+// with this little program?
 //
 const std = @import("std");
 
