@@ -15,8 +15,7 @@ const print = std.debug.print;
 
 pub const Exercise = struct {
     /// main_file must have the format key_name.zig.
-    /// The key will be used as a shorthand to build
-    /// just one example.
+    /// The key will be used as a shorthand to build just one example.
     main_file: []const u8,
 
     /// This is the desired output of the program.
@@ -25,14 +24,14 @@ pub const Exercise = struct {
     output: []const u8,
 
     /// This is an optional hint to give if the program does not succeed.
-    hint: []const u8 = "",
+    hint: ?[]const u8 = null,
 
     /// By default, we verify output against stderr.
     /// Set this to true to check stdout instead.
     check_stdout: bool = false,
 
-    /// This exercise makes use of C functions
-    /// We need to keep track of this, so we compile with libc
+    /// This exercise makes use of C functions.
+    /// We need to keep track of this, so we compile with libc.
     link_libc: bool = false,
 
     /// This exercise doesn't have a main function.
@@ -51,13 +50,14 @@ pub const Exercise = struct {
     /// "zero padding" removed.
     /// For example, "001_hello.zig" has the key "1".
     pub fn key(self: Exercise) []const u8 {
-        const end_index = std.mem.indexOfScalar(u8, self.main_file, '_');
-        assert(end_index != null); // main file must be key_description.zig
+        // Main file must be key_description.zig.
+        const end_index = std.mem.indexOfScalar(u8, self.main_file, '_') orelse
+            unreachable;
 
-        // remove zero padding by advancing index past '0's
+        // Remove zero padding by advancing index past '0's.
         var start_index: usize = 0;
         while (self.main_file[start_index] == '0') start_index += 1;
-        return self.main_file[start_index..end_index.?];
+        return self.main_file[start_index..end_index];
     }
 
     /// Returns the exercise key as an integer.
@@ -67,12 +67,12 @@ pub const Exercise = struct {
 
     /// Returns the CompileStep for this exercise.
     pub fn addExecutable(self: Exercise, b: *Build, work_path: []const u8) *CompileStep {
-        const file_path = join(b.allocator, &.{ work_path, self.main_file }) catch
+        const path = join(b.allocator, &.{ work_path, self.main_file }) catch
             @panic("OOM");
 
         return b.addExecutable(.{
             .name = self.name(),
-            .root_source_file = .{ .path = file_path },
+            .root_source_file = .{ .path = path },
             .link_libc = self.link_libc,
         });
     }
@@ -258,22 +258,16 @@ const ZiglingStep = struct {
         }
 
         const exe_path = self.compile(prog_node) catch {
-            if (self.exercise.hint.len > 0) {
-                print("\n{s}HINT: {s}{s}", .{
-                    bold_text, self.exercise.hint, reset_text,
-                });
-            }
+            if (self.exercise.hint) |hint|
+                print("\n{s}HINT: {s}{s}", .{ bold_text, hint, reset_text });
 
             self.help();
             std.os.exit(1);
         };
 
         self.run(exe_path, prog_node) catch {
-            if (self.exercise.hint.len > 0) {
-                print("\n{s}HINT: {s}{s}", .{
-                    bold_text, self.exercise.hint, reset_text,
-                });
-            }
+            if (self.exercise.hint) |hint|
+                print("\n{s}HINT: {s}{s}", .{ bold_text, hint, reset_text });
 
             self.help();
             std.os.exit(1);
@@ -326,9 +320,11 @@ const ZiglingStep = struct {
         }
 
         // Validate the output.
-        const output = std.mem.trimRight(u8, raw_output, " \r\n");
-        const exercise_output = std.mem.trimRight(u8, self.exercise.output, " \r\n");
-        if (!std.mem.eql(u8, output, exercise_output)) {
+        // NOTE: exercise.output can never contain a CR character.
+        // See https://ziglang.org/documentation/master/#Source-Encoding.
+        const output = try trimLines(b.allocator, raw_output);
+        const exercise_output = self.exercise.output;
+        if (!std.mem.eql(u8, output, self.exercise.output)) {
             const red = red_text;
             const reset = reset_text;
 
@@ -565,6 +561,26 @@ fn resetLine() void {
     if (use_color_escapes) print("{s}", .{"\x1b[2K\r"});
 }
 
+/// Remove trailing whitespace for each line in buf, also ensuring that there
+/// are no trailing LF characters at the end.
+pub fn trimLines(allocator: std.mem.Allocator, buf: []const u8) ![]const u8 {
+    var list = try std.ArrayList(u8).initCapacity(allocator, buf.len);
+
+    var iter = std.mem.split(u8, buf, " \n");
+    while (iter.next()) |line| {
+        // TODO: trimming CR characters is probably not necessary.
+        const data = std.mem.trimRight(u8, line, " \r");
+        try list.appendSlice(data);
+        try list.append('\n');
+    }
+
+    const result = try list.toOwnedSlice(); // TODO: probably not necessary
+
+    // Remove the trailing LF character, that is always present in the exercise
+    // output.
+    return std.mem.trimRight(u8, result, "\n");
+}
+
 // Print a message to stderr.
 const PrintStep = struct {
     step: Step,
@@ -626,7 +642,7 @@ const SkipStep = struct {
 // Check that each exercise number, excluding the last, forms the sequence
 // `[1, exercise.len)`.
 //
-// Additionally check that the output field does not contain trailing whitespace.
+// Additionally check that the output field lines doesn't have trailing whitespace.
 fn validate_exercises() bool {
     // Don't use the "multi-object for loop" syntax, in order to avoid a syntax
     // error with old Zig compilers.
@@ -646,13 +662,16 @@ fn validate_exercises() bool {
             return false;
         }
 
-        const output = std.mem.trimRight(u8, ex.output, " \r\n");
-        if (output.len != ex.output.len) {
-            print("exercise {s} output field has extra trailing whitespace\n", .{
-                ex.main_file,
-            });
+        var iter = std.mem.split(u8, ex.output, "\n");
+        while (iter.next()) |line| {
+            const output = std.mem.trimRight(u8, line, " \r");
+            if (output.len != line.len) {
+                print("exercise {s} output field lines have trailing whitespace\n", .{
+                    ex.main_file,
+                });
 
-            return false;
+                return false;
+            }
         }
 
         if (!std.mem.endsWith(u8, ex.main_file, ".zig")) {
@@ -669,7 +688,13 @@ const exercises = [_]Exercise{
     .{
         .main_file = "001_hello.zig",
         .output = "Hello world!",
-        .hint = "DON'T PANIC!\nRead the error above.\nSee how it has something to do with 'main'?\nOpen up the source file as noted and read the comments.\nYou can do this!",
+        .hint =
+        \\DON'T PANIC!
+        \\Read the error above.
+        \\See how it has something to do with 'main'?
+        \\Open up the source file as noted and read the comments.
+        \\You can do this!
+        ,
     },
     .{
         .main_file = "002_std.zig",
@@ -697,7 +722,11 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "007_strings2.zig",
-        .output = "Ziggy played guitar\nJamming good with Andrew Kelley\nAnd the Spiders from Mars",
+        .output =
+        \\Ziggy played guitar
+        \\Jamming good with Andrew Kelley
+        \\And the Spiders from Mars
+        ,
         .hint = "Please fix the lyrics!",
     },
     .{
@@ -828,7 +857,13 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "036_enums2.zig",
-        .output = "<p>\n  <span style=\"color: #ff0000\">Red</span>\n  <span style=\"color: #00ff00\">Green</span>\n  <span style=\"color: #0000ff\">Blue</span>\n</p>",
+        .output =
+        \\<p>
+        \\  <span style="color: #ff0000">Red</span>
+        \\  <span style="color: #00ff00">Green</span>
+        \\  <span style="color: #0000ff">Blue</span>
+        \\</p>
+        ,
         .hint = "I'm feeling blue about this.",
     },
     .{
@@ -837,7 +872,10 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "038_structs2.zig",
-        .output = "Character 1 - G:20 H:100 XP:10\nCharacter 2 - G:10 H:100 XP:20",
+        .output =
+        \\Character 1 - G:20 H:100 XP:10
+        \\Character 2 - G:10 H:100 XP:20
+        ,
     },
     .{
         .main_file = "039_pointers.zig",
@@ -858,7 +896,10 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "043_pointers5.zig",
-        .output = "Wizard (G:10 H:100 XP:20)\n  Mentor: Wizard (G:10000 H:100 XP:2340)",
+        .output =
+        \\Wizard (G:10 H:100 XP:20)
+        \\  Mentor: Wizard (G:10000 H:100 XP:2340)
+        ,
     },
     .{
         .main_file = "044_quiz5.zig",
@@ -899,7 +940,10 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "052_slices.zig",
-        .output = "Hand1: A 4 K 8 \nHand2: 5 2 Q J",
+        .output =
+        \\Hand1: A 4 K 8
+        \\Hand2: 5 2 Q J
+        ,
     },
     .{
         .main_file = "053_slices2.zig",
@@ -966,7 +1010,11 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "068_comptime3.zig",
-        .output = "Minnow (1:32, 4 x 2)\nShark (1:16, 8 x 5)\nWhale (1:1, 143 x 95)",
+        .output =
+        \\Minnow (1:32, 4 x 2)
+        \\Shark (1:16, 8 x 5)
+        \\Whale (1:1, 143 x 95)
+        ,
     },
     .{
         .main_file = "069_comptime4.zig",
@@ -974,7 +1022,9 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "070_comptime5.zig",
-        .output = "\"Quack.\" ducky1: true, \"Squeek!\" ducky2: true, ducky3: false",
+        .output =
+        \\"Quack." ducky1: true, "Squeek!" ducky2: true, ducky3: false
+        ,
         .hint = "Have you kept the wizard hat on?",
     },
     .{
@@ -1025,7 +1075,9 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "082_anonymous_structs3.zig",
-        .output = "\"0\"(bool):true \"1\"(bool):false \"2\"(i32):42 \"3\"(f32):3.14159202e+00",
+        .output =
+        \\"0"(bool):true "1"(bool):false "2"(i32):42 "3"(f32):3.14159202e+00
+        ,
         .hint = "This one is a challenge! But you have everything you need.",
     },
     .{
@@ -1079,7 +1131,12 @@ const exercises = [_]Exercise{
 
     .{
         .main_file = "092_interfaces.zig",
-        .output = "Daily Insect Report:\nAnt is alive.\nBee visited 17 flowers.\nGrasshopper hopped 32 meters.",
+        .output =
+        \\Daily Insect Report:
+        \\Ant is alive.
+        \\Bee visited 17 flowers.
+        \\Grasshopper hopped 32 meters.
+        ,
     },
     .{
         .main_file = "093_hello_c.zig",
@@ -1109,7 +1166,40 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "099_formatting.zig",
-        .output = "\n X |  1   2   3   4   5   6   7   8   9  10  11  12  13  14  15 \n---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+\n 1 |  1   2   3   4   5   6   7   8   9  10  11  12  13  14  15 \n\n 2 |  2   4   6   8  10  12  14  16  18  20  22  24  26  28  30 \n\n 3 |  3   6   9  12  15  18  21  24  27  30  33  36  39  42  45 \n\n 4 |  4   8  12  16  20  24  28  32  36  40  44  48  52  56  60 \n\n 5 |  5  10  15  20  25  30  35  40  45  50  55  60  65  70  75 \n\n 6 |  6  12  18  24  30  36  42  48  54  60  66  72  78  84  90 \n\n 7 |  7  14  21  28  35  42  49  56  63  70  77  84  91  98 105 \n\n 8 |  8  16  24  32  40  48  56  64  72  80  88  96 104 112 120 \n\n 9 |  9  18  27  36  45  54  63  72  81  90  99 108 117 126 135 \n\n10 | 10  20  30  40  50  60  70  80  90 100 110 120 130 140 150 \n\n11 | 11  22  33  44  55  66  77  88  99 110 121 132 143 154 165 \n\n12 | 12  24  36  48  60  72  84  96 108 120 132 144 156 168 180 \n\n13 | 13  26  39  52  65  78  91 104 117 130 143 156 169 182 195 \n\n14 | 14  28  42  56  70  84  98 112 126 140 154 168 182 196 210 \n\n15 | 15  30  45  60  75  90 105 120 135 150 165 180 195 210 225",
+        .output =
+        \\
+        \\ X |  1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
+        \\---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+        \\ 1 |  1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
+        \\
+        \\ 2 |  2   4   6   8  10  12  14  16  18  20  22  24  26  28  30
+        \\
+        \\ 3 |  3   6   9  12  15  18  21  24  27  30  33  36  39  42  45
+        \\
+        \\ 4 |  4   8  12  16  20  24  28  32  36  40  44  48  52  56  60
+        \\
+        \\ 5 |  5  10  15  20  25  30  35  40  45  50  55  60  65  70  75
+        \\
+        \\ 6 |  6  12  18  24  30  36  42  48  54  60  66  72  78  84  90
+        \\
+        \\ 7 |  7  14  21  28  35  42  49  56  63  70  77  84  91  98 105
+        \\
+        \\ 8 |  8  16  24  32  40  48  56  64  72  80  88  96 104 112 120
+        \\
+        \\ 9 |  9  18  27  36  45  54  63  72  81  90  99 108 117 126 135
+        \\
+        \\10 | 10  20  30  40  50  60  70  80  90 100 110 120 130 140 150
+        \\
+        \\11 | 11  22  33  44  55  66  77  88  99 110 121 132 143 154 165
+        \\
+        \\12 | 12  24  36  48  60  72  84  96 108 120 132 144 156 168 180
+        \\
+        \\13 | 13  26  39  52  65  78  91 104 117 130 143 156 169 182 195
+        \\
+        \\14 | 14  28  42  56  70  84  98 112 126 140 154 168 182 196 210
+        \\
+        \\15 | 15  30  45  60  75  90 105 120 135 150 165 180 195 210 225
+        ,
     },
     .{
         .main_file = "100_for4.zig",
@@ -1117,7 +1207,12 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "101_for5.zig",
-        .output = "1. Wizard (Gold: 25, XP: 40)\n2. Bard (Gold: 11, XP: 17)\n3. Bard (Gold: 5, XP: 55)\n4. Warrior (Gold: 7392, XP: 21)",
+        .output =
+        \\1. Wizard (Gold: 25, XP: 40)
+        \\2. Bard (Gold: 11, XP: 17)
+        \\3. Bard (Gold: 5, XP: 55)
+        \\4. Warrior (Gold: 7392, XP: 21)
+        ,
     },
     .{
         .main_file = "102_testing.zig",
@@ -1126,6 +1221,10 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "999_the_end.zig",
-        .output = "\nThis is the end for now!\nWe hope you had fun and were able to learn a lot, so visit us again when the next exercises are available.",
+        .output =
+        \\
+        \\This is the end for now!
+        \\We hope you had fun and were able to learn a lot, so visit us again when the next exercises are available.
+        ,
     },
 };
