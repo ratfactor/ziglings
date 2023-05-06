@@ -43,18 +43,17 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
             });
             cmd.setName(b.fmt("zig build -Dhealed -Dn={} test", .{n}));
             cmd.expectExitCode(0);
-
-            if (ex.check_stdout) {
-                expectStdOutMatch(cmd, ex.output);
-                cmd.expectStdErrEqual("");
-            } else {
-                expectStdErrMatch(cmd, ex.output);
-                cmd.expectStdOutEqual("");
-            }
-
             cmd.step.dependOn(&heal_step.step);
 
-            case_step.dependOn(&cmd.step);
+            const output = if (ex.check_stdout)
+                cmd.captureStdOut()
+            else
+                cmd.captureStdErr();
+
+            const verify = CheckNamedStep.create(b, ex, output);
+            verify.step.dependOn(&cmd.step);
+
+            case_step.dependOn(&verify.step);
         }
 
         const cleanup = b.addRemoveDirTree(tmp_path);
@@ -195,6 +194,47 @@ fn createCase(b: *Build, name: []const u8) *Step {
 
     return case_step;
 }
+
+/// Checks the output of `zig build -Dn=n test`.
+const CheckNamedStep = struct {
+    step: Step,
+    exercise: Exercise,
+    output: FileSource,
+
+    pub fn create(owner: *Build, exercise: Exercise, output: FileSource) *CheckNamedStep {
+        const self = owner.allocator.create(CheckNamedStep) catch @panic("OOM");
+        self.* = .{
+            .step = Step.init(.{
+                .id = .custom,
+                .name = "check-named",
+                .owner = owner,
+                .makeFn = make,
+            }),
+            .exercise = exercise,
+            .output = output,
+        };
+
+        return self;
+    }
+
+    fn make(step: *Step, _: *std.Progress.Node) !void {
+        const b = step.owner;
+        const self = @fieldParentPtr(CheckNamedStep, "step", step);
+
+        // Allow up to 1 MB of output capture.
+        const max_bytes = 1 * 1024 * 1024;
+        const path = self.output.getPath(b);
+        const raw_output = try fs.cwd().readFileAlloc(b.allocator, path, max_bytes);
+
+        const actual = try root.trimLines(b.allocator, raw_output);
+        const expect = self.exercise.output;
+        if (!mem.eql(u8, expect, actual)) {
+            return step.fail("{s}: expected to see \"{s}\", found \"{s}\"", .{
+                self.exercise.main_file, expect, actual,
+            });
+        }
+    }
+};
 
 /// Checks the output of `zig build` or `zig build -Dn=1 start`.
 const CheckStep = struct {
