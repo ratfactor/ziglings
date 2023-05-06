@@ -63,12 +63,12 @@ pub const Exercise = struct {
 
     /// Returns the CompileStep for this exercise.
     pub fn addExecutable(self: Exercise, b: *Build, work_path: []const u8) *CompileStep {
-        const file_path = join(b.allocator, &.{ work_path, self.main_file }) catch
+        const path = join(b.allocator, &.{ work_path, self.main_file }) catch
             @panic("OOM");
 
         return b.addExecutable(.{
             .name = self.name(),
-            .root_source_file = .{ .path = file_path },
+            .root_source_file = .{ .path = path },
             .link_libc = self.link_libc,
         });
     }
