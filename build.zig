@@ -523,14 +523,15 @@ const ZiglingStep = struct {
         const path = self.exercise.main_file;
         const key = self.exercise.key();
 
-        print("\n{s}Edit exercises/{s} and run this again.{s}", .{
+        print("\n{s}Edit exercises/{s} and run 'zig build' again.{s}\n", .{
             red_text, path, reset_text,
         });
 
         const format =
             \\
-            \\{s}To continue from this zigling, use this command:{s}
-            \\    {s}zig build -Dn={s}{s}
+            \\{s}To compile only this exercise, you can also use this command:{s}
+            \\{s}zig build -Dn={s}{s}
+            \\
             \\
         ;
         print(format, .{ red_text, reset_text, bold_text, key, reset_text });
@@ -694,6 +695,7 @@ const exercises = [_]Exercise{
         \\See how it has something to do with 'main'?
         \\Open up the source file as noted and read the comments.
         \\You can do this!
+        \\
         ,
     },
     .{
