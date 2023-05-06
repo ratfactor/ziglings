@@ -25,7 +25,7 @@ pub const Exercise = struct {
     output: []const u8,
 
     /// This is an optional hint to give if the program does not succeed.
-    hint: []const u8 = "",
+    hint: ?[]const u8 = null,
 
     /// By default, we verify output against stderr.
     /// Set this to true to check stdout instead.
@@ -254,22 +254,16 @@ const ZiglingStep = struct {
         }
 
         const exe_path = self.compile(prog_node) catch {
-            if (self.exercise.hint.len > 0) {
-                print("\n{s}HINT: {s}{s}", .{
-                    bold_text, self.exercise.hint, reset_text,
-                });
-            }
+            if (self.exercise.hint) |hint|
+                print("\n{s}HINT: {s}{s}", .{ bold_text, hint, reset_text });
 
             self.help();
             std.os.exit(1);
         };
 
         self.run(exe_path, prog_node) catch {
-            if (self.exercise.hint.len > 0) {
-                print("\n{s}HINT: {s}{s}", .{
-                    bold_text, self.exercise.hint, reset_text,
-                });
-            }
+            if (self.exercise.hint) |hint|
+                print("\n{s}HINT: {s}{s}", .{ bold_text, hint, reset_text });
 
             self.help();
             std.os.exit(1);

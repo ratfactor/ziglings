@@ -175,7 +175,7 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         const cmd = b.addSystemCommand(&.{ b.zig_exe, "build", "-Dn=1" });
         cmd.setName("zig build -Dn=1");
         cmd.expectExitCode(1);
-        expectStdErrMatch(cmd, exercises[0].hint);
+        expectStdErrMatch(cmd, exercises[0].hint orelse "");
 
         cmd.step.dependOn(case_step);
 
