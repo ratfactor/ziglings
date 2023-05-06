@@ -15,8 +15,7 @@ const print = std.debug.print;
 
 pub const Exercise = struct {
     /// main_file must have the format key_name.zig.
-    /// The key will be used as a shorthand to build
-    /// just one example.
+    /// The key will be used as a shorthand to build just one example.
     main_file: []const u8,
 
     /// This is the desired output of the program.
@@ -31,8 +30,8 @@ pub const Exercise = struct {
     /// Set this to true to check stdout instead.
     check_stdout: bool = false,
 
-    /// This exercise makes use of C functions
-    /// We need to keep track of this, so we compile with libc
+    /// This exercise makes use of C functions.
+    /// We need to keep track of this, so we compile with libc.
     link_libc: bool = false,
 
     /// This exercise is not supported by the current Zig compiler.
@@ -47,13 +46,14 @@ pub const Exercise = struct {
     /// "zero padding" removed.
     /// For example, "001_hello.zig" has the key "1".
     pub fn key(self: Exercise) []const u8 {
-        const end_index = std.mem.indexOfScalar(u8, self.main_file, '_');
-        assert(end_index != null); // main file must be key_description.zig
+        // Main file must be key_description.zig.
+        const end_index = std.mem.indexOfScalar(u8, self.main_file, '_') orelse
+            unreachable;
 
-        // remove zero padding by advancing index past '0's
+        // Remove zero padding by advancing index past '0's.
         var start_index: usize = 0;
         while (self.main_file[start_index] == '0') start_index += 1;
-        return self.main_file[start_index..end_index.?];
+        return self.main_file[start_index..end_index];
     }
 
     /// Returns the exercise key as an integer.
