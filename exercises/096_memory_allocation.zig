@@ -27,7 +27,7 @@
 //         std.debug.print("ptr={*}\n", .{ptr});
 //
 //         const slice_ptr = try allocator.alloc(f64, 5);
-//         std.debug.print("ptr={*}\n", .{ptr});
+//         std.debug.print("slice_ptr={*}\n", .{slice_ptr});
 //     }
 
 // Instead of an simple integer or a constant sized slice, this

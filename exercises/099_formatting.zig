@@ -22,7 +22,7 @@
 // These can be used in different ways, but typically to convert
 // numerical values into various text representations. The
 // results can be used for direct output to a terminal or stored
-// for later use or written to file. The latter is useful when
+// for later use or written to a file. The latter is useful when
 // large amounts of data are to be processed by other programs.
 //
 // In Ziglings, we are concerned with the output to the console.

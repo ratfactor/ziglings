@@ -69,7 +69,7 @@ pub fn main() void {
 }
 
 // Here's our generic sequence printing function. It's nearly
-// complete, but there are a couple missing bits. Please fix
+// complete, but there are a couple of missing bits. Please fix
 // them!
 fn printSequence(my_seq: anytype) void {
     const my_typeinfo = @typeInfo(@TypeOf(my_seq));
