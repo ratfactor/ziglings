@@ -1,6 +1,6 @@
 //
 // There is also an 'inline while'. Just like 'inline for', it
-// loops at compile time, allowing you do all sorts of
+// loops at compile time, allowing you to do all sorts of
 // interesting things not possible at runtime. See if you can
 // figure out what this rather bonkers example prints:
 //
