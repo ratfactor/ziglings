@@ -133,17 +133,20 @@ pub fn build(b: *Build) !void {
             print("unknown exercise number: {}\n", .{n});
             std.os.exit(1);
         }
-
         const ex = exercises[n - 1];
 
         const build_step = ex.addExecutable(b, work_path);
-        b.installArtifact(build_step);
+
+        const skip_step = SkipStep.create(b, ex);
+        if (!ex.skip)
+            b.installArtifact(build_step)
+        else
+            b.getInstallStep().dependOn(&skip_step.step);
 
         const run_step = b.addRunArtifact(build_step);
 
         const test_step = b.step("test", b.fmt("Run {s} without checking output", .{ex.main_file}));
         if (ex.skip) {
-            const skip_step = SkipStep.create(b, ex);
             test_step.dependOn(&skip_step.step);
         } else {
             test_step.dependOn(&run_step.step);
@@ -201,7 +204,12 @@ pub fn build(b: *Build) !void {
     var prev_step = &header_step.step;
     for (exercises) |ex| {
         const build_step = ex.addExecutable(b, work_path);
-        b.installArtifact(build_step);
+
+        const skip_step = SkipStep.create(b, ex);
+        if (!ex.skip)
+            b.installArtifact(build_step)
+        else
+            b.getInstallStep().dependOn(&skip_step.step);
 
         const verify_stepn = ZiglingStep.create(b, ex, work_path);
         verify_stepn.step.dependOn(prev_step);
