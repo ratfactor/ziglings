@@ -616,9 +616,9 @@ const PrintStep = struct {
 
     fn make(step: *Step, prog_node: *std.Progress.Node) !void {
         _ = prog_node;
-        const p = @fieldParentPtr(PrintStep, "step", step);
+        const self = @fieldParentPtr(PrintStep, "step", step);
 
-        print("{s}", .{p.message});
+        print("{s}", .{self.message});
     }
 };
 
@@ -644,10 +644,10 @@ const SkipStep = struct {
 
     fn make(step: *Step, prog_node: *std.Progress.Node) !void {
         _ = prog_node;
-        const p = @fieldParentPtr(SkipStep, "step", step);
+        const self = @fieldParentPtr(SkipStep, "step", step);
 
-        if (p.exercise.skip) {
-            print("{s} skipped\n", .{p.exercise.main_file});
+        if (self.exercise.skip) {
+            print("{s} skipped\n", .{self.exercise.main_file});
         }
     }
 };
