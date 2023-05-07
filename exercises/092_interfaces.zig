@@ -86,7 +86,7 @@ const Insect = union(enum) {
 
     // Thanks to 'inline else', we can think of this print() as
     // being an interface method. Any member of this union with
-    // with a print() method can be treated uniformly by outside
+    // a print() method can be treated uniformly by outside
     // code without needing to know any other details. Cool!
     pub fn print(self: Insect) void {
         switch (self) {
