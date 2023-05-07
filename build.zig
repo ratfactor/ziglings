@@ -198,11 +198,9 @@ pub fn build(b: *Build) !void {
     const ziglings_step = b.step("ziglings", "Check all ziglings");
     b.default_step = ziglings_step;
 
-    // Don't use the "multi-object for loop" syntax, in order to avoid a syntax
-    // error with old Zig compilers.
     var prev_step = &header_step.step;
     for (exercises) |ex| {
-        const build_step = ex.addExecutable(b, "exercises");
+        const build_step = ex.addExecutable(b, work_path);
         b.installArtifact(build_step);
 
         const verify_stepn = ZiglingStep.create(b, ex, work_path);
