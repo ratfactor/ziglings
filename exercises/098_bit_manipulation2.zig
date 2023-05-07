@@ -39,7 +39,7 @@ fn isPangram(str: []const u8) bool {
     // first we check if the string has at least 26 characters
     if (str.len < 26) return false;
 
-    // we uses a 32 bit variable of which we need 26 bit
+    // we uses a 32 bit variable of which we need 26 bits
     var bits: u32 = 0;
 
     // loop about all characters in the string
@@ -50,8 +50,8 @@ fn isPangram(str: []const u8) bool {
             //
             // to do this, we use a little trick:
             // since the letters in the ASCI table start at 65
-            // and are numbered by, we simply subtract the first
-            // letter (in this case the 'a') from the character
+            // and are numbered sequentially, we simply subtract the
+            // first letter (in this case the 'a') from the character
             // found, and thus get the position of the desired bit
             bits |= @as(u32, 1) << @truncate(u5, ascii.toLower(c) - 'a');
         }
