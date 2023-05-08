@@ -388,37 +388,32 @@ const ZiglingStep = struct {
                     print("{s}{s}: Unable to spawn the following command: file not found{s}\n", .{
                         red_text, self.exercise.main_file, reset_text,
                     });
-                    for (argv) |v| print("{s} ", .{v});
-                    print("\n", .{});
+                    dumpArgs(argv);
                 },
                 error.ExitCodeFailure => {
                     print("{s}{s}: The following command exited with error code {}:{s}\n", .{
                         red_text, self.exercise.main_file, code, reset_text,
                     });
-                    for (argv) |v| print("{s} ", .{v});
-                    print("\n", .{});
+                    dumpArgs(argv);
                 },
                 error.ProcessTerminated => {
                     print("{s}{s}: The following command terminated unexpectedly:{s}\n", .{
                         red_text, self.exercise.main_file, reset_text,
                     });
-                    for (argv) |v| print("{s} ", .{v});
-                    print("\n", .{});
+                    dumpArgs(argv);
                 },
                 error.ZigIPCError => {
                     // Commenting this out for now. It always shows up when compilation fails.
                     //print("{s}{s}: The following command failed to communicate the compilation result:{s}\n", .{
                     //    red_text, self.exercise.main_file, reset_text,
                     //});
-                    //for (argv) |v| print("{s} ", .{v});
-                    //print("\n", .{});
+                    //dumpArgs(argv);
                 },
                 else => {
                     print("{s}{s}: Unexpected error: {s}{s}\n", .{
                         red_text, self.exercise.main_file, @errorName(err), reset_text,
                     });
-                    for (argv) |v| print("{s} ", .{v});
-                    print("\n", .{});
+                    dumpArgs(argv);
                 },
             }
 
@@ -567,6 +562,11 @@ const ZiglingStep = struct {
         }
     }
 };
+
+fn dumpArgs(args: []const []const u8) void {
+    for (args) |arg| print("{s} ", .{arg});
+    print("\n", .{});
+}
 
 /// Clears the entire line and move the cursor to column zero.
 /// Used for clearing the compiler and build_runner progress messages.
