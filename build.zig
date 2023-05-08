@@ -119,7 +119,8 @@ pub fn build(b: *Build) !void {
         \\
     ;
 
-    const healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse false;
+    const healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse
+        false;
     const override_healed_path = b.option([]const u8, "healed-path", "Override healed path");
     const exno: ?usize = b.option(usize, "n", "Select exercise");
 
@@ -145,7 +146,10 @@ pub fn build(b: *Build) !void {
 
         const run_step = b.addRunArtifact(build_step);
 
-        const test_step = b.step("test", b.fmt("Run {s} without checking output", .{ex.main_file}));
+        const test_step = b.step(
+            "test",
+            b.fmt("Run {s} without checking output", .{ex.main_file}),
+        );
         if (ex.skip) {
             test_step.dependOn(&skip_step.step);
         } else {
@@ -154,11 +158,17 @@ pub fn build(b: *Build) !void {
 
         const verify_step = ZiglingStep.create(b, ex, work_path);
 
-        const zigling_step = b.step("zigling", b.fmt("Check the solution of {s}", .{ex.main_file}));
+        const zigling_step = b.step(
+            "zigling",
+            b.fmt("Check the solution of {s}", .{ex.main_file}),
+        );
         zigling_step.dependOn(&verify_step.step);
         b.default_step = zigling_step;
 
-        const start_step = b.step("start", b.fmt("Check all solutions starting at {s}", .{ex.main_file}));
+        const start_step = b.step(
+            "start",
+            b.fmt("Check all solutions starting at {s}", .{ex.main_file}),
+        );
 
         var prev_step = verify_step;
         for (exercises) |exn| {
@@ -665,9 +675,7 @@ fn validate_exercises() bool {
 
         if (exno != i and exno != last) {
             print("exercise {s} has an incorrect number: expected {}, got {s}\n", .{
-                ex.main_file,
-                i,
-                ex.key(),
+                ex.main_file, i, ex.key(),
             });
 
             return false;
