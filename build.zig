@@ -568,13 +568,13 @@ const ZiglingStep = struct {
     }
 };
 
-// Clear the entire line and move the cursor to column zero.
-// Used for clearing the compiler and build_runner progress messages.
+/// Clears the entire line and move the cursor to column zero.
+/// Used for clearing the compiler and build_runner progress messages.
 fn resetLine() void {
     if (use_color_escapes) print("{s}", .{"\x1b[2K\r"});
 }
 
-/// Remove trailing whitespace for each line in buf, also ensuring that there
+/// Removes trailing whitespace for each line in buf, also ensuring that there
 /// are no trailing LF characters at the end.
 pub fn trimLines(allocator: std.mem.Allocator, buf: []const u8) ![]const u8 {
     var list = try std.ArrayList(u8).initCapacity(allocator, buf.len);
@@ -594,7 +594,7 @@ pub fn trimLines(allocator: std.mem.Allocator, buf: []const u8) ![]const u8 {
     return std.mem.trimRight(u8, result, "\n");
 }
 
-// Print a message to stderr.
+/// Prints a message to stderr.
 const PrintStep = struct {
     step: Step,
     message: []const u8,
@@ -621,7 +621,7 @@ const PrintStep = struct {
     }
 };
 
-// Skip an exercise.
+/// Skips an exercise.
 const SkipStep = struct {
     step: Step,
     exercise: Exercise,
@@ -650,10 +650,10 @@ const SkipStep = struct {
     }
 };
 
-// Check that each exercise number, excluding the last, forms the sequence
-// `[1, exercise.len)`.
-//
-// Additionally check that the output field lines doesn't have trailing whitespace.
+/// Checks that each exercise number, excluding the last, forms the sequence
+/// `[1, exercise.len)`.
+///
+/// Additionally check that the output field lines doesn't have trailing whitespace.
 fn validate_exercises() bool {
     // Don't use the "multi-object for loop" syntax, in order to avoid a syntax
     // error with old Zig compilers.
