@@ -84,10 +84,11 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
                 b.fmt("-Dn={}", .{n}),
                 "test",
             });
+            const expect = b.fmt("{s} skipped", .{ex.main_file});
             cmd.setName(b.fmt("zig build -Dhealed -Dn={} test", .{n}));
             cmd.expectExitCode(0);
-            cmd.expectStdOutEqual("");
-            expectStdErrMatch(cmd, b.fmt("{s} skipped", .{ex.main_file}));
+            cmd.addCheck(.{ .expect_stdout_exact = "" });
+            cmd.addCheck(.{ .expect_stderr_match = expect });
 
             cmd.step.dependOn(&heal_step.step);
 
@@ -172,9 +173,10 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         const case_step = createCase(b, "case-5");
 
         const cmd = b.addSystemCommand(&.{ b.zig_exe, "build", "-Dn=1" });
+        const expect = exercises[0].hint orelse "";
         cmd.setName("zig build -Dn=1");
         cmd.expectExitCode(1);
-        expectStdErrMatch(cmd, exercises[0].hint orelse "");
+        cmd.addCheck(.{ .expect_stderr_match = expect });
 
         cmd.step.dependOn(case_step);
 
@@ -465,28 +467,4 @@ pub fn makeTempPath(b: *Build) ![]const u8 {
     try b.cache_root.handle.makePath(tmp_dir_sub_path);
 
     return path;
-}
-
-//
-// Missing functions from std.Build.RunStep
-//
-
-/// Adds a check for stderr match. Does not add any other checks.
-pub fn expectStdErrMatch(self: *RunStep, bytes: []const u8) void {
-    const new_check: RunStep.StdIo.Check = .{
-        .expect_stderr_match = self.step.owner.dupe(bytes),
-    };
-    self.addCheck(new_check);
-}
-
-/// Adds a check for stdout match as well as a check for exit code 0, if
-/// there is not already an expected termination check.
-pub fn expectStdOutMatch(self: *RunStep, bytes: []const u8) void {
-    const new_check: RunStep.StdIo.Check = .{
-        .expect_stdout_match = self.step.owner.dupe(bytes),
-    };
-    self.addCheck(new_check);
-    if (!self.hasTermCheck()) {
-        self.expectExitCode(0);
-    }
 }
