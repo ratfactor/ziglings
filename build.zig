@@ -74,9 +74,22 @@ pub const Exercise = struct {
     }
 };
 
+pub const logo =
+    \\         _       _ _
+    \\     ___(_) __ _| (_)_ __   __ _ ___
+    \\    |_  | |/ _' | | | '_ \ / _' / __|
+    \\     / /| | (_| | | | | | | (_| \__ \
+    \\    /___|_|\__, |_|_|_| |_|\__, |___/
+    \\           |___/           |___/
+    \\
+    \\    "Look out! Broken programs below!"
+    \\
+    \\
+;
+
 pub fn build(b: *Build) !void {
     if (!compat.is_compatible) compat.die();
-    if (!validate_exercises()) std.os.exit(1);
+    if (!validate_exercises()) std.os.exit(2);
 
     use_color_escapes = false;
     if (std.io.getStdErr().supportsAnsiEscapeCodes()) {
@@ -106,19 +119,6 @@ pub fn build(b: *Build) !void {
         reset_text = "\x1b[0m";
     }
 
-    const logo =
-        \\         _       _ _
-        \\     ___(_) __ _| (_)_ __   __ _ ___
-        \\    |_  | |/ _' | | | '_ \ / _' / __|
-        \\     / /| | (_| | | | | | | (_| \__ \
-        \\    /___|_|\__, |_|_|_| |_|\__, |___/
-        \\           |___/           |___/
-        \\
-        \\    "Look out! Broken programs below!"
-        \\
-        \\
-    ;
-
     const healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse
         false;
     const override_healed_path = b.option([]const u8, "healed-path", "Override healed path");
@@ -136,7 +136,7 @@ pub fn build(b: *Build) !void {
     if (exno) |n| {
         if (n == 0 or n > exercises.len - 1) {
             print("unknown exercise number: {}\n", .{n});
-            std.os.exit(1);
+            std.os.exit(2);
         }
         const ex = exercises[n - 1];
 
@@ -280,10 +280,10 @@ const ZiglingStep = struct {
 
             self.help();
 
-            // NOTE: Returning 0 'success' status because the *exercise* failed,
-            // but Ziglings did not. Otherwise the learner will see this message:
-            //   "error: the following build command failed with exit code 1:..."
-            std.os.exit(0);
+            // NOTE: Using exit code 2 will prevent the Zig compiler to print
+            // the message:
+            // "error: the following build command failed with exit code 1:..."
+            std.os.exit(2);
         };
 
         self.run(exe_path, prog_node) catch {
@@ -293,7 +293,7 @@ const ZiglingStep = struct {
             self.help();
 
             // NOTE: See note above!
-            std.os.exit(0);
+            std.os.exit(2);
         };
     }
 

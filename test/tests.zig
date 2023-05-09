@@ -175,7 +175,7 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         const cmd = b.addSystemCommand(&.{ b.zig_exe, "build", "-Dn=1" });
         const expect = exercises[0].hint orelse "";
         cmd.setName("zig build -Dn=1");
-        cmd.expectExitCode(1);
+        cmd.expectExitCode(2);
         cmd.addCheck(.{ .expect_stderr_match = expect });
 
         cmd.step.dependOn(case_step);
@@ -282,10 +282,11 @@ const CheckStep = struct {
         for (exercises) |ex| {
             if (ex.number() == 1 and self.has_logo) {
                 // Skip the logo.
+                const nlines = mem.count(u8, root.logo, "\n");
                 var buf: [80]u8 = undefined;
 
                 var lineno: usize = 0;
-                while (lineno < 8) : (lineno += 1) {
+                while (lineno < nlines) : (lineno += 1) {
                     _ = try readLine(stderr, &buf);
                 }
             }
