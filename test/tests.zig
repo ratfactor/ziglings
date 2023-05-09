@@ -435,10 +435,11 @@ const HealStep = struct {
 
 /// Heals all the exercises.
 fn heal(allocator: Allocator, exercises: []const Exercise, work_path: []const u8) !void {
+    const sep = std.fs.path.sep_str;
     const join = fs.path.join;
 
     const exercises_path = "exercises";
-    const patches_path = "patches/patches";
+    const patches_path = "patches" ++ sep ++ "patches";
 
     for (exercises) |ex| {
         const name = ex.name();

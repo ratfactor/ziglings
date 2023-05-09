@@ -124,7 +124,11 @@ pub fn build(b: *Build) !void {
     const override_healed_path = b.option([]const u8, "healed-path", "Override healed path");
     const exno: ?usize = b.option(usize, "n", "Select exercise");
 
-    const healed_path = if (override_healed_path) |path| path else "patches/healed";
+    const sep = std.fs.path.sep_str;
+    const healed_path = if (override_healed_path) |path|
+        path
+    else
+        "patches" ++ sep ++ "healed";
     const work_path = if (healed) healed_path else "exercises";
 
     const header_step = PrintStep.create(b, logo);
