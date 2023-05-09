@@ -111,13 +111,14 @@ pub fn build(b: *Build) !void {
     }
 
     const logo =
-        \\
         \\         _       _ _
         \\     ___(_) __ _| (_)_ __   __ _ ___
         \\    |_  | |/ _' | | | '_ \ / _' / __|
         \\     / /| | (_| | | | | | | (_| \__ \
         \\    /___|_|\__, |_|_|_| |_|\__, |___/
         \\           |___/           |___/
+        \\
+        \\    "Look out! Broken programs below!"
         \\
         \\
     ;
@@ -259,18 +260,24 @@ const ZiglingStep = struct {
 
         const exe_path = self.compile(prog_node) catch {
             if (self.exercise.hint) |hint|
-                print("\n{s}HINT: {s}{s}", .{ bold_text, hint, reset_text });
+                print("\n{s}Ziglings hint: {s}{s}", .{ bold_text, hint, reset_text });
 
             self.help();
-            std.os.exit(1);
+
+            // NOTE: Returning 0 'success' status because the *exercise* failed,
+            // but Ziglings did not. Otherwise the learner will see this message:
+            //   "error: the following build command failed with exit code 1:..."
+            std.os.exit(0);
         };
 
         self.run(exe_path, prog_node) catch {
             if (self.exercise.hint) |hint|
-                print("\n{s}HINT: {s}{s}", .{ bold_text, hint, reset_text });
+                print("\n{s}Ziglings hint: {s}{s}", .{ bold_text, hint, reset_text });
 
             self.help();
-            std.os.exit(1);
+
+            // NOTE: See note above!
+            std.os.exit(0);
         };
     }
 
@@ -397,11 +404,12 @@ const ZiglingStep = struct {
                     print("\n", .{});
                 },
                 error.ZigIPCError => {
-                    print("{s}{s}: The following command failed to communicate the compilation result:{s}\n", .{
-                        red_text, self.exercise.main_file, reset_text,
-                    });
-                    for (argv) |v| print("{s} ", .{v});
-                    print("\n", .{});
+                    // Commenting this out for now. It always shows up when compilation fails.
+                    //print("{s}{s}: The following command failed to communicate the compilation result:{s}\n", .{
+                    //    red_text, self.exercise.main_file, reset_text,
+                    //});
+                    //for (argv) |v| print("{s} ", .{v});
+                    //print("\n", .{});
                 },
                 else => {
                     print("{s}{s}: Unexpected error: {s}{s}\n", .{
@@ -521,20 +529,22 @@ const ZiglingStep = struct {
 
     fn help(self: *ZiglingStep) void {
         const path = self.exercise.main_file;
-        const key = self.exercise.key();
 
         print("\n{s}Edit exercises/{s} and run 'zig build' again.{s}\n", .{
             red_text, path, reset_text,
         });
 
-        const format =
-            \\
-            \\{s}To compile only this exercise, you can also use this command:{s}
-            \\{s}zig build -Dn={s}{s}
-            \\
-            \\
-        ;
-        print(format, .{ red_text, reset_text, bold_text, key, reset_text });
+        // NOTE: The README explains this "advanced feature" if anyone wishes to use
+        //       it. Otherwise, beginners are thinking they *have* to do this.
+        //const key = self.exercise.key();
+        //const format =
+        //    \\
+        //    \\{s}To compile only this exercise, you can also use this command:{s}
+        //    \\{s}zig build -Dn={s}{s}
+        //    \\
+        //    \\
+        //;
+        //print(format, .{ red_text, reset_text, bold_text, key, reset_text });
     }
 
     fn printErrors(self: *ZiglingStep) void {
@@ -691,10 +701,12 @@ const exercises = [_]Exercise{
         .output = "Hello world!",
         .hint =
         \\DON'T PANIC!
-        \\Read the error above.
-        \\See how it has something to do with 'main'?
-        \\Open up the source file as noted and read the comments.
-        \\You can do this!
+        \\Read the compiler messages above. (Something about 'main'?)
+        \\Open up the source file as noted below and read the comments.
+        \\
+        \\(Hints like these will occasionally show up, but for the
+        \\most part, you'll be taking directions from the Zig
+        \\compiler itself.)
         \\
         ,
     },
