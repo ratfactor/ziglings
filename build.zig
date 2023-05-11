@@ -74,9 +74,22 @@ pub const Exercise = struct {
     }
 };
 
+pub const logo =
+    \\         _       _ _
+    \\     ___(_) __ _| (_)_ __   __ _ ___
+    \\    |_  | |/ _' | | | '_ \ / _' / __|
+    \\     / /| | (_| | | | | | | (_| \__ \
+    \\    /___|_|\__, |_|_|_| |_|\__, |___/
+    \\           |___/           |___/
+    \\
+    \\    "Look out! Broken programs below!"
+    \\
+    \\
+;
+
 pub fn build(b: *Build) !void {
     if (!compat.is_compatible) compat.die();
-    if (!validate_exercises()) std.os.exit(1);
+    if (!validate_exercises()) std.os.exit(2);
 
     use_color_escapes = false;
     if (std.io.getStdErr().supportsAnsiEscapeCodes()) {
@@ -106,24 +119,16 @@ pub fn build(b: *Build) !void {
         reset_text = "\x1b[0m";
     }
 
-    const logo =
-        \\         _       _ _
-        \\     ___(_) __ _| (_)_ __   __ _ ___
-        \\    |_  | |/ _' | | | '_ \ / _' / __|
-        \\     / /| | (_| | | | | | | (_| \__ \
-        \\    /___|_|\__, |_|_|_| |_|\__, |___/
-        \\           |___/           |___/
-        \\
-        \\    "Look out! Broken programs below!"
-        \\
-        \\
-    ;
-
-    const healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse false;
+    const healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse
+        false;
     const override_healed_path = b.option([]const u8, "healed-path", "Override healed path");
     const exno: ?usize = b.option(usize, "n", "Select exercise");
 
-    const healed_path = if (override_healed_path) |path| path else "patches/healed";
+    const sep = std.fs.path.sep_str;
+    const healed_path = if (override_healed_path) |path|
+        path
+    else
+        "patches" ++ sep ++ "healed";
     const work_path = if (healed) healed_path else "exercises";
 
     const header_step = PrintStep.create(b, logo);
@@ -131,19 +136,25 @@ pub fn build(b: *Build) !void {
     if (exno) |n| {
         if (n == 0 or n > exercises.len - 1) {
             print("unknown exercise number: {}\n", .{n});
-            std.os.exit(1);
+            std.os.exit(2);
         }
-
         const ex = exercises[n - 1];
 
         const build_step = ex.addExecutable(b, work_path);
-        b.installArtifact(build_step);
+
+        const skip_step = SkipStep.create(b, ex);
+        if (!ex.skip)
+            b.installArtifact(build_step)
+        else
+            b.getInstallStep().dependOn(&skip_step.step);
 
         const run_step = b.addRunArtifact(build_step);
 
-        const test_step = b.step("test", b.fmt("Run {s} without checking output", .{ex.main_file}));
+        const test_step = b.step(
+            "test",
+            b.fmt("Run {s} without checking output", .{ex.main_file}),
+        );
         if (ex.skip) {
-            const skip_step = SkipStep.create(b, ex);
             test_step.dependOn(&skip_step.step);
         } else {
             test_step.dependOn(&run_step.step);
@@ -151,11 +162,17 @@ pub fn build(b: *Build) !void {
 
         const verify_step = ZiglingStep.create(b, ex, work_path);
 
-        const zigling_step = b.step("zigling", b.fmt("Check the solution of {s}", .{ex.main_file}));
+        const zigling_step = b.step(
+            "zigling",
+            b.fmt("Check the solution of {s}", .{ex.main_file}),
+        );
         zigling_step.dependOn(&verify_step.step);
         b.default_step = zigling_step;
 
-        const start_step = b.step("start", b.fmt("Check all solutions starting at {s}", .{ex.main_file}));
+        const start_step = b.step(
+            "start",
+            b.fmt("Check all solutions starting at {s}", .{ex.main_file}),
+        );
 
         var prev_step = verify_step;
         for (exercises) |exn| {
@@ -198,12 +215,15 @@ pub fn build(b: *Build) !void {
     const ziglings_step = b.step("ziglings", "Check all ziglings");
     b.default_step = ziglings_step;
 
-    // Don't use the "multi-object for loop" syntax, in order to avoid a syntax
-    // error with old Zig compilers.
     var prev_step = &header_step.step;
     for (exercises) |ex| {
-        const build_step = ex.addExecutable(b, "exercises");
-        b.installArtifact(build_step);
+        const build_step = ex.addExecutable(b, work_path);
+
+        const skip_step = SkipStep.create(b, ex);
+        if (!ex.skip)
+            b.installArtifact(build_step)
+        else
+            b.getInstallStep().dependOn(&skip_step.step);
 
         const verify_stepn = ZiglingStep.create(b, ex, work_path);
         verify_stepn.step.dependOn(prev_step);
@@ -260,10 +280,10 @@ const ZiglingStep = struct {
 
             self.help();
 
-            // NOTE: Returning 0 'success' status because the *exercise* failed,
-            // but Ziglings did not. Otherwise the learner will see this message:
-            //   "error: the following build command failed with exit code 1:..."
-            std.os.exit(0);
+            // NOTE: Using exit code 2 will prevent the Zig compiler to print
+            // the message:
+            // "error: the following build command failed with exit code 1:..."
+            std.os.exit(2);
         };
 
         self.run(exe_path, prog_node) catch {
@@ -273,7 +293,7 @@ const ZiglingStep = struct {
             self.help();
 
             // NOTE: See note above!
-            std.os.exit(0);
+            std.os.exit(2);
         };
     }
 
@@ -382,37 +402,32 @@ const ZiglingStep = struct {
                     print("{s}{s}: Unable to spawn the following command: file not found{s}\n", .{
                         red_text, self.exercise.main_file, reset_text,
                     });
-                    for (argv) |v| print("{s} ", .{v});
-                    print("\n", .{});
+                    dumpArgs(argv);
                 },
                 error.ExitCodeFailure => {
                     print("{s}{s}: The following command exited with error code {}:{s}\n", .{
                         red_text, self.exercise.main_file, code, reset_text,
                     });
-                    for (argv) |v| print("{s} ", .{v});
-                    print("\n", .{});
+                    dumpArgs(argv);
                 },
                 error.ProcessTerminated => {
                     print("{s}{s}: The following command terminated unexpectedly:{s}\n", .{
                         red_text, self.exercise.main_file, reset_text,
                     });
-                    for (argv) |v| print("{s} ", .{v});
-                    print("\n", .{});
+                    dumpArgs(argv);
                 },
                 error.ZigIPCError => {
                     // Commenting this out for now. It always shows up when compilation fails.
                     //print("{s}{s}: The following command failed to communicate the compilation result:{s}\n", .{
                     //    red_text, self.exercise.main_file, reset_text,
                     //});
-                    //for (argv) |v| print("{s} ", .{v});
-                    //print("\n", .{});
+                    //dumpArgs(argv);
                 },
                 else => {
                     print("{s}{s}: Unexpected error: {s}{s}\n", .{
                         red_text, self.exercise.main_file, @errorName(err), reset_text,
                     });
-                    for (argv) |v| print("{s} ", .{v});
-                    print("\n", .{});
+                    dumpArgs(argv);
                 },
             }
 
@@ -562,13 +577,18 @@ const ZiglingStep = struct {
     }
 };
 
-// Clear the entire line and move the cursor to column zero.
-// Used for clearing the compiler and build_runner progress messages.
+fn dumpArgs(args: []const []const u8) void {
+    for (args) |arg| print("{s} ", .{arg});
+    print("\n", .{});
+}
+
+/// Clears the entire line and move the cursor to column zero.
+/// Used for clearing the compiler and build_runner progress messages.
 fn resetLine() void {
     if (use_color_escapes) print("{s}", .{"\x1b[2K\r"});
 }
 
-/// Remove trailing whitespace for each line in buf, also ensuring that there
+/// Removes trailing whitespace for each line in buf, also ensuring that there
 /// are no trailing LF characters at the end.
 pub fn trimLines(allocator: std.mem.Allocator, buf: []const u8) ![]const u8 {
     var list = try std.ArrayList(u8).initCapacity(allocator, buf.len);
@@ -588,7 +608,7 @@ pub fn trimLines(allocator: std.mem.Allocator, buf: []const u8) ![]const u8 {
     return std.mem.trimRight(u8, result, "\n");
 }
 
-// Print a message to stderr.
+/// Prints a message to stderr.
 const PrintStep = struct {
     step: Step,
     message: []const u8,
@@ -608,15 +628,14 @@ const PrintStep = struct {
         return self;
     }
 
-    fn make(step: *Step, prog_node: *std.Progress.Node) !void {
-        _ = prog_node;
-        const p = @fieldParentPtr(PrintStep, "step", step);
+    fn make(step: *Step, _: *std.Progress.Node) !void {
+        const self = @fieldParentPtr(PrintStep, "step", step);
 
-        print("{s}", .{p.message});
+        print("{s}", .{self.message});
     }
 };
 
-// Skip an exercise.
+/// Skips an exercise.
 const SkipStep = struct {
     step: Step,
     exercise: Exercise,
@@ -636,20 +655,19 @@ const SkipStep = struct {
         return self;
     }
 
-    fn make(step: *Step, prog_node: *std.Progress.Node) !void {
-        _ = prog_node;
-        const p = @fieldParentPtr(SkipStep, "step", step);
+    fn make(step: *Step, _: *std.Progress.Node) !void {
+        const self = @fieldParentPtr(SkipStep, "step", step);
 
-        if (p.exercise.skip) {
-            print("{s} skipped\n", .{p.exercise.main_file});
+        if (self.exercise.skip) {
+            print("{s} skipped\n", .{self.exercise.main_file});
         }
     }
 };
 
-// Check that each exercise number, excluding the last, forms the sequence
-// `[1, exercise.len)`.
-//
-// Additionally check that the output field lines doesn't have trailing whitespace.
+/// Checks that each exercise number, excluding the last, forms the sequence
+/// `[1, exercise.len)`.
+///
+/// Additionally check that the output field lines doesn't have trailing whitespace.
 fn validate_exercises() bool {
     // Don't use the "multi-object for loop" syntax, in order to avoid a syntax
     // error with old Zig compilers.
@@ -661,9 +679,7 @@ fn validate_exercises() bool {
 
         if (exno != i and exno != last) {
             print("exercise {s} has an incorrect number: expected {}, got {s}\n", .{
-                ex.main_file,
-                i,
-                ex.key(),
+                ex.main_file, i, ex.key(),
             });
 
             return false;
