@@ -84,10 +84,11 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
                 b.fmt("-Dn={}", .{n}),
                 "test",
             });
+            const expect = b.fmt("{s} skipped", .{ex.main_file});
             cmd.setName(b.fmt("zig build -Dhealed -Dn={} test", .{n}));
             cmd.expectExitCode(0);
-            cmd.expectStdOutEqual("");
-            expectStdErrMatch(cmd, b.fmt("{s} skipped", .{ex.main_file}));
+            cmd.addCheck(.{ .expect_stdout_exact = "" });
+            cmd.addCheck(.{ .expect_stderr_match = expect });
 
             cmd.step.dependOn(&heal_step.step);
 
@@ -172,9 +173,10 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         const case_step = createCase(b, "case-5");
 
         const cmd = b.addSystemCommand(&.{ b.zig_exe, "build", "-Dn=1" });
+        const expect = exercises[0].hint orelse "";
         cmd.setName("zig build -Dn=1");
-        cmd.expectExitCode(1);
-        expectStdErrMatch(cmd, exercises[0].hint orelse "");
+        cmd.expectExitCode(2);
+        cmd.addCheck(.{ .expect_stderr_match = expect });
 
         cmd.step.dependOn(case_step);
 
@@ -280,10 +282,11 @@ const CheckStep = struct {
         for (exercises) |ex| {
             if (ex.number() == 1 and self.has_logo) {
                 // Skip the logo.
+                const nlines = mem.count(u8, root.logo, "\n");
                 var buf: [80]u8 = undefined;
 
                 var lineno: usize = 0;
-                while (lineno < 8) : (lineno += 1) {
+                while (lineno < nlines) : (lineno += 1) {
                     _ = try readLine(stderr, &buf);
                 }
             }
@@ -433,10 +436,11 @@ const HealStep = struct {
 
 /// Heals all the exercises.
 fn heal(allocator: Allocator, exercises: []const Exercise, work_path: []const u8) !void {
+    const sep = std.fs.path.sep_str;
     const join = fs.path.join;
 
     const exercises_path = "exercises";
-    const patches_path = "patches/patches";
+    const patches_path = "patches" ++ sep ++ "patches";
 
     for (exercises) |ex| {
         const name = ex.name();
@@ -465,28 +469,4 @@ pub fn makeTempPath(b: *Build) ![]const u8 {
     try b.cache_root.handle.makePath(tmp_dir_sub_path);
 
     return path;
-}
-
-//
-// Missing functions from std.Build.RunStep
-//
-
-/// Adds a check for stderr match. Does not add any other checks.
-pub fn expectStdErrMatch(self: *RunStep, bytes: []const u8) void {
-    const new_check: RunStep.StdIo.Check = .{
-        .expect_stderr_match = self.step.owner.dupe(bytes),
-    };
-    self.addCheck(new_check);
-}
-
-/// Adds a check for stdout match as well as a check for exit code 0, if
-/// there is not already an expected termination check.
-pub fn expectStdOutMatch(self: *RunStep, bytes: []const u8) void {
-    const new_check: RunStep.StdIo.Check = .{
-        .expect_stdout_match = self.step.owner.dupe(bytes),
-    };
-    self.addCheck(new_check);
-    if (!self.hasTermCheck()) {
-        self.expectExitCode(0);
-    }
 }
