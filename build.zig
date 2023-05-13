@@ -153,8 +153,11 @@ pub fn build(b: *Build) !void {
             b.fmt("Check the solution of {s}", .{ex.main_file}),
         );
         b.default_step = zigling_step;
+        zigling_step.dependOn(&header_step.step);
 
         const verify_step = ZiglingStep.create(b, ex, work_path);
+        verify_step.step.dependOn(&header_step.step);
+
         zigling_step.dependOn(&verify_step.step);
 
         return;

@@ -151,6 +151,16 @@ const CheckNamedStep = struct {
         defer stderr_file.close();
 
         const stderr = stderr_file.reader();
+        {
+            // Skip the logo.
+            const nlines = mem.count(u8, root.logo, "\n");
+            var buf: [80]u8 = undefined;
+
+            var lineno: usize = 0;
+            while (lineno < nlines) : (lineno += 1) {
+                _ = try readLine(stderr, &buf);
+            }
+        }
         try check_output(step, ex, stderr);
     }
 };
