@@ -194,20 +194,13 @@ pub fn build(b: *Build) !void {
         return;
     }
 
-    // Run all exercises in a row
+    // Normal build mode: verifies all exercises according to the recommended
+    // order.
     const ziglings_step = b.step("ziglings", "Check all ziglings");
     b.default_step = ziglings_step;
 
     var prev_step = &header_step.step;
     for (exercises) |ex| {
-        const build_step = ex.addExecutable(b, work_path);
-
-        const skip_step = SkipStep.create(b, ex);
-        if (!ex.skip)
-            b.installArtifact(build_step)
-        else
-            b.getInstallStep().dependOn(&skip_step.step);
-
         const verify_stepn = ZiglingStep.create(b, ex, work_path);
         verify_stepn.step.dependOn(prev_step);
 
