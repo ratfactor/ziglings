@@ -66,6 +66,14 @@ pub const Exercise = struct {
     }
 };
 
+/// Build mode.
+const Mode = enum {
+    /// Normal build mode: `zig build`
+    normal,
+    /// Named build mode: `zig build -Dn=n`
+    named,
+};
+
 pub const logo =
     \\         _       _ _
     \\     ___(_) __ _| (_)_ __   __ _ ___
@@ -141,7 +149,7 @@ pub fn build(b: *Build) !void {
         b.default_step = zigling_step;
         zigling_step.dependOn(&header_step.step);
 
-        const verify_step = ZiglingStep.create(b, ex, work_path);
+        const verify_step = ZiglingStep.create(b, ex, work_path, .named);
         verify_step.step.dependOn(&header_step.step);
 
         zigling_step.dependOn(&verify_step.step);
@@ -156,7 +164,7 @@ pub fn build(b: *Build) !void {
 
     var prev_step = &header_step.step;
     for (exercises) |ex| {
-        const verify_stepn = ZiglingStep.create(b, ex, work_path);
+        const verify_stepn = ZiglingStep.create(b, ex, work_path, .normal);
         verify_stepn.step.dependOn(prev_step);
 
         prev_step = &verify_stepn.step;
@@ -177,12 +185,18 @@ const ZiglingStep = struct {
     step: Step,
     exercise: Exercise,
     work_path: []const u8,
+    mode: Mode,
 
     is_testing: bool = false,
     result_messages: []const u8 = "",
     result_error_bundle: std.zig.ErrorBundle = std.zig.ErrorBundle.empty,
 
-    pub fn create(b: *Build, exercise: Exercise, work_path: []const u8) *ZiglingStep {
+    pub fn create(
+        b: *Build,
+        exercise: Exercise,
+        work_path: []const u8,
+        mode: Mode,
+    ) *ZiglingStep {
         const self = b.allocator.create(ZiglingStep) catch @panic("OOM");
         self.* = .{
             .step = Step.init(.{
@@ -193,6 +207,7 @@ const ZiglingStep = struct {
             }),
             .exercise = exercise,
             .work_path = work_path,
+            .mode = mode,
         };
         return self;
     }
@@ -533,23 +548,18 @@ const ZiglingStep = struct {
     }
 
     fn help(self: *ZiglingStep) void {
+        const b = self.step.owner;
+        const key = self.exercise.key();
         const path = self.exercise.main_file;
 
-        print("\n{s}Edit exercises/{s} and run 'zig build' again.{s}\n", .{
-            red_text, path, reset_text,
-        });
+        const cmd = switch (self.mode) {
+            .normal => "zig build",
+            .named => b.fmt("zig build -Dn={s}", .{key}),
+        };
 
-        // NOTE: The README explains this "advanced feature" if anyone wishes to use
-        //       it. Otherwise, beginners are thinking they *have* to do this.
-        //const key = self.exercise.key();
-        //const format =
-        //    \\
-        //    \\{s}To compile only this exercise, you can also use this command:{s}
-        //    \\{s}zig build -Dn={s}{s}
-        //    \\
-        //    \\
-        //;
-        //print(format, .{ red_text, reset_text, bold_text, key, reset_text });
+        print("\n{s}Edit exercises/{s} and run '{s}' again.{s}\n", .{
+            red_text, path, cmd, reset_text,
+        });
     }
 
     fn printErrors(self: *ZiglingStep) void {
