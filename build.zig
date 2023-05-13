@@ -64,20 +64,6 @@ pub const Exercise = struct {
     pub fn number(self: Exercise) usize {
         return std.fmt.parseInt(usize, self.key(), 10) catch unreachable;
     }
-
-    /// Returns the CompileStep for this exercise.
-    ///
-    /// TODO: currently this method is no longer used.
-    pub fn addExecutable(self: Exercise, b: *Build, work_path: []const u8) *CompileStep {
-        const path = join(b.allocator, &.{ work_path, self.main_file }) catch
-            @panic("OOM");
-
-        return b.addExecutable(.{
-            .name = self.name(),
-            .root_source_file = .{ .path = path },
-            .link_libc = self.link_libc,
-        });
-    }
 };
 
 pub const logo =
@@ -640,35 +626,6 @@ const PrintStep = struct {
         const self = @fieldParentPtr(PrintStep, "step", step);
 
         print("{s}", .{self.message});
-    }
-};
-
-/// Skips an exercise.
-const SkipStep = struct {
-    step: Step,
-    exercise: Exercise,
-
-    pub fn create(owner: *Build, exercise: Exercise) *SkipStep {
-        const self = owner.allocator.create(SkipStep) catch @panic("OOM");
-        self.* = .{
-            .step = Step.init(.{
-                .id = .custom,
-                .name = owner.fmt("skip {s}", .{exercise.main_file}),
-                .owner = owner,
-                .makeFn = make,
-            }),
-            .exercise = exercise,
-        };
-
-        return self;
-    }
-
-    fn make(step: *Step, _: *std.Progress.Node) !void {
-        const self = @fieldParentPtr(SkipStep, "step", step);
-
-        if (self.exercise.skip) {
-            print("{s} skipped\n", .{self.exercise.main_file});
-        }
     }
 };
 
