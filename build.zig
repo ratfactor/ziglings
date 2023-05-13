@@ -192,29 +192,6 @@ pub fn build(b: *Build) !void {
         start_step.dependOn(&prev_step.step);
 
         return;
-    } else if (healed and false) {
-        // Special case when healed by the eowyn script, where we can make the
-        // code more efficient.
-        //
-        // TODO: this branch is disabled because it prevents the normal case to
-        // be executed.
-        const test_step = b.step("test", "Test the healed exercises");
-        b.default_step = test_step;
-
-        for (exercises) |ex| {
-            const build_step = ex.addExecutable(b, healed_path);
-            b.installArtifact(build_step);
-
-            const run_step = b.addRunArtifact(build_step);
-            if (ex.skip) {
-                const skip_step = SkipStep.create(b, ex);
-                test_step.dependOn(&skip_step.step);
-            } else {
-                test_step.dependOn(&run_step.step);
-            }
-        }
-
-        return;
     }
 
     // Run all exercises in a row
