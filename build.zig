@@ -119,6 +119,9 @@ pub fn build(b: *Build) !void {
         reset_text = "\x1b[0m";
     }
 
+    // Remove the standard install and uninstall steps.
+    b.top_level_steps = .{};
+
     const healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse
         false;
     const override_healed_path = b.option([]const u8, "healed-path", "Override healed path");
