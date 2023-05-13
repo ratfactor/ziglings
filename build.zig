@@ -137,6 +137,7 @@ pub fn build(b: *Build) !void {
 
     const header_step = PrintStep.create(b, logo);
 
+    // If the user pass a number for an exercise
     if (exno) |n| {
         if (n == 0 or n > exercises.len - 1) {
             print("unknown exercise number: {}\n", .{n});
@@ -216,6 +217,7 @@ pub fn build(b: *Build) !void {
         return;
     }
 
+    // Run all exercises in a row
     const ziglings_step = b.step("ziglings", "Check all ziglings");
     b.default_step = ziglings_step;
 
@@ -251,6 +253,7 @@ const ZiglingStep = struct {
     exercise: Exercise,
     work_path: []const u8,
 
+    is_testing: bool = false,
     result_messages: []const u8 = "",
     result_error_bundle: std.zig.ErrorBundle = std.zig.ErrorBundle.empty,
 
@@ -270,6 +273,8 @@ const ZiglingStep = struct {
     }
 
     fn make(step: *Step, prog_node: *std.Progress.Node) !void {
+        // NOTE: Using exit code 2 will prevent the Zig compiler to print the message:
+        // "error: the following build command failed with exit code 1:..."
         const self = @fieldParentPtr(ZiglingStep, "step", step);
 
         if (self.exercise.skip) {
@@ -278,15 +283,23 @@ const ZiglingStep = struct {
             return;
         }
 
+        // Test exercise.
+        if (self.exercise.run_test) {
+            self.is_testing = true;
+            const result_msg = self.testing(prog_node) catch {
+                std.os.exit(2);
+            };
+            const output = try trimLines(self.step.owner.allocator, result_msg);
+            print("\n{s}PASSED:\n{s}{s}\n\n", .{ green_text, output, reset_text });
+            return;
+        }
+
+        // Normal exercise.
         const exe_path = self.compile(prog_node) catch {
             if (self.exercise.hint) |hint|
                 print("\n{s}Ziglings hint: {s}{s}", .{ bold_text, hint, reset_text });
 
             self.help();
-
-            // NOTE: Using exit code 2 will prevent the Zig compiler to print
-            // the message:
-            // "error: the following build command failed with exit code 1:..."
             std.os.exit(2);
         };
 
@@ -295,8 +308,6 @@ const ZiglingStep = struct {
                 print("\n{s}Ziglings hint: {s}{s}", .{ bold_text, hint, reset_text });
 
             self.help();
-
-            // NOTE: See note above!
             std.os.exit(2);
         };
     }
@@ -368,6 +379,57 @@ const ZiglingStep = struct {
         }
 
         print("{s}PASSED:\n{s}{s}\n\n", .{ green_text, output, reset_text });
+    }
+
+    fn testing(self: *ZiglingStep, prog_node: *std.Progress.Node) ![]const u8 {
+        print("Testing {s}...\n", .{self.exercise.main_file});
+
+        const b = self.step.owner;
+        const exercise_path = self.exercise.main_file;
+        const path = join(b.allocator, &.{ self.work_path, exercise_path }) catch
+            @panic("OOM");
+
+        var zig_args = std.ArrayList([]const u8).init(b.allocator);
+        defer zig_args.deinit();
+
+        zig_args.append(b.zig_exe) catch @panic("OOM");
+        zig_args.append("test") catch @panic("OOM");
+
+        zig_args.append(b.pathFromRoot(path)) catch @panic("OOM");
+
+        const argv = zig_args.items;
+        var code: u8 = undefined;
+        _ = self.eval(argv, &code, prog_node) catch |err| {
+            self.printErrors();
+
+            switch (err) {
+                error.FileNotFound => {
+                    print("{s}{s}: Unable to spawn the following command: file not found{s}\n", .{
+                        red_text, self.exercise.main_file, reset_text,
+                    });
+                    dumpArgs(argv);
+                },
+                error.ExitCodeFailure => {
+                    // Expected when test fails.
+                },
+                error.ProcessTerminated => {
+                    print("{s}{s}: The following command terminated unexpectedly:{s}\n", .{
+                        red_text, self.exercise.main_file, reset_text,
+                    });
+                    dumpArgs(argv);
+                },
+                else => {
+                    print("{s}{s}: Unexpected error: {s}{s}\n", .{
+                        red_text, self.exercise.main_file, @errorName(err), reset_text,
+                    });
+                    dumpArgs(argv);
+                },
+            }
+
+            return err;
+        };
+
+        return self.result_messages;
     }
 
     fn compile(self: *ZiglingStep, prog_node: *std.Progress.Node) ![]const u8 {
@@ -539,6 +601,9 @@ const ZiglingStep = struct {
             },
         }
 
+        if (self.is_testing) {
+            return "ok";
+        }
         return result orelse return error.ZigIPCError;
     }
 
@@ -1248,6 +1313,7 @@ const exercises = [_]Exercise{
         .main_file = "102_testing.zig",
         .output = "All 1 tests passed.",
         .run_test = true,
+        .skip = true,
     },
     .{
         .main_file = "999_the_end.zig",
