@@ -66,6 +66,8 @@ pub const Exercise = struct {
     }
 
     /// Returns the CompileStep for this exercise.
+    ///
+    /// TODO: currently this method is no longer used.
     pub fn addExecutable(self: Exercise, b: *Build, work_path: []const u8) *CompileStep {
         const path = join(b.allocator, &.{ work_path, self.main_file }) catch
             @panic("OOM");
@@ -139,57 +141,21 @@ pub fn build(b: *Build) !void {
 
     // If the user pass a number for an exercise
     if (exno) |n| {
+        // Named build mode: verifies a single exercise.
         if (n == 0 or n > exercises.len - 1) {
             print("unknown exercise number: {}\n", .{n});
             std.os.exit(2);
         }
         const ex = exercises[n - 1];
 
-        const build_step = ex.addExecutable(b, work_path);
-
-        const skip_step = SkipStep.create(b, ex);
-        if (!ex.skip)
-            b.installArtifact(build_step)
-        else
-            b.getInstallStep().dependOn(&skip_step.step);
-
-        const run_step = b.addRunArtifact(build_step);
-
-        const test_step = b.step(
-            "test",
-            b.fmt("Run {s} without checking output", .{ex.main_file}),
-        );
-        if (ex.skip) {
-            test_step.dependOn(&skip_step.step);
-        } else {
-            test_step.dependOn(&run_step.step);
-        }
-
-        const verify_step = ZiglingStep.create(b, ex, work_path);
-
         const zigling_step = b.step(
             "zigling",
             b.fmt("Check the solution of {s}", .{ex.main_file}),
         );
-        zigling_step.dependOn(&verify_step.step);
         b.default_step = zigling_step;
 
-        const start_step = b.step(
-            "start",
-            b.fmt("Check all solutions starting at {s}", .{ex.main_file}),
-        );
-
-        var prev_step = verify_step;
-        for (exercises) |exn| {
-            const nth = exn.number();
-            if (nth > n) {
-                const verify_stepn = ZiglingStep.create(b, exn, work_path);
-                verify_stepn.step.dependOn(&prev_step.step);
-
-                prev_step = verify_stepn;
-            }
-        }
-        start_step.dependOn(&prev_step.step);
+        const verify_step = ZiglingStep.create(b, ex, work_path);
+        zigling_step.dependOn(&verify_step.step);
 
         return;
     }
