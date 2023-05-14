@@ -136,7 +136,6 @@ pub fn build(b: *Build) !void {
 
     const header_step = PrintStep.create(b, logo);
 
-    // If the user pass a number for an exercise
     if (exno) |n| {
         // Named build mode: verifies a single exercise.
         if (n == 0 or n > exercises.len - 1) {
