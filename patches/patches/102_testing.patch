@@ -1,0 +1,8 @@
+86c86
+<     try testing.expect(sub(10, 5) == 6);
+---
+>     try testing.expect(sub(10, 5) == 5);
+111c111
+<     try testing.expectError(error.???, divide(15, 0));
+---
+>     try testing.expectError(error.DivisionByZero, divide(15, 0));

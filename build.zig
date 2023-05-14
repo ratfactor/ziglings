@@ -1219,9 +1219,8 @@ const exercises = [_]Exercise{
     },
     .{
         .main_file = "102_testing.zig",
-        .output = "All 1 tests passed.",
+        .output = "",
         .run_test = true,
-        .skip = true,
     },
     .{
         .main_file = "999_the_end.zig",

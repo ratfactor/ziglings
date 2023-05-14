@@ -93,7 +93,7 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         const case_step = createCase(b, "case-3");
 
         for (exercises[0 .. exercises.len - 1]) |ex| {
-            if (ex.skip) continue;
+            if (ex.skip or ex.run_test) continue;
 
             if (ex.hint) |hint| {
                 const n = ex.number();
@@ -238,6 +238,21 @@ fn check_output(step: *Step, exercise: Exercise, reader: Reader) !void {
         {
             const actual = try readLine(reader, &buf) orelse "EOF";
             const expect = b.fmt("Skipping {s}", .{exercise.main_file});
+            try check(step, exercise, expect, actual);
+        }
+
+        {
+            const actual = try readLine(reader, &buf) orelse "EOF";
+            try check(step, exercise, "", actual);
+        }
+
+        return;
+    }
+
+    if (exercise.run_test) {
+        {
+            const actual = try readLine(reader, &buf) orelse "EOF";
+            const expect = b.fmt("Testing {s}...", .{exercise.main_file});
             try check(step, exercise, expect, actual);
         }
 
