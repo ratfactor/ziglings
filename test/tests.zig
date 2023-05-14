@@ -89,18 +89,29 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
     }
 
     {
-        // Test that `zig build -Dn=1` prints the hint.
+        // Test that `zig build -Dn=n` prints the hint.
         const case_step = createCase(b, "case-3");
 
-        const cmd = b.addSystemCommand(&.{ b.zig_exe, "build", "-Dn=1" });
-        const expect = exercises[0].hint orelse "";
-        cmd.setName("zig build -Dn=1");
-        cmd.expectExitCode(2);
-        cmd.addCheck(.{ .expect_stderr_match = expect });
+        for (exercises[0 .. exercises.len - 1]) |ex| {
+            if (ex.skip) continue;
 
-        cmd.step.dependOn(case_step);
+            if (ex.hint) |hint| {
+                const n = ex.number();
 
-        step.dependOn(&cmd.step);
+                const cmd = b.addSystemCommand(&.{
+                    b.zig_exe,
+                    "build",
+                    b.fmt("-Dn={}", .{n}),
+                });
+                cmd.setName(b.fmt("zig build -Dn={}", .{n}));
+                cmd.expectExitCode(2);
+                cmd.addCheck(.{ .expect_stderr_match = hint });
+
+                case_step.dependOn(&cmd.step);
+            }
+        }
+
+        step.dependOn(case_step);
     }
 
     return step;
