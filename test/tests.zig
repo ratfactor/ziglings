@@ -20,7 +20,7 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
     const step = b.step("test-cli", "Test the command line interface");
 
     {
-        // Test that `zig build -Dhealed -Dn=n test` selects the nth exercise.
+        // Test that `zig build -Dhealed -Dn=n` selects the nth exercise.
         const case_step = createCase(b, "case-1");
 
         const tmp_path = makeTempPath(b) catch |err| {
@@ -31,7 +31,6 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
 
         for (exercises[0 .. exercises.len - 1]) |ex| {
             const n = ex.number();
-            if (ex.skip) continue;
 
             const cmd = b.addSystemCommand(&.{
                 b.zig_exe,
@@ -39,18 +38,13 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
                 "-Dhealed",
                 b.fmt("-Dhealed-path={s}", .{tmp_path}),
                 b.fmt("-Dn={}", .{n}),
-                "test",
             });
-            cmd.setName(b.fmt("zig build -Dhealed -Dn={} test", .{n}));
+            cmd.setName(b.fmt("zig build -Dhealed -Dn={}", .{n}));
             cmd.expectExitCode(0);
             cmd.step.dependOn(&heal_step.step);
 
-            const output = if (ex.check_stdout)
-                cmd.captureStdOut()
-            else
-                cmd.captureStdErr();
-
-            const verify = CheckNamedStep.create(b, ex, output);
+            const stderr = cmd.captureStdErr();
+            const verify = CheckNamedStep.create(b, ex, stderr);
             verify.step.dependOn(&cmd.step);
 
             case_step.dependOn(&verify.step);
@@ -63,47 +57,8 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
     }
 
     {
-        // Test that `zig build -Dhealed -Dn=n test` skips disabled esercises.
+        // Test that `zig build -Dhealed` processes all the exercises in order.
         const case_step = createCase(b, "case-2");
-
-        const tmp_path = makeTempPath(b) catch |err| {
-            return fail(step, "unable to make tmp path: {s}\n", .{@errorName(err)});
-        };
-
-        const heal_step = HealStep.create(b, exercises, tmp_path);
-
-        for (exercises[0 .. exercises.len - 1]) |ex| {
-            const n = ex.number();
-            if (!ex.skip) continue;
-
-            const cmd = b.addSystemCommand(&.{
-                b.zig_exe,
-                "build",
-                "-Dhealed",
-                b.fmt("-Dhealed-path={s}", .{tmp_path}),
-                b.fmt("-Dn={}", .{n}),
-                "test",
-            });
-            const expect = b.fmt("{s} skipped", .{ex.main_file});
-            cmd.setName(b.fmt("zig build -Dhealed -Dn={} test", .{n}));
-            cmd.expectExitCode(0);
-            cmd.addCheck(.{ .expect_stdout_exact = "" });
-            cmd.addCheck(.{ .expect_stderr_match = expect });
-
-            cmd.step.dependOn(&heal_step.step);
-
-            case_step.dependOn(&cmd.step);
-        }
-
-        const cleanup = b.addRemoveDirTree(tmp_path);
-        cleanup.step.dependOn(case_step);
-
-        step.dependOn(&cleanup.step);
-    }
-
-    {
-        // Test that `zig build -Dhealed` process all the exercises in order.
-        const case_step = createCase(b, "case-3");
 
         const tmp_path = makeTempPath(b) catch |err| {
             return fail(step, "unable to make tmp path: {s}\n", .{@errorName(err)});
@@ -124,7 +79,7 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         cmd.step.dependOn(&heal_step.step);
 
         const stderr = cmd.captureStdErr();
-        const verify = CheckStep.create(b, exercises, stderr, true);
+        const verify = CheckStep.create(b, exercises, stderr);
         verify.step.dependOn(&cmd.step);
 
         const cleanup = b.addRemoveDirTree(tmp_path);
@@ -134,53 +89,29 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
     }
 
     {
-        // Test that `zig build -Dhealed -Dn=1 start` process all the exercises
-        // in order.
-        const case_step = createCase(b, "case-4");
+        // Test that `zig build -Dn=n` prints the hint.
+        const case_step = createCase(b, "case-3");
 
-        const tmp_path = makeTempPath(b) catch |err| {
-            return fail(step, "unable to make tmp path: {s}\n", .{@errorName(err)});
-        };
+        for (exercises[0 .. exercises.len - 1]) |ex| {
+            if (ex.skip) continue;
 
-        const heal_step = HealStep.create(b, exercises, tmp_path);
-        heal_step.step.dependOn(case_step);
+            if (ex.hint) |hint| {
+                const n = ex.number();
 
-        // TODO: when an exercise is modified, the cache is not invalidated.
-        const cmd = b.addSystemCommand(&.{
-            b.zig_exe,
-            "build",
-            "-Dhealed",
-            b.fmt("-Dhealed-path={s}", .{tmp_path}),
-            "-Dn=1",
-            "start",
-        });
-        cmd.setName("zig build -Dhealed -Dn=1 start");
-        cmd.expectExitCode(0);
-        cmd.step.dependOn(&heal_step.step);
+                const cmd = b.addSystemCommand(&.{
+                    b.zig_exe,
+                    "build",
+                    b.fmt("-Dn={}", .{n}),
+                });
+                cmd.setName(b.fmt("zig build -Dn={}", .{n}));
+                cmd.expectExitCode(2);
+                cmd.addCheck(.{ .expect_stderr_match = hint });
 
-        const stderr = cmd.captureStdErr();
-        const verify = CheckStep.create(b, exercises, stderr, false);
-        verify.step.dependOn(&cmd.step);
+                case_step.dependOn(&cmd.step);
+            }
+        }
 
-        const cleanup = b.addRemoveDirTree(tmp_path);
-        cleanup.step.dependOn(&verify.step);
-
-        step.dependOn(&cleanup.step);
-    }
-
-    {
-        // Test that `zig build -Dn=1` prints the hint.
-        const case_step = createCase(b, "case-5");
-
-        const cmd = b.addSystemCommand(&.{ b.zig_exe, "build", "-Dn=1" });
-        const expect = exercises[0].hint orelse "";
-        cmd.setName("zig build -Dn=1");
-        cmd.expectExitCode(2);
-        cmd.addCheck(.{ .expect_stderr_match = expect });
-
-        cmd.step.dependOn(case_step);
-
-        step.dependOn(&cmd.step);
+        step.dependOn(case_step);
     }
 
     return step;
@@ -197,13 +128,13 @@ fn createCase(b: *Build, name: []const u8) *Step {
     return case_step;
 }
 
-/// Checks the output of `zig build -Dn=n test`.
+/// Checks the output of `zig build -Dn=n`.
 const CheckNamedStep = struct {
     step: Step,
     exercise: Exercise,
-    output: FileSource,
+    stderr: FileSource,
 
-    pub fn create(owner: *Build, exercise: Exercise, output: FileSource) *CheckNamedStep {
+    pub fn create(owner: *Build, exercise: Exercise, stderr: FileSource) *CheckNamedStep {
         const self = owner.allocator.create(CheckNamedStep) catch @panic("OOM");
         self.* = .{
             .step = Step.init(.{
@@ -213,7 +144,7 @@ const CheckNamedStep = struct {
                 .makeFn = make,
             }),
             .exercise = exercise,
-            .output = output,
+            .stderr = stderr,
         };
 
         return self;
@@ -222,34 +153,39 @@ const CheckNamedStep = struct {
     fn make(step: *Step, _: *std.Progress.Node) !void {
         const b = step.owner;
         const self = @fieldParentPtr(CheckNamedStep, "step", step);
+        const ex = self.exercise;
 
-        // Allow up to 1 MB of output capture.
-        const max_bytes = 1 * 1024 * 1024;
-        const path = self.output.getPath(b);
-        const raw_output = try fs.cwd().readFileAlloc(b.allocator, path, max_bytes);
+        const stderr_file = try fs.cwd().openFile(
+            self.stderr.getPath(b),
+            .{ .mode = .read_only },
+        );
+        defer stderr_file.close();
 
-        const actual = try root.trimLines(b.allocator, raw_output);
-        const expect = self.exercise.output;
-        if (!mem.eql(u8, expect, actual)) {
-            return step.fail("{s}: expected to see \"{s}\", found \"{s}\"", .{
-                self.exercise.main_file, expect, actual,
-            });
+        const stderr = stderr_file.reader();
+        {
+            // Skip the logo.
+            const nlines = mem.count(u8, root.logo, "\n");
+            var buf: [80]u8 = undefined;
+
+            var lineno: usize = 0;
+            while (lineno < nlines) : (lineno += 1) {
+                _ = try readLine(stderr, &buf);
+            }
         }
+        try check_output(step, ex, stderr);
     }
 };
 
-/// Checks the output of `zig build` or `zig build -Dn=1 start`.
+/// Checks the output of `zig build`.
 const CheckStep = struct {
     step: Step,
     exercises: []const Exercise,
     stderr: FileSource,
-    has_logo: bool,
 
     pub fn create(
         owner: *Build,
         exercises: []const Exercise,
         stderr: FileSource,
-        has_logo: bool,
     ) *CheckStep {
         const self = owner.allocator.create(CheckStep) catch @panic("OOM");
         self.* = .{
@@ -261,7 +197,6 @@ const CheckStep = struct {
             }),
             .exercises = exercises,
             .stderr = stderr,
-            .has_logo = has_logo,
         };
 
         return self;
@@ -280,7 +215,7 @@ const CheckStep = struct {
 
         const stderr = stderr_file.reader();
         for (exercises) |ex| {
-            if (ex.number() == 1 and self.has_logo) {
+            if (ex.number() == 1) {
                 // Skip the logo.
                 const nlines = mem.count(u8, root.logo, "\n");
                 var buf: [80]u8 = undefined;
@@ -293,75 +228,75 @@ const CheckStep = struct {
             try check_output(step, ex, stderr);
         }
     }
-
-    fn check_output(step: *Step, exercise: Exercise, reader: Reader) !void {
-        const b = step.owner;
-
-        var buf: [1024]u8 = undefined;
-        if (exercise.skip) {
-            {
-                const actual = try readLine(reader, &buf) orelse "EOF";
-                const expect = b.fmt("Skipping {s}", .{exercise.main_file});
-                try check(step, exercise, expect, actual);
-            }
-
-            {
-                const actual = try readLine(reader, &buf) orelse "EOF";
-                try check(step, exercise, "", actual);
-            }
-
-            return;
-        }
-
-        {
-            const actual = try readLine(reader, &buf) orelse "EOF";
-            const expect = b.fmt("Compiling {s}...", .{exercise.main_file});
-            try check(step, exercise, expect, actual);
-        }
-
-        {
-            const actual = try readLine(reader, &buf) orelse "EOF";
-            const expect = b.fmt("Checking {s}...", .{exercise.main_file});
-            try check(step, exercise, expect, actual);
-        }
-
-        {
-            const actual = try readLine(reader, &buf) orelse "EOF";
-            const expect = "PASSED:";
-            try check(step, exercise, expect, actual);
-        }
-
-        // Skip the exercise output.
-        const nlines = 1 + mem.count(u8, exercise.output, "\n") + 1;
-        var lineno: usize = 0;
-        while (lineno < nlines) : (lineno += 1) {
-            _ = try readLine(reader, &buf) orelse @panic("EOF");
-        }
-    }
-
-    fn check(
-        step: *Step,
-        exercise: Exercise,
-        expect: []const u8,
-        actual: []const u8,
-    ) !void {
-        if (!mem.eql(u8, expect, actual)) {
-            return step.fail("{s}: expected to see \"{s}\", found \"{s}\"", .{
-                exercise.main_file,
-                expect,
-                actual,
-            });
-        }
-    }
-
-    fn readLine(reader: fs.File.Reader, buf: []u8) !?[]const u8 {
-        if (try reader.readUntilDelimiterOrEof(buf, '\n')) |line| {
-            return mem.trimRight(u8, line, " \r\n");
-        }
-
-        return null;
-    }
 };
+
+fn check_output(step: *Step, exercise: Exercise, reader: Reader) !void {
+    const b = step.owner;
+
+    var buf: [1024]u8 = undefined;
+    if (exercise.skip) {
+        {
+            const actual = try readLine(reader, &buf) orelse "EOF";
+            const expect = b.fmt("Skipping {s}", .{exercise.main_file});
+            try check(step, exercise, expect, actual);
+        }
+
+        {
+            const actual = try readLine(reader, &buf) orelse "EOF";
+            try check(step, exercise, "", actual);
+        }
+
+        return;
+    }
+
+    {
+        const actual = try readLine(reader, &buf) orelse "EOF";
+        const expect = b.fmt("Compiling {s}...", .{exercise.main_file});
+        try check(step, exercise, expect, actual);
+    }
+
+    {
+        const actual = try readLine(reader, &buf) orelse "EOF";
+        const expect = b.fmt("Checking {s}...", .{exercise.main_file});
+        try check(step, exercise, expect, actual);
+    }
+
+    {
+        const actual = try readLine(reader, &buf) orelse "EOF";
+        const expect = "PASSED:";
+        try check(step, exercise, expect, actual);
+    }
+
+    // Skip the exercise output.
+    const nlines = 1 + mem.count(u8, exercise.output, "\n") + 1;
+    var lineno: usize = 0;
+    while (lineno < nlines) : (lineno += 1) {
+        _ = try readLine(reader, &buf) orelse @panic("EOF");
+    }
+}
+
+fn check(
+    step: *Step,
+    exercise: Exercise,
+    expect: []const u8,
+    actual: []const u8,
+) !void {
+    if (!mem.eql(u8, expect, actual)) {
+        return step.fail("{s}: expected to see \"{s}\", found \"{s}\"", .{
+            exercise.main_file,
+            expect,
+            actual,
+        });
+    }
+}
+
+fn readLine(reader: fs.File.Reader, buf: []u8) !?[]const u8 {
+    if (try reader.readUntilDelimiterOrEof(buf, '\n')) |line| {
+        return mem.trimRight(u8, line, " \r\n");
+    }
+
+    return null;
+}
 
 /// Fails with a custom error message.
 const FailStep = struct {

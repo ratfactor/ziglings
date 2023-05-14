@@ -64,18 +64,14 @@ pub const Exercise = struct {
     pub fn number(self: Exercise) usize {
         return std.fmt.parseInt(usize, self.key(), 10) catch unreachable;
     }
+};
 
-    /// Returns the CompileStep for this exercise.
-    pub fn addExecutable(self: Exercise, b: *Build, work_path: []const u8) *CompileStep {
-        const path = join(b.allocator, &.{ work_path, self.main_file }) catch
-            @panic("OOM");
-
-        return b.addExecutable(.{
-            .name = self.name(),
-            .root_source_file = .{ .path = path },
-            .link_libc = self.link_libc,
-        });
-    }
+/// Build mode.
+const Mode = enum {
+    /// Normal build mode: `zig build`
+    normal,
+    /// Named build mode: `zig build -Dn=n`
+    named,
 };
 
 pub const logo =
@@ -123,6 +119,9 @@ pub fn build(b: *Build) !void {
         reset_text = "\x1b[0m";
     }
 
+    // Remove the standard install and uninstall steps.
+    b.top_level_steps = .{};
+
     const healed = b.option(bool, "healed", "Run exercises from patches/healed") orelse
         false;
     const override_healed_path = b.option([]const u8, "healed-path", "Override healed path");
@@ -137,101 +136,37 @@ pub fn build(b: *Build) !void {
 
     const header_step = PrintStep.create(b, logo);
 
-    // If the user pass a number for an exercise
     if (exno) |n| {
+        // Named build mode: verifies a single exercise.
         if (n == 0 or n > exercises.len - 1) {
             print("unknown exercise number: {}\n", .{n});
             std.os.exit(2);
         }
         const ex = exercises[n - 1];
 
-        const build_step = ex.addExecutable(b, work_path);
-
-        const skip_step = SkipStep.create(b, ex);
-        if (!ex.skip)
-            b.installArtifact(build_step)
-        else
-            b.getInstallStep().dependOn(&skip_step.step);
-
-        const run_step = b.addRunArtifact(build_step);
-
-        const test_step = b.step(
-            "test",
-            b.fmt("Run {s} without checking output", .{ex.main_file}),
-        );
-        if (ex.skip) {
-            test_step.dependOn(&skip_step.step);
-        } else {
-            test_step.dependOn(&run_step.step);
-        }
-
-        const verify_step = ZiglingStep.create(b, ex, work_path);
-
         const zigling_step = b.step(
             "zigling",
             b.fmt("Check the solution of {s}", .{ex.main_file}),
         );
-        zigling_step.dependOn(&verify_step.step);
         b.default_step = zigling_step;
+        zigling_step.dependOn(&header_step.step);
 
-        const start_step = b.step(
-            "start",
-            b.fmt("Check all solutions starting at {s}", .{ex.main_file}),
-        );
+        const verify_step = ZiglingStep.create(b, ex, work_path, .named);
+        verify_step.step.dependOn(&header_step.step);
 
-        var prev_step = verify_step;
-        for (exercises) |exn| {
-            const nth = exn.number();
-            if (nth > n) {
-                const verify_stepn = ZiglingStep.create(b, exn, work_path);
-                verify_stepn.step.dependOn(&prev_step.step);
-
-                prev_step = verify_stepn;
-            }
-        }
-        start_step.dependOn(&prev_step.step);
-
-        return;
-    } else if (healed and false) {
-        // Special case when healed by the eowyn script, where we can make the
-        // code more efficient.
-        //
-        // TODO: this branch is disabled because it prevents the normal case to
-        // be executed.
-        const test_step = b.step("test", "Test the healed exercises");
-        b.default_step = test_step;
-
-        for (exercises) |ex| {
-            const build_step = ex.addExecutable(b, healed_path);
-            b.installArtifact(build_step);
-
-            const run_step = b.addRunArtifact(build_step);
-            if (ex.skip) {
-                const skip_step = SkipStep.create(b, ex);
-                test_step.dependOn(&skip_step.step);
-            } else {
-                test_step.dependOn(&run_step.step);
-            }
-        }
+        zigling_step.dependOn(&verify_step.step);
 
         return;
     }
 
-    // Run all exercises in a row
+    // Normal build mode: verifies all exercises according to the recommended
+    // order.
     const ziglings_step = b.step("ziglings", "Check all ziglings");
     b.default_step = ziglings_step;
 
     var prev_step = &header_step.step;
     for (exercises) |ex| {
-        const build_step = ex.addExecutable(b, work_path);
-
-        const skip_step = SkipStep.create(b, ex);
-        if (!ex.skip)
-            b.installArtifact(build_step)
-        else
-            b.getInstallStep().dependOn(&skip_step.step);
-
-        const verify_stepn = ZiglingStep.create(b, ex, work_path);
+        const verify_stepn = ZiglingStep.create(b, ex, work_path, .normal);
         verify_stepn.step.dependOn(prev_step);
 
         prev_step = &verify_stepn.step;
@@ -252,12 +187,18 @@ const ZiglingStep = struct {
     step: Step,
     exercise: Exercise,
     work_path: []const u8,
+    mode: Mode,
 
     is_testing: bool = false,
     result_messages: []const u8 = "",
     result_error_bundle: std.zig.ErrorBundle = std.zig.ErrorBundle.empty,
 
-    pub fn create(b: *Build, exercise: Exercise, work_path: []const u8) *ZiglingStep {
+    pub fn create(
+        b: *Build,
+        exercise: Exercise,
+        work_path: []const u8,
+        mode: Mode,
+    ) *ZiglingStep {
         const self = b.allocator.create(ZiglingStep) catch @panic("OOM");
         self.* = .{
             .step = Step.init(.{
@@ -268,6 +209,7 @@ const ZiglingStep = struct {
             }),
             .exercise = exercise,
             .work_path = work_path,
+            .mode = mode,
         };
         return self;
     }
@@ -608,23 +550,18 @@ const ZiglingStep = struct {
     }
 
     fn help(self: *ZiglingStep) void {
+        const b = self.step.owner;
+        const key = self.exercise.key();
         const path = self.exercise.main_file;
 
-        print("\n{s}Edit exercises/{s} and run 'zig build' again.{s}\n", .{
-            red_text, path, reset_text,
-        });
+        const cmd = switch (self.mode) {
+            .normal => "zig build",
+            .named => b.fmt("zig build -Dn={s}", .{key}),
+        };
 
-        // NOTE: The README explains this "advanced feature" if anyone wishes to use
-        //       it. Otherwise, beginners are thinking they *have* to do this.
-        //const key = self.exercise.key();
-        //const format =
-        //    \\
-        //    \\{s}To compile only this exercise, you can also use this command:{s}
-        //    \\{s}zig build -Dn={s}{s}
-        //    \\
-        //    \\
-        //;
-        //print(format, .{ red_text, reset_text, bold_text, key, reset_text });
+        print("\n{s}Edit exercises/{s} and run '{s}' again.{s}\n", .{
+            red_text, path, cmd, reset_text,
+        });
     }
 
     fn printErrors(self: *ZiglingStep) void {
@@ -701,35 +638,6 @@ const PrintStep = struct {
         const self = @fieldParentPtr(PrintStep, "step", step);
 
         print("{s}", .{self.message});
-    }
-};
-
-/// Skips an exercise.
-const SkipStep = struct {
-    step: Step,
-    exercise: Exercise,
-
-    pub fn create(owner: *Build, exercise: Exercise) *SkipStep {
-        const self = owner.allocator.create(SkipStep) catch @panic("OOM");
-        self.* = .{
-            .step = Step.init(.{
-                .id = .custom,
-                .name = owner.fmt("skip {s}", .{exercise.main_file}),
-                .owner = owner,
-                .makeFn = make,
-            }),
-            .exercise = exercise,
-        };
-
-        return self;
-    }
-
-    fn make(step: *Step, _: *std.Progress.Node) !void {
-        const self = @fieldParentPtr(SkipStep, "step", step);
-
-        if (self.exercise.skip) {
-            print("{s} skipped\n", .{self.exercise.main_file});
-        }
     }
 };
 
