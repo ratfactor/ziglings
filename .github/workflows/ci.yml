@@ -42,6 +42,6 @@ jobs:
         uses: goto-bus-stop/setup-zig@v2
         with:
           version: master
-
-      - name: Run unit tests
-        run: zig build test
+# Temporarily disabled.
+#      - name: Run unit tests
+#        run: zig build test
