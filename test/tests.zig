@@ -93,7 +93,7 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
         const case_step = createCase(b, "case-3");
 
         for (exercises[0 .. exercises.len - 1]) |ex| {
-            if (ex.skip or ex.run_test) continue;
+            if (ex.skip) continue;
 
             if (ex.hint) |hint| {
                 const n = ex.number();
@@ -249,21 +249,6 @@ fn check_output(step: *Step, exercise: Exercise, reader: Reader) !void {
         return;
     }
 
-    if (exercise.run_test) {
-        {
-            const actual = try readLine(reader, &buf) orelse "EOF";
-            const expect = b.fmt("Testing {s}...", .{exercise.main_file});
-            try check(step, exercise, expect, actual);
-        }
-
-        {
-            const actual = try readLine(reader, &buf) orelse "EOF";
-            try check(step, exercise, "", actual);
-        }
-
-        return;
-    }
-
     {
         const actual = try readLine(reader, &buf) orelse "EOF";
         const expect = b.fmt("Compiling {s}...", .{exercise.main_file});
@@ -278,12 +263,19 @@ fn check_output(step: *Step, exercise: Exercise, reader: Reader) !void {
 
     {
         const actual = try readLine(reader, &buf) orelse "EOF";
-        const expect = "PASSED:";
+        const expect = switch (exercise.kind) {
+            .exe => "PASSED:",
+            .@"test" => "PASSED",
+        };
         try check(step, exercise, expect, actual);
     }
 
     // Skip the exercise output.
-    const nlines = 1 + mem.count(u8, exercise.output, "\n") + 1;
+    const nlines = switch (exercise.kind) {
+        .exe => 1 + mem.count(u8, exercise.output, "\n") + 1,
+        .@"test" => 1,
+    };
+
     var lineno: usize = 0;
     while (lineno < nlines) : (lineno += 1) {
         _ = try readLine(reader, &buf) orelse @panic("EOF");

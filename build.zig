@@ -13,6 +13,13 @@ const assert = std.debug.assert;
 const join = std.fs.path.join;
 const print = std.debug.print;
 
+const Kind = enum {
+    /// Run the artifact as a normal executable.
+    exe,
+    /// Run the artifact as a test.
+    @"test",
+};
+
 pub const Exercise = struct {
     /// main_file must have the format key_name.zig.
     /// The key will be used as a shorthand to build just one example.
@@ -34,9 +41,8 @@ pub const Exercise = struct {
     /// We need to keep track of this, so we compile with libc.
     link_libc: bool = false,
 
-    /// This exercise doesn't have a main function.
-    /// We only call the test.
-    run_test: bool = false,
+    /// This exercise kind.
+    kind: Kind = .exe,
 
     /// This exercise is not supported by the current Zig compiler.
     skip: bool = false,
@@ -225,18 +231,6 @@ const ZiglingStep = struct {
             return;
         }
 
-        // Test exercise.
-        if (self.exercise.run_test) {
-            self.is_testing = true;
-            const result_msg = self.testing(prog_node) catch {
-                std.os.exit(2);
-            };
-            const output = try trimLines(self.step.owner.allocator, result_msg);
-            print("\n{s}PASSED:\n{s}{s}\n\n", .{ green_text, output, reset_text });
-            return;
-        }
-
-        // Normal exercise.
         const exe_path = self.compile(prog_node) catch {
             if (self.exercise.hint) |hint|
                 print("\n{s}Ziglings hint: {s}{s}", .{ bold_text, hint, reset_text });
@@ -276,10 +270,14 @@ const ZiglingStep = struct {
             return err;
         };
 
-        const raw_output = if (self.exercise.check_stdout)
-            result.stdout
-        else
-            result.stderr;
+        switch (self.exercise.kind) {
+            .exe => return self.check_output(result),
+            .@"test" => return self.check_test(result),
+        }
+    }
+
+    fn check_output(self: *ZiglingStep, result: Child.ExecResult) !void {
+        const b = self.step.owner;
 
         // Make sure it exited cleanly.
         switch (result.term) {
@@ -298,6 +296,11 @@ const ZiglingStep = struct {
                 return error.UnexpectedTermination;
             },
         }
+
+        const raw_output = if (self.exercise.check_stdout)
+            result.stdout
+        else
+            result.stderr;
 
         // Validate the output.
         // NOTE: exercise.output can never contain a CR character.
@@ -323,55 +326,28 @@ const ZiglingStep = struct {
         print("{s}PASSED:\n{s}{s}\n\n", .{ green_text, output, reset_text });
     }
 
-    fn testing(self: *ZiglingStep, prog_node: *std.Progress.Node) ![]const u8 {
-        print("Testing {s}...\n", .{self.exercise.main_file});
-
-        const b = self.step.owner;
-        const exercise_path = self.exercise.main_file;
-        const path = join(b.allocator, &.{ self.work_path, exercise_path }) catch
-            @panic("OOM");
-
-        var zig_args = std.ArrayList([]const u8).init(b.allocator);
-        defer zig_args.deinit();
-
-        zig_args.append(b.zig_exe) catch @panic("OOM");
-        zig_args.append("test") catch @panic("OOM");
-
-        zig_args.append(b.pathFromRoot(path)) catch @panic("OOM");
-
-        const argv = zig_args.items;
-        var code: u8 = undefined;
-        _ = self.eval(argv, &code, prog_node) catch |err| {
-            self.printErrors();
-
-            switch (err) {
-                error.FileNotFound => {
-                    print("{s}{s}: Unable to spawn the following command: file not found{s}\n", .{
-                        red_text, self.exercise.main_file, reset_text,
+    fn check_test(self: *ZiglingStep, result: Child.ExecResult) !void {
+        switch (result.term) {
+            .Exited => |code| {
+                if (code != 0) {
+                    // The test failed.
+                    print("{s}{s}{s}\n", .{
+                        red_text, result.stderr, reset_text,
                     });
-                    dumpArgs(argv);
-                },
-                error.ExitCodeFailure => {
-                    // Expected when test fails.
-                },
-                error.ProcessTerminated => {
-                    print("{s}{s}: The following command terminated unexpectedly:{s}\n", .{
-                        red_text, self.exercise.main_file, reset_text,
-                    });
-                    dumpArgs(argv);
-                },
-                else => {
-                    print("{s}{s}: Unexpected error: {s}{s}\n", .{
-                        red_text, self.exercise.main_file, @errorName(err), reset_text,
-                    });
-                    dumpArgs(argv);
-                },
-            }
 
-            return err;
-        };
+                    return error.TestFailed;
+                }
+            },
+            else => {
+                print("{s}{s} terminated unexpectedly{s}\n", .{
+                    red_text, self.exercise.main_file, reset_text,
+                });
 
-        return self.result_messages;
+                return error.UnexpectedTermination;
+            },
+        }
+
+        print("{s}PASSED{s}\n\n", .{ green_text, reset_text });
     }
 
     fn compile(self: *ZiglingStep, prog_node: *std.Progress.Node) ![]const u8 {
@@ -386,7 +362,12 @@ const ZiglingStep = struct {
         defer zig_args.deinit();
 
         zig_args.append(b.zig_exe) catch @panic("OOM");
-        zig_args.append("build-exe") catch @panic("OOM");
+
+        const cmd = switch (self.exercise.kind) {
+            .exe => "build-exe",
+            .@"test" => "test",
+        };
+        zig_args.append(cmd) catch @panic("OOM");
 
         // Enable C support for exercises that use C functions.
         if (self.exercise.link_libc) {
@@ -1220,7 +1201,7 @@ const exercises = [_]Exercise{
     .{
         .main_file = "102_testing.zig",
         .output = "",
-        .run_test = true,
+        .kind = .@"test",
     },
     .{
         .main_file = "999_the_end.zig",
