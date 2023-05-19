@@ -266,10 +266,9 @@ const ZiglingStep = struct {
             .cwd_dir = b.build_root.handle,
             .max_output_bytes = max_output_bytes,
         }) catch |err| {
-            print("{s}Unable to spawn {s}: {s}{s}\n", .{
-                red_text, exe_path, @errorName(err), reset_text,
+            return self.step.fail("unable to spawn {s}: {s}", .{
+                exe_path, @errorName(err),
             });
-            return err;
         };
 
         switch (self.exercise.kind) {
@@ -285,17 +284,15 @@ const ZiglingStep = struct {
         switch (result.term) {
             .Exited => |code| {
                 if (code != 0) {
-                    print("{s}{s} exited with error code {d} (expected {d}){s}\n", .{
-                        red_text, self.exercise.main_file, code, 0, reset_text,
+                    return self.step.fail("{s} exited with error code {d} (expected {})", .{
+                        self.exercise.main_file, code, 0,
                     });
-                    return error.BadExitCode;
                 }
             },
             else => {
-                print("{s}{s} terminated unexpectedly{s}\n", .{
-                    red_text, self.exercise.main_file, reset_text,
+                return self.step.fail("{s} terminated unexpectedly", .{
+                    self.exercise.main_file,
                 });
-                return error.UnexpectedTermination;
             },
         }
 
@@ -310,19 +307,14 @@ const ZiglingStep = struct {
         const output = try trimLines(b.allocator, raw_output);
         const exercise_output = self.exercise.output;
         if (!std.mem.eql(u8, output, self.exercise.output)) {
-            const red = red_text;
-            const reset = reset_text;
-
-            print(
+            return self.step.fail(
                 \\
-                \\{s}========= expected this output: =========={s}
+                \\========= expected this output: ==========
                 \\{s}
-                \\{s}========= but found: ====================={s}
+                \\========= but found: =====================
                 \\{s}
-                \\{s}=========================================={s}
-                \\
-            , .{ red, reset, exercise_output, red, reset, output, red, reset });
-            return error.InvalidOutput;
+                \\==========================================
+            , .{ exercise_output, output });
         }
 
         print("{s}PASSED:\n{s}{s}\n\n", .{ green_text, output, reset_text });
@@ -333,19 +325,15 @@ const ZiglingStep = struct {
             .Exited => |code| {
                 if (code != 0) {
                     // The test failed.
-                    print("{s}{s}{s}\n", .{
-                        red_text, result.stderr, reset_text,
-                    });
+                    const stderr = std.mem.trimRight(u8, result.stderr, " \r\n");
 
-                    return error.TestFailed;
+                    return self.step.fail("\n{s}", .{stderr});
                 }
             },
             else => {
-                print("{s}{s} terminated unexpectedly{s}\n", .{
-                    red_text, self.exercise.main_file, reset_text,
+                return self.step.fail("{s} terminated unexpectedly", .{
+                    self.exercise.main_file,
                 });
-
-                return error.UnexpectedTermination;
             },
         }
 
