@@ -304,7 +304,7 @@ const ZiglingStep = struct {
         // Validate the output.
         // NOTE: exercise.output can never contain a CR character.
         // See https://ziglang.org/documentation/master/#Source-Encoding.
-        const output = try trimLines(b.allocator, raw_output);
+        const output = trimLines(b.allocator, raw_output) catch @panic("OOM");
         const exercise_output = self.exercise.output;
         if (!std.mem.eql(u8, output, self.exercise.output)) {
             return self.step.fail(
