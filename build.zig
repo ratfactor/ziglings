@@ -119,6 +119,8 @@ pub fn build(b: *Build) !void {
 
     if (use_color_escapes) {
         red_text = "\x1b[31m";
+        red_bold_text = "\x1b[31;1m";
+        red_dim_text = "\x1b[31;2m";
         green_text = "\x1b[32m";
         bold_text = "\x1b[1m";
         reset_text = "\x1b[0m";
@@ -184,6 +186,8 @@ pub fn build(b: *Build) !void {
 
 var use_color_escapes = false;
 var red_text: []const u8 = "";
+var red_bold_text: []const u8 = "";
+var red_dim_text: []const u8 = "";
 var green_text: []const u8 = "";
 var bold_text: []const u8 = "";
 var reset_text: []const u8 = "";
@@ -307,14 +311,20 @@ const ZiglingStep = struct {
         const output = trimLines(b.allocator, raw_output) catch @panic("OOM");
         const exercise_output = self.exercise.output;
         if (!std.mem.eql(u8, output, self.exercise.output)) {
+            const red = red_dim_text;
+            const reset = reset_text;
+
+            // Override the coloring applied by the printError method.
+            // NOTE: the first red and the last reset are not necessary, they
+            // are here only for alignment.
             return self.step.fail(
                 \\
-                \\========= expected this output: ==========
+                \\{s}========= expected this output: =========={s}
                 \\{s}
-                \\========= but found: =====================
+                \\{s}========= but found: ====================={s}
                 \\{s}
-                \\==========================================
-            , .{ exercise_output, output });
+                \\{s}=========================================={s}
+            , .{ red, reset, exercise_output, red, reset, output, red, reset });
         }
 
         print("{s}PASSED:\n{s}{s}\n\n", .{ green_text, output, reset_text });
@@ -395,7 +405,9 @@ const ZiglingStep = struct {
         // Display error/warning messages.
         if (self.step.result_error_msgs.items.len > 0) {
             for (self.step.result_error_msgs.items) |msg| {
-                print("{s}error: {s}{s}\n", .{ red_text, reset_text, msg });
+                print("{s}error: {s}{s}{s}{s}\n", .{
+                    red_bold_text, reset_text, red_dim_text, msg, reset_text,
+                });
             }
         }
 
