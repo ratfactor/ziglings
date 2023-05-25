@@ -45,7 +45,7 @@ Verify the installation and build number of `zig` like so:
 
 ```
 $ zig version
-0.11.0-dev.2704+xxxxxxxxx
+0.11.0-dev.3295+xxxxxxxxx
 ```
 
 Clone this repository with Git:
@@ -89,7 +89,8 @@ that if you update one, you may need to also update the other.
 
 ### Version Changes
 
-Version-0.11.0-dev.2704+83970b6d9
+Version-0.11.0-dev.3295+7cb2e653a
+* *2023-05-25* zig 0.11.0-dev.3295 - `std.debug.TTY` is now `std.io.tty`
 * *2023-04-30* zig 0.11.0-dev.2704 - use of the new `std.Build.ExecutableOptions.link_libc` field
 * *2023-04-12* zig 0.11.0-dev.2560 - changes in `std.Build` - remove run() and install()
 * *2023-04-07* zig 0.11.0-dev.2401 - fixes of the new build system - see [#212](https://github.com/ratfactor/ziglings/pull/212)

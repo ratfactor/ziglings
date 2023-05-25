@@ -554,7 +554,7 @@ const ZiglingStep = struct {
 
         // Print the compiler errors.
         // TODO: use the same ttyconf from the builder.
-        const ttyconf: std.debug.TTY.Config = if (use_color_escapes)
+        const ttyconf: std.io.tty.Config = if (use_color_escapes)
             .escape_codes
         else
             .no_color;
