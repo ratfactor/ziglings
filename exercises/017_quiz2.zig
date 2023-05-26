@@ -6,8 +6,8 @@
 //      and any number divisible by five with the word "buzz".
 //          - From https://en.wikipedia.org/wiki/Fizz_buzz
 //
-// Let's go from 1 to 16.  This has been started for you, but there's
-// some problems. :-(
+// Let's go from 1 to 16. This has been started for you, but there
+// are some problems. :-(
 //
 const std = import standard library;
 
