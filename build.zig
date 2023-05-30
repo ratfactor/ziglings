@@ -1,7 +1,6 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const compat = @import("src/compat.zig");
-const ipc = @import("src/ipc.zig");
 const tests = @import("test/tests.zig");
 
 const Build = compat.Build;
@@ -120,6 +119,8 @@ pub fn build(b: *Build) !void {
 
     if (use_color_escapes) {
         red_text = "\x1b[31m";
+        red_bold_text = "\x1b[31;1m";
+        red_dim_text = "\x1b[31;2m";
         green_text = "\x1b[32m";
         bold_text = "\x1b[1m";
         reset_text = "\x1b[0m";
@@ -185,6 +186,8 @@ pub fn build(b: *Build) !void {
 
 var use_color_escapes = false;
 var red_text: []const u8 = "";
+var red_bold_text: []const u8 = "";
+var red_dim_text: []const u8 = "";
 var green_text: []const u8 = "";
 var bold_text: []const u8 = "";
 var reset_text: []const u8 = "";
@@ -194,10 +197,6 @@ const ZiglingStep = struct {
     exercise: Exercise,
     work_path: []const u8,
     mode: Mode,
-
-    is_testing: bool = false,
-    result_messages: []const u8 = "",
-    result_error_bundle: std.zig.ErrorBundle = std.zig.ErrorBundle.empty,
 
     pub fn create(
         b: *Build,
@@ -232,6 +231,8 @@ const ZiglingStep = struct {
         }
 
         const exe_path = self.compile(prog_node) catch {
+            self.printErrors();
+
             if (self.exercise.hint) |hint|
                 print("\n{s}Ziglings hint: {s}{s}", .{ bold_text, hint, reset_text });
 
@@ -240,12 +241,17 @@ const ZiglingStep = struct {
         };
 
         self.run(exe_path, prog_node) catch {
+            self.printErrors();
+
             if (self.exercise.hint) |hint|
                 print("\n{s}Ziglings hint: {s}{s}", .{ bold_text, hint, reset_text });
 
             self.help();
             std.os.exit(2);
         };
+
+        // Print possible warning/debug messages.
+        self.printErrors();
     }
 
     fn run(self: *ZiglingStep, exe_path: []const u8, _: *std.Progress.Node) !void {
@@ -264,10 +270,9 @@ const ZiglingStep = struct {
             .cwd_dir = b.build_root.handle,
             .max_output_bytes = max_output_bytes,
         }) catch |err| {
-            print("{s}Unable to spawn {s}: {s}{s}\n", .{
-                red_text, exe_path, @errorName(err), reset_text,
+            return self.step.fail("unable to spawn {s}: {s}", .{
+                exe_path, @errorName(err),
             });
-            return err;
         };
 
         switch (self.exercise.kind) {
@@ -283,17 +288,15 @@ const ZiglingStep = struct {
         switch (result.term) {
             .Exited => |code| {
                 if (code != 0) {
-                    print("{s}{s} exited with error code {d} (expected {d}){s}\n", .{
-                        red_text, self.exercise.main_file, code, 0, reset_text,
+                    return self.step.fail("{s} exited with error code {d} (expected {})", .{
+                        self.exercise.main_file, code, 0,
                     });
-                    return error.BadExitCode;
                 }
             },
             else => {
-                print("{s}{s} terminated unexpectedly{s}\n", .{
-                    red_text, self.exercise.main_file, reset_text,
+                return self.step.fail("{s} terminated unexpectedly", .{
+                    self.exercise.main_file,
                 });
-                return error.UnexpectedTermination;
             },
         }
 
@@ -305,22 +308,23 @@ const ZiglingStep = struct {
         // Validate the output.
         // NOTE: exercise.output can never contain a CR character.
         // See https://ziglang.org/documentation/master/#Source-Encoding.
-        const output = try trimLines(b.allocator, raw_output);
+        const output = trimLines(b.allocator, raw_output) catch @panic("OOM");
         const exercise_output = self.exercise.output;
         if (!std.mem.eql(u8, output, self.exercise.output)) {
-            const red = red_text;
+            const red = red_dim_text;
             const reset = reset_text;
 
-            print(
+            // Override the coloring applied by the printError method.
+            // NOTE: the first red and the last reset are not necessary, they
+            // are here only for alignment.
+            return self.step.fail(
                 \\
                 \\{s}========= expected this output: =========={s}
                 \\{s}
                 \\{s}========= but found: ====================={s}
                 \\{s}
                 \\{s}=========================================={s}
-                \\
             , .{ red, reset, exercise_output, red, reset, output, red, reset });
-            return error.InvalidOutput;
         }
 
         print("{s}PASSED:\n{s}{s}\n\n", .{ green_text, output, reset_text });
@@ -331,19 +335,15 @@ const ZiglingStep = struct {
             .Exited => |code| {
                 if (code != 0) {
                     // The test failed.
-                    print("{s}{s}{s}\n", .{
-                        red_text, result.stderr, reset_text,
-                    });
+                    const stderr = std.mem.trimRight(u8, result.stderr, " \r\n");
 
-                    return error.TestFailed;
+                    return self.step.fail("\n{s}", .{stderr});
                 }
             },
             else => {
-                print("{s}{s} terminated unexpectedly{s}\n", .{
-                    red_text, self.exercise.main_file, reset_text,
+                return self.step.fail("{s} terminated unexpectedly", .{
+                    self.exercise.main_file,
                 });
-
-                return error.UnexpectedTermination;
             },
         }
 
@@ -381,153 +381,7 @@ const ZiglingStep = struct {
 
         zig_args.append("--listen=-") catch @panic("OOM");
 
-        const argv = zig_args.items;
-        var code: u8 = undefined;
-        const exe_path = self.eval(argv, &code, prog_node) catch |err| {
-            self.printErrors();
-
-            switch (err) {
-                error.FileNotFound => {
-                    print("{s}{s}: Unable to spawn the following command: file not found{s}\n", .{
-                        red_text, self.exercise.main_file, reset_text,
-                    });
-                    dumpArgs(argv);
-                },
-                error.ExitCodeFailure => {
-                    print("{s}{s}: The following command exited with error code {}:{s}\n", .{
-                        red_text, self.exercise.main_file, code, reset_text,
-                    });
-                    dumpArgs(argv);
-                },
-                error.ProcessTerminated => {
-                    print("{s}{s}: The following command terminated unexpectedly:{s}\n", .{
-                        red_text, self.exercise.main_file, reset_text,
-                    });
-                    dumpArgs(argv);
-                },
-                error.ZigIPCError => {
-                    // Commenting this out for now. It always shows up when compilation fails.
-                    //print("{s}{s}: The following command failed to communicate the compilation result:{s}\n", .{
-                    //    red_text, self.exercise.main_file, reset_text,
-                    //});
-                    //dumpArgs(argv);
-                },
-                else => {
-                    print("{s}{s}: Unexpected error: {s}{s}\n", .{
-                        red_text, self.exercise.main_file, @errorName(err), reset_text,
-                    });
-                    dumpArgs(argv);
-                },
-            }
-
-            return err;
-        };
-        self.printErrors();
-
-        return exe_path;
-    }
-
-    // Code adapted from `std.Build.execAllowFail and `std.Build.Step.evalZigProcess`.
-    pub fn eval(
-        self: *ZiglingStep,
-        argv: []const []const u8,
-        out_code: *u8,
-        prog_node: *std.Progress.Node,
-    ) ![]const u8 {
-        assert(argv.len != 0);
-        const b = self.step.owner;
-        const allocator = b.allocator;
-
-        var child = Child.init(argv, allocator);
-        child.env_map = b.env_map;
-        child.stdin_behavior = .Pipe;
-        child.stdout_behavior = .Pipe;
-        child.stderr_behavior = .Pipe;
-
-        try child.spawn();
-
-        var poller = std.io.poll(allocator, enum { stdout, stderr }, .{
-            .stdout = child.stdout.?,
-            .stderr = child.stderr.?,
-        });
-        defer poller.deinit();
-
-        try ipc.sendMessage(child.stdin.?, .update);
-        try ipc.sendMessage(child.stdin.?, .exit);
-
-        const Header = std.zig.Server.Message.Header;
-        var result: ?[]const u8 = null;
-
-        var node_name: std.ArrayListUnmanaged(u8) = .{};
-        defer node_name.deinit(allocator);
-        var sub_prog_node = prog_node.start("", 0);
-        defer sub_prog_node.end();
-
-        const stdout = poller.fifo(.stdout);
-
-        poll: while (true) {
-            while (stdout.readableLength() < @sizeOf(Header)) {
-                if (!(try poller.poll())) break :poll;
-            }
-            const header = stdout.reader().readStruct(Header) catch unreachable;
-            while (stdout.readableLength() < header.bytes_len) {
-                if (!(try poller.poll())) break :poll;
-            }
-            const body = stdout.readableSliceOfLen(header.bytes_len);
-
-            switch (header.tag) {
-                .zig_version => {
-                    if (!std.mem.eql(u8, builtin.zig_version_string, body))
-                        return error.ZigVersionMismatch;
-                },
-                .error_bundle => {
-                    self.result_error_bundle = try ipc.parseErrorBundle(allocator, body);
-                },
-                .progress => {
-                    node_name.clearRetainingCapacity();
-                    try node_name.appendSlice(allocator, body);
-                    sub_prog_node.setName(node_name.items);
-                },
-                .emit_bin_path => {
-                    const emit_bin = try ipc.parseEmitBinPath(allocator, body);
-                    result = emit_bin.path;
-                },
-                else => {}, // ignore other messages
-            }
-
-            stdout.discard(body.len);
-        }
-
-        const stderr = poller.fifo(.stderr);
-        if (stderr.readableLength() > 0) {
-            self.result_messages = try stderr.toOwnedSlice();
-        }
-
-        // Send EOF to stdin.
-        child.stdin.?.close();
-        child.stdin = null;
-
-        // Keep the errors compatible with std.Build.execAllowFail.
-        const term = try child.wait();
-        switch (term) {
-            .Exited => |code| {
-                if (code != 0) {
-                    out_code.* = @truncate(u8, code);
-
-                    return error.ExitCodeFailure;
-                }
-            },
-            .Signal, .Stopped, .Unknown => |code| {
-                out_code.* = @truncate(u8, code);
-
-                return error.ProcessTerminated;
-            },
-        }
-
-        if (self.is_testing) {
-            return "ok";
-        }
-        return result orelse return error.ZigIPCError;
+        return try self.step.evalZigProcess(zig_args.items, prog_node);
     }
 
     fn help(self: *ZiglingStep) void {
@@ -548,26 +402,26 @@ const ZiglingStep = struct {
     fn printErrors(self: *ZiglingStep) void {
         resetLine();
 
-        // Print the additional log and verbose messages.
-        // TODO: use colors?
-        if (self.result_messages.len > 0) print("{s}", .{self.result_messages});
+        // Display error/warning messages.
+        if (self.step.result_error_msgs.items.len > 0) {
+            for (self.step.result_error_msgs.items) |msg| {
+                print("{s}error: {s}{s}{s}{s}\n", .{
+                    red_bold_text, reset_text, red_dim_text, msg, reset_text,
+                });
+            }
+        }
 
-        // Print the compiler errors.
+        // Render compile errors at the bottom of the terminal.
         // TODO: use the same ttyconf from the builder.
         const ttyconf: std.io.tty.Config = if (use_color_escapes)
             .escape_codes
         else
             .no_color;
-        if (self.result_error_bundle.errorMessageCount() > 0) {
-            self.result_error_bundle.renderToStdErr(.{ .ttyconf = ttyconf });
+        if (self.step.result_error_bundle.errorMessageCount() > 0) {
+            self.step.result_error_bundle.renderToStdErr(.{ .ttyconf = ttyconf });
         }
     }
 };
-
-fn dumpArgs(args: []const []const u8) void {
-    for (args) |arg| print("{s} ", .{arg});
-    print("\n", .{});
-}
 
 /// Clears the entire line and move the cursor to column zero.
 /// Used for clearing the compiler and build_runner progress messages.
