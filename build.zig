@@ -311,7 +311,7 @@ const ZiglingStep = struct {
         const output = trimLines(b.allocator, raw_output) catch @panic("OOM");
         const exercise_output = self.exercise.output;
         if (!std.mem.eql(u8, output, self.exercise.output)) {
-            const red = red_dim_text;
+            const red = red_bold_text;
             const reset = reset_text;
 
             // Override the coloring applied by the printError method.
@@ -395,7 +395,7 @@ const ZiglingStep = struct {
         };
 
         print("\n{s}Edit exercises/{s} and run '{s}' again.{s}\n", .{
-            red_text, path, cmd, reset_text,
+            red_bold_text, path, cmd, reset_text,
         });
     }
 
