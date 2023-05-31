@@ -210,6 +210,7 @@ Zig Standard Library
 
 * [X] String formatting
 * [X] Testing
+* [ ] Tokenization
 
 ## Contributing
 
