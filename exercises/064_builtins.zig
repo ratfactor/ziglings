@@ -13,7 +13,7 @@
 // compiler, such as type introspection (the ability to examine
 // type properties from within a program).
 //
-// Zig currently contains 101 builtin functions. We're certainly
+// Zig currently contains 117 builtin functions. We're certainly
 // not going to cover them all, but we can look at some
 // interesting ones.
 //
