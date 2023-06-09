@@ -17,7 +17,7 @@ const std = @import("std");
 
 pub fn main() void {
     // Let's store the bits of binary number 1101 in
-    // 'little-endian' order (least significant byte first):
+    // 'little-endian' order (least significant byte or bit first):
     const bits = [_]u8{ 1, 0, 1, 1 };
     var value: u32 = 0;
 
