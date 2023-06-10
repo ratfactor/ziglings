@@ -1,8 +1,8 @@
-67c67
+66c66
 <     const expected_result: u8 = ???;
 ---
 >     const expected_result: u8 = 0b00010010;
-82c82
+81c81
 <     const tupni: u8 = @bitReverse(input, tupni);
 ---
 >     const tupni: u8 = @bitReverse(input);

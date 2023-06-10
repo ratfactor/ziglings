@@ -13,7 +13,7 @@
 // compiler, such as type introspection (the ability to examine
 // type properties from within a program).
 //
-// Zig currently contains 101 builtin functions. We're certainly
+// Zig contains over 100 builtin functions. We're certainly
 // not going to cover them all, but we can look at some
 // interesting ones.
 //
@@ -28,8 +28,7 @@ const print = @import("std").debug.print;
 pub fn main() void {
     // The second builtin, alphabetically, is:
     //   @addWithOverflow(a: anytype, b: anytype) struct { @TypeOf(a, b), u1 }
-    //     * 'T' will be the type of the other parameters.
-    //     * 'a' and 'b' are numbers of the type T.
+    //     * 'a' and 'b' are numbers of anytype.
     //     * The return value is a tuple with the result and a possible overflow bit.
     //
     // Let's try it with a tiny 4-bit integer size to make it clear:
