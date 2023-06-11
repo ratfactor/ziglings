@@ -6,3 +6,7 @@
 <     var scale: u32 = undefined;
 ---
 >     comptime var scale: u32 = undefined;
+76c76
+<     minnow.scaleMe(scale);
+---
+>     minnow.scaleMe(32);

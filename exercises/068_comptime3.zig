@@ -28,7 +28,7 @@ const Schooner = struct {
     mainmast_height: u32 = 95,
 
     fn scaleMe(self: *Schooner, comptime scale: u32) void {
-        var my_scale = scale;
+        comptime var my_scale = scale;
 
         // We did something neat here: we've anticipated the
         // possibility of accidentally attempting to create a
