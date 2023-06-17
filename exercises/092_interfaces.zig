@@ -23,7 +23,7 @@
 // the simulation expanded to hundreds of different insects.
 //
 // Thankfully, Zig has another comptime feature we can use
-// to get out of this dilema called the 'inline else'.
+// to get out of this dilemma called the 'inline else'.
 //
 // We can replace this redundant code:
 //
