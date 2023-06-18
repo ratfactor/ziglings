@@ -21,7 +21,7 @@
 const std = @import("std");
 
 pub fn main() void {
-    var n: u32 = 2;
+    var n: u16 = 2;
 
     // Please set the continue expression so that we get the desired
     // results in the print statement below.
