@@ -45,7 +45,7 @@ Verify the installation and build number of `zig` like so:
 
 ```
 $ zig version
-0.11.0-dev.3295+xxxxxxxxx
+0.11.0-dev.3747+xxxxxxxxx
 ```
 
 Clone this repository with Git:
@@ -89,7 +89,8 @@ that if you update one, you may need to also update the other.
 
 ### Version Changes
 
-Version-0.11.0-dev.3295+7cb2e653a
+Version-0.11.0-dev.3747+7b5bd3a93
+* *2023-05-25* zig 0.11.0-dev.3747 - `@enumToInt` is now `@intFromEnum` and `@intToFloat` is now `@floatFromInt`
 * *2023-05-25* zig 0.11.0-dev.3295 - `std.debug.TTY` is now `std.io.tty`
 * *2023-04-30* zig 0.11.0-dev.2704 - use of the new `std.Build.ExecutableOptions.link_libc` field
 * *2023-04-12* zig 0.11.0-dev.2560 - changes in `std.Build` - remove run() and install()

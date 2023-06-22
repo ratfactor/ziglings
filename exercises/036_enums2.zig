@@ -57,8 +57,8 @@ pub fn main() void {
         \\</p>
         \\
     , .{
-        @enumToInt(Color.red),
-        @enumToInt(Color.green),
-        @enumToInt(???), // Oops! We're missing something!
+        @intFromEnum(Color.red),
+        @intFromEnum(Color.green),
+        @intFromEnum(???), // Oops! We're missing something!
     });
 }

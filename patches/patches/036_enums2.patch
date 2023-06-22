@@ -7,6 +7,6 @@
 ---
 >         \\  <span style="color: #{x:0>6}">Blue</span>
 62c62
-<         @enumToInt(???), // Oops! We're missing something!
+<         @intFromEnum(???), // Oops! We're missing something!
 ---
->         @enumToInt(Color.blue), // Oops! We're missing something!
+>         @intFromEnum(Color.blue), // Oops! We're missing something!
