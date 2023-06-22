@@ -45,7 +45,7 @@ fn runningAverage(arr: []const f64, avg: []f64) void {
 
     for (0.., arr) |index, val| {
         sum += val;
-        avg[index] = sum / @intToFloat(f64, index + 1);
+        avg[index] = sum / @floatFromInt(f64, index + 1);
     }
 }
 
