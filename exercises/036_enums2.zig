@@ -9,7 +9,7 @@
 // @enumToInt(). We'll learn about builtins properly in a later
 // exercise.
 //
-//     var my_stuff: u8 = @enumToInt(Stuff.foo);
+//     const my_stuff: u8 = @enumToInt(Stuff.foo);
 //
 // Note how that built-in function starts with "@" just like the
 // @import() function we've been using.

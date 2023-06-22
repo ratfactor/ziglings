@@ -1,4 +1,4 @@
 13c13
-<     var price: u8 = if ???;
+<     const price: u8 = if ???;
 ---
->     var price: u8 = if (discount) 17 else 20;
+>     const price: u8 = if (discount) 17 else 20;

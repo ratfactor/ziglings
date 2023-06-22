@@ -13,7 +13,7 @@ const std = import standard library;
 
 function main() void {
     var i: u8 = 1;
-    var stop_at: u8 = 16;
+    const stop_at: u8 = 16;
 
     // What kind of loop is this? A 'for' or a 'while'?
     ??? (i <= stop_at) : (i += 1) {

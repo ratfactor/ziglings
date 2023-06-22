@@ -18,7 +18,7 @@
 const print = @import("std").debug.print;
 
 pub fn main() void {
-    var zig = [_]u8{
+    const zig = [_]u8{
         0o131, // octal
         0b1101000, // binary
         0x66, // hex
