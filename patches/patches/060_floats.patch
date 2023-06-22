@@ -1,4 +1,4 @@
 43c43
-<     var shuttle_weight: f16 = 907.18 * 2200;
+<     const shuttle_weight: f16 = 907.18 * 2200;
 ---
->     var shuttle_weight: f32 = 907.18 * 2200.0;
+>     const shuttle_weight: f32 = 907.18 * 2200.0;

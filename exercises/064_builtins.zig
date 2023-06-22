@@ -4,7 +4,7 @@
 // Ziglings exercise.
 //
 // We've also seen @intCast() in "016_for2.zig", "058_quiz7.zig";
-// and @enumToInt() in "036_enums2.zig".
+// and @intFromEnum() in "036_enums2.zig".
 //
 // Builtins are special because they are intrinsic to the Zig
 // language itself (as opposed to being provided in the standard

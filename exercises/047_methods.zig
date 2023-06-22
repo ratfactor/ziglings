@@ -78,7 +78,7 @@ pub fn main() void {
     };
 
     var aliens_alive = aliens.len;
-    var heat_ray = HeatRay{ .damage = 7 }; // We've been given a heat ray weapon.
+    const heat_ray = HeatRay{ .damage = 7 }; // We've been given a heat ray weapon.
 
     // We'll keep checking to see if we've killed all the aliens yet.
     while (aliens_alive > 0) {
