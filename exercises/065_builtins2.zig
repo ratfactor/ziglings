@@ -1,13 +1,13 @@
 //
 // Zig has builtins for mathematical operations such as...
 //
-//      @sqrt        @sin          @cos
-//      @exp         @log          @floor
+//      @sqrt        @sin           @cos
+//      @exp         @log           @floor
 //
 // ...and lots of type casting operations such as...
 //
-//      @as          @intToError   @intToFloat
-//      @intToPtr    @ptrToInt     @enumToInt
+//      @as          @errorFromInt  @floatFromInt
+//      @ptrFromInt  @intFromPtr    @intFromEnum
 //
 // Spending part of a rainy day skimming through the complete
 // list of builtins in the official Zig documentation wouldn't be
