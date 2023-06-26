@@ -429,7 +429,7 @@ fn printTrip(trip: []?TripItem) void {
     // We convert the usize length to a u8 with @intCast(), a
     // builtin function just like @import().  We'll learn about
     // these properly in a later exercise.
-    var i: u8 = @intCast(u8, trip.len);
+    var i: u8 = @intCast(trip.len);
 
     while (i > 0) {
         i -= 1;

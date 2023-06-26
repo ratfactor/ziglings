@@ -204,7 +204,7 @@ pub fn main() void {
 }
 
 fn printTrip(trip: []?TripItem) void {
-    var i: u8 = @intCast(u8, trip.len);
+    var i: u8 = @intCast(trip.len);
 
     while (i > 0) {
         i -= 1;
