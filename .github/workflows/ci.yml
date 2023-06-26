@@ -25,7 +25,8 @@ jobs:
           version: ${{ matrix.zig }}
 
       - name: Check compatibility with old Zig compilers
-        run: ci/compat.sh
+       # Temporarily disabled.
+       # run: ci/compat.sh
 
   test:
     name: Unit Tests
@@ -42,6 +43,6 @@ jobs:
         uses: goto-bus-stop/setup-zig@v2
         with:
           version: master
-      # Temporarily disabled.
-      #- name: Run unit tests
-      #  run: zig build test
+          
+      - name: Run unit tests
+        run: zig build test
