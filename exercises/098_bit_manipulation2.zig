@@ -53,7 +53,7 @@ fn isPangram(str: []const u8) bool {
             // and are numbered sequentially, we simply subtract the
             // first letter (in this case the 'a') from the character
             // found, and thus get the position of the desired bit
-            bits |= @as(u32, 1) << @truncate(u5, ascii.toLower(c) - 'a');
+            bits |= @as(u32, 1) << @truncate(ascii.toLower(c) - 'a');
         }
     }
     // last we return the comparison if all 26 bits are set,
