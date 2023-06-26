@@ -1058,6 +1058,27 @@ const exercises = [_]Exercise{
         .kind = .@"test",
     },
     .{
+        .main_file = "103_tokenization.zig",
+        .output =
+        \\My
+        \\name
+        \\is
+        \\Ozymandias
+        \\King
+        \\of
+        \\Kings
+        \\Look
+        \\on
+        \\my
+        \\Works
+        \\ye
+        \\Mighty
+        \\and
+        \\despair
+        \\This little poem has 15 words!
+        ,
+    },
+    .{
         .main_file = "999_the_end.zig",
         .output =
         \\

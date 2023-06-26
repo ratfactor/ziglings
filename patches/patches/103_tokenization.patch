@@ -1,0 +1,4 @@
+139c139
+<     var it = std.mem.tokenize(u8, poem, ???);
+---
+>     var it = std.mem.tokenize(u8, poem, " ,;!\n");
