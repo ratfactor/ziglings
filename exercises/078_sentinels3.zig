@@ -8,7 +8,7 @@
 // Yes, we can. Zig's @ptrCast() builtin can do this. Check out
 // the signature:
 //
-//     @ptrCast(comptime DestType: type, value: anytype) DestType
+//     @ptrCast(value: anytype) anytype
 //
 // See if you can use it to solve the same many-item pointer
 // problem, but without needing a length!
