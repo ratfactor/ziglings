@@ -30,7 +30,7 @@
 //         std.debug.print("slice_ptr={*}\n", .{slice_ptr});
 //     }
 
-// Instead of an simple integer or a constant sized slice, this
+// Instead of a simple integer or a constant sized slice, this
 // program requires a slice to be allocated that is the same size as
 // an input array.
 
