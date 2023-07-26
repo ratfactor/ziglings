@@ -45,7 +45,7 @@ Verify the installation and build number of `zig` like so:
 
 ```
 $ zig version
-0.11.0-dev.3853+xxxxxxxxx
+0.11.0-dev.4246+xxxxxxxxx
 ```
 
 Clone this repository with Git:
@@ -89,7 +89,8 @@ that if you update one, you may need to also update the other.
 
 ### Version Changes
 
-Version-0.11.0-dev.3853+cc2daae47
+Version-0.11.0-dev.4246+71dfce31b
+* *2023-06-26* zig 0.11.0-dev.4246 - changes in compile step (now it can be null)
 * *2023-06-26* zig 0.11.0-dev.3853 - removal of destination type from all cast builtins
 * *2023-06-20* zig 0.11.0-dev.3747 - `@enumToInt` is now `@intFromEnum` and `@intToFloat` is now `@floatFromInt`
 * *2023-05-25* zig 0.11.0-dev.3295 - `std.debug.TTY` is now `std.io.tty`

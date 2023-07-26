@@ -15,7 +15,7 @@ const print = if (@hasDecl(debug, "print")) debug.print else debug.warn;
 // When changing this version, be sure to also update README.md in two places:
 //     1) Getting Started
 //     2) Version Changes
-const needed_version_str = "0.11.0-dev.3853";
+const needed_version_str = "0.11.0-dev.4246";
 
 fn isCompatible() bool {
     if (!@hasDecl(builtin, "zig_version") or !@hasDecl(std, "SemanticVersion")) {
