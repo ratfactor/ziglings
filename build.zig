@@ -240,7 +240,7 @@ const ZiglingStep = struct {
             std.os.exit(2);
         };
 
-        self.run(exe_path, prog_node) catch {
+        self.run(exe_path.?, prog_node) catch {
             self.printErrors();
 
             if (self.exercise.hint) |hint|
@@ -350,7 +350,7 @@ const ZiglingStep = struct {
         print("{s}PASSED{s}\n\n", .{ green_text, reset_text });
     }
 
-    fn compile(self: *ZiglingStep, prog_node: *std.Progress.Node) ![]const u8 {
+    fn compile(self: *ZiglingStep, prog_node: *std.Progress.Node) !?[]const u8 {
         print("Compiling {s}...\n", .{self.exercise.main_file});
 
         const b = self.step.owner;
