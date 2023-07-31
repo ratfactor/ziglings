@@ -6,10 +6,10 @@
 //     const Stuff = enum(u8){ foo = 16 };
 //
 // You can get the integer out with a builtin function,
-// @intFromEnum(). We'll learn about builtins properly in a later
+// @enumToInt(). We'll learn about builtins properly in a later
 // exercise.
 //
-//     const my_stuff: u8 = @intFromEnum(Stuff.foo);
+//     const my_stuff: u8 = @enumToInt(Stuff.foo);
 //
 // Note how that built-in function starts with "@" just like the
 // @import() function we've been using.
@@ -57,8 +57,8 @@ pub fn main() void {
         \\</p>
         \\
     , .{
-        @intFromEnum(Color.red),
-        @intFromEnum(Color.green),
-        @intFromEnum(???), // Oops! We're missing something!
+        @enumToInt(Color.red),
+        @enumToInt(Color.green),
+        @enumToInt(???), // Oops! We're missing something!
     });
 }
