@@ -8,7 +8,7 @@
 //
 const std = @import("std");
 
-const Class = enum {
+const Role = enum {
     wizard,
     thief,
     bard,
@@ -16,7 +16,7 @@ const Class = enum {
 };
 
 const Character = struct {
-    class: Class,
+    role: Role,
     gold: u32,
     health: u8,
     experience: u32,
@@ -27,7 +27,7 @@ pub fn main() void {
 
     // Glorp the Wise
     chars[0] = Character{
-        .class = Class.wizard,
+        .role = Role.wizard,
         .gold = 20,
         .health = 100,
         .experience = 10,
@@ -35,7 +35,7 @@ pub fn main() void {
 
     // Please add "Zump the Loud" with the following properties:
     //
-    //     class      bard
+    //     role       bard
     //     gold       10
     //     health     100
     //     experience 20
