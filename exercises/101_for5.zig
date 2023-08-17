@@ -120,3 +120,9 @@ pub fn main() void {
 // three arrays of one data type each, like those in the exercise
 // above (SoA).
 //
+// To learn more about Zig's "data-driven design," watch this
+// video by Andre Kelley: https://vimeo.com/649009599
+//
+// And for a deeper understanding there is an online book:
+// https://www.dataorienteddesign.com/dodbook/dodmain.html
+//
