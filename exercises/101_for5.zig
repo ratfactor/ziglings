@@ -35,8 +35,8 @@
 const std = @import("std");
 const print = std.debug.print;
 
-// This is the same character class enum we've seen before.
-const Class = enum {
+// This is the same character role enum we've seen before.
+const Role = enum {
     wizard,
     thief,
     bard,
@@ -45,14 +45,14 @@ const Class = enum {
 
 pub fn main() void {
     // Here are the three "property" arrays:
-    const classes = [4]Class{ .wizard, .bard, .bard, .warrior };
+    const roles = [4]Role{ .wizard, .bard, .bard, .warrior };
     const gold = [4]u16{ 25, 11, 5, 7392 };
     const experience = [4]u8{ 40, 17, 55, 21 };
 
     // We would like to number our list starting with 1, not 0.
     // How do we do that?
-    for (classes, gold, experience, ???) |c, g, e, i| {
-        const class_name = switch (c) {
+    for (roles, gold, experience, ???) |c, g, e, i| {
+        const role_name = switch (c) {
             .wizard => "Wizard",
             .thief => "Thief",
             .bard => "Bard",
@@ -61,7 +61,7 @@ pub fn main() void {
 
         std.debug.print("{d}. {s} (Gold: {d}, XP: {d})\n", .{
             i,
-            class_name,
+            role_name,
             g,
             e,
         });
