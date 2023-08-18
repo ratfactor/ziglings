@@ -107,9 +107,9 @@ fn printTuple(tuple: anytype) void {
         //         @field(lhs: anytype, comptime field_name: []const u8)
         //
         //     The first parameter is the value to be accessed,
-        //     the second parameter is a string with the name of
-        //     the field you wish to access. The value of the
-        //     field is returned.
+        //     the second parameter is a string with the type of
+        //     the field you wish to access, and the third parameter
+        //     is the value returned by the field.
         //
         //     Example:
         //
