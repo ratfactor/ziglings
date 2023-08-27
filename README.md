@@ -114,12 +114,10 @@ Version-0.11.0-dev.4246+71dfce31b
 
 ## Advanced Usage
 
-It can be handy to check just a single exercise or _start_ from a
-single exercise:
+It can be handy to check just a single exercise:
 
 ```
 zig build -Dn=19
-zig build -Dn=19 start
 ```
 
 You can also run without checking for correctness:
