@@ -59,8 +59,8 @@ $ zig version
 Clone this repository with Git:
 
 ```
-$ git clone https://github.com/ratfactor/ziglings
-$ cd ziglings
+$ git clone https://ziglings.org
+$ cd ziglings.org
 ```
 
 Then run `zig build` and follow the instructions to begin!
