@@ -1,5 +1,13 @@
 # Ziglings
 
+## ⚠️ Attention! Ziglings has moved to Codeberg!
+
+Check out our handy new URL: https://ziglings.org
+
+Or visit the repo directly at: https://codeberg.org/ziglings/exercises
+
+***
+
 Welcome to Ziglings! This project contains a series of tiny
 broken programs (and one nasty surprise).  By fixing them, you'll
 learn how to read and write [Zig](https://ziglang.org/) code.
