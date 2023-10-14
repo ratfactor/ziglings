@@ -18,7 +18,7 @@
 const std = @import("std");
 
 const c = @cImport({
-    // What do wee need here?
+    // What do we need here?
     ???
 });
 
