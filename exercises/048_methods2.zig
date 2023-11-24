@@ -24,7 +24,7 @@ const Elephant = struct {
 
     pub fn print(self: *Elephant) void {
         // Prints elephant letter and [v]isited
-        var v: u8 = if (self.visited) 'v' else ' ';
+        const v: u8 = if (self.visited) 'v' else ' ';
         std.debug.print("{u}{u} ", .{ self.letter, v });
     }
 };

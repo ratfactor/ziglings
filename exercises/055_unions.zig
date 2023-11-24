@@ -53,8 +53,8 @@ const AntOrBee = enum { a, b };
 
 pub fn main() void {
     // We'll just make one bee and one ant to test them out:
-    var ant = Insect{ .still_alive = true };
-    var bee = Insect{ .flowers_visited = 15 };
+    const ant = Insect{ .still_alive = true };
+    const bee = Insect{ .flowers_visited = 15 };
 
     std.debug.print("Insect report! ", .{});
 

@@ -38,8 +38,8 @@ const Insect = union(InsectStat) {
 };
 
 pub fn main() void {
-    var ant = Insect{ .still_alive = true };
-    var bee = Insect{ .flowers_visited = 16 };
+    const ant = Insect{ .still_alive = true };
+    const bee = Insect{ .flowers_visited = 16 };
 
     std.debug.print("Insect report! ", .{});
 

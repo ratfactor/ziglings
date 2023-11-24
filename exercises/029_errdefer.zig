@@ -21,8 +21,8 @@ const MyErr = error{ GetFail, IncFail };
 
 pub fn main() void {
     // We simply quit the entire program if we fail to get a number:
-    var a: u32 = makeNumber() catch return;
-    var b: u32 = makeNumber() catch return;
+    const a: u32 = makeNumber() catch return;
+    const b: u32 = makeNumber() catch return;
 
     std.debug.print("Numbers: {}, {}\n", .{ a, b });
 }

@@ -24,7 +24,7 @@ const std = @import("std");
 
 pub fn main() void {
     var num1: u8 = 5;
-    var num1_pointer: *u8 = &num1;
+    const num1_pointer: *u8 = &num1;
 
     var num2: u8 = undefined;
 

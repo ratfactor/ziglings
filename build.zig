@@ -263,7 +263,7 @@ const ZiglingStep = struct {
         // Allow up to 1 MB of stdout capture.
         const max_output_bytes = 1 * 1024 * 1024;
 
-        var result = Child.exec(.{
+        const result = Child.exec(.{
             .allocator = b.allocator,
             .argv = &.{exe_path},
             .cwd = b.build_root.path.?,
