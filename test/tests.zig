@@ -8,8 +8,8 @@ const mem = std.mem;
 
 const Allocator = std.mem.Allocator;
 const Child = std.process.Child;
-const Build = std.build;
-const FileSource = std.Build.FileSource;
+const Build = std.Build;
+const LazyPath = std.Build.LazyPath;
 const Reader = fs.File.Reader;
 const RunStep = std.Build.RunStep;
 const Step = Build.Step;
@@ -33,7 +33,7 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
             const n = ex.number();
 
             const cmd = b.addSystemCommand(&.{
-                b.zig_exe,
+                b.graph.zig_exe,
                 "build",
                 "-Dhealed",
                 b.fmt("-Dhealed-path={s}", .{tmp_path}),
@@ -69,7 +69,7 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
 
         // TODO: when an exercise is modified, the cache is not invalidated.
         const cmd = b.addSystemCommand(&.{
-            b.zig_exe,
+            b.graph.zig_exe,
             "build",
             "-Dhealed",
             b.fmt("-Dhealed-path={s}", .{tmp_path}),
@@ -99,7 +99,7 @@ pub fn addCliTests(b: *std.Build, exercises: []const Exercise) *Step {
                 const n = ex.number();
 
                 const cmd = b.addSystemCommand(&.{
-                    b.zig_exe,
+                    b.graph.zig_exe,
                     "build",
                     b.fmt("-Dn={}", .{n}),
                 });
@@ -132,9 +132,9 @@ fn createCase(b: *Build, name: []const u8) *Step {
 const CheckNamedStep = struct {
     step: Step,
     exercise: Exercise,
-    stderr: FileSource,
+    stderr: LazyPath,
 
-    pub fn create(owner: *Build, exercise: Exercise, stderr: FileSource) *CheckNamedStep {
+    pub fn create(owner: *Build, exercise: Exercise, stderr: LazyPath) *CheckNamedStep {
         const self = owner.allocator.create(CheckNamedStep) catch @panic("OOM");
         self.* = .{
             .step = Step.init(.{
@@ -152,7 +152,7 @@ const CheckNamedStep = struct {
 
     fn make(step: *Step, _: *std.Progress.Node) !void {
         const b = step.owner;
-        const self = @fieldParentPtr(CheckNamedStep, "step", step);
+        const self: *CheckNamedStep = @fieldParentPtr("step", step);
         const ex = self.exercise;
 
         const stderr_file = try fs.cwd().openFile(
@@ -180,12 +180,12 @@ const CheckNamedStep = struct {
 const CheckStep = struct {
     step: Step,
     exercises: []const Exercise,
-    stderr: FileSource,
+    stderr: LazyPath,
 
     pub fn create(
         owner: *Build,
         exercises: []const Exercise,
-        stderr: FileSource,
+        stderr: LazyPath,
     ) *CheckStep {
         const self = owner.allocator.create(CheckStep) catch @panic("OOM");
         self.* = .{
@@ -204,7 +204,7 @@ const CheckStep = struct {
 
     fn make(step: *Step, _: *std.Progress.Node) !void {
         const b = step.owner;
-        const self = @fieldParentPtr(CheckStep, "step", step);
+        const self: *CheckStep = @fieldParentPtr("step", step);
         const exercises = self.exercises;
 
         const stderr_file = try fs.cwd().openFile(
@@ -327,7 +327,7 @@ const FailStep = struct {
 
     fn make(step: *Step, _: *std.Progress.Node) !void {
         const b = step.owner;
-        const self = @fieldParentPtr(FailStep, "step", step);
+        const self: *FailStep = @fieldParentPtr("step", step);
 
         try step.result_error_msgs.append(b.allocator, self.error_msg);
         return error.MakeFailed;
@@ -370,7 +370,7 @@ const HealStep = struct {
 
     fn make(step: *Step, _: *std.Progress.Node) !void {
         const b = step.owner;
-        const self = @fieldParentPtr(HealStep, "step", step);
+        const self: *HealStep = @fieldParentPtr("step", step);
 
         return heal(b.allocator, self.exercises, self.work_path);
     }

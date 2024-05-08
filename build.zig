@@ -94,7 +94,7 @@ pub const logo =
 
 pub fn build(b: *Build) !void {
     if (!compat.is_compatible) compat.die();
-    if (!validate_exercises()) std.os.exit(2);
+    if (!validate_exercises()) std.posix.exit(2);
 
     use_color_escapes = false;
     if (std.io.getStdErr().supportsAnsiEscapeCodes()) {
@@ -147,7 +147,7 @@ pub fn build(b: *Build) !void {
         // Named build mode: verifies a single exercise.
         if (n == 0 or n > exercises.len - 1) {
             print("unknown exercise number: {}\n", .{n});
-            std.os.exit(2);
+            std.posix.exit(2);
         }
         const ex = exercises[n - 1];
 
@@ -222,7 +222,7 @@ const ZiglingStep = struct {
     fn make(step: *Step, prog_node: *std.Progress.Node) !void {
         // NOTE: Using exit code 2 will prevent the Zig compiler to print the message:
         // "error: the following build command failed with exit code 1:..."
-        const self = @fieldParentPtr(ZiglingStep, "step", step);
+        const self: *ZiglingStep = @fieldParentPtr("step", step);
 
         if (self.exercise.skip) {
             print("Skipping {s}\n\n", .{self.exercise.main_file});
@@ -237,7 +237,7 @@ const ZiglingStep = struct {
                 print("\n{s}Ziglings hint: {s}{s}", .{ bold_text, hint, reset_text });
 
             self.help();
-            std.os.exit(2);
+            std.posix.exit(2);
         };
 
         self.run(exe_path.?, prog_node) catch {
@@ -247,7 +247,7 @@ const ZiglingStep = struct {
                 print("\n{s}Ziglings hint: {s}{s}", .{ bold_text, hint, reset_text });
 
             self.help();
-            std.os.exit(2);
+            std.posix.exit(2);
         };
 
         // Print possible warning/debug messages.
@@ -263,7 +263,7 @@ const ZiglingStep = struct {
         // Allow up to 1 MB of stdout capture.
         const max_output_bytes = 1 * 1024 * 1024;
 
-        var result = Child.exec(.{
+        const result = Child.run(.{
             .allocator = b.allocator,
             .argv = &.{exe_path},
             .cwd = b.build_root.path.?,
@@ -281,7 +281,7 @@ const ZiglingStep = struct {
         }
     }
 
-    fn check_output(self: *ZiglingStep, result: Child.ExecResult) !void {
+    fn check_output(self: *ZiglingStep, result: Child.RunResult) !void {
         const b = self.step.owner;
 
         // Make sure it exited cleanly.
@@ -330,7 +330,7 @@ const ZiglingStep = struct {
         print("{s}PASSED:\n{s}{s}\n\n", .{ green_text, output, reset_text });
     }
 
-    fn check_test(self: *ZiglingStep, result: Child.ExecResult) !void {
+    fn check_test(self: *ZiglingStep, result: Child.RunResult) !void {
         switch (result.term) {
             .Exited => |code| {
                 if (code != 0) {
@@ -361,7 +361,7 @@ const ZiglingStep = struct {
         var zig_args = std.ArrayList([]const u8).init(b.allocator);
         defer zig_args.deinit();
 
-        zig_args.append(b.zig_exe) catch @panic("OOM");
+        zig_args.append(b.graph.zig_exe) catch @panic("OOM");
 
         const cmd = switch (self.exercise.kind) {
             .exe => "build-exe",
@@ -470,7 +470,7 @@ const PrintStep = struct {
     }
 
     fn make(step: *Step, _: *std.Progress.Node) !void {
-        const self = @fieldParentPtr(PrintStep, "step", step);
+        const self: *PrintStep = @fieldParentPtr("step", step);
 
         print("{s}", .{self.message});
     }
