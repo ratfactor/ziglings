@@ -1,4 +1,0 @@
-63c63
-<     const printable = ???;
----
->     const printable = foo.data[0..foo.length];

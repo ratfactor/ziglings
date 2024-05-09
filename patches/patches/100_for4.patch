@@ -1,4 +1,0 @@
-42c42
-<     for (hex_nums, ???) |hn, ???| {
----
->     for (hex_nums, dec_nums) |hn, dn| {

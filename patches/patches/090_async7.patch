@@ -1,4 +1,0 @@
-32c32
-<     var my_beef = getBeef(0);
----
->     var my_beef = nosuspend getBeef(0);

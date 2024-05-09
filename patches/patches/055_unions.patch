@@ -1,6 +1,0 @@
-62,63c62,63
-<     printInsect(ant, AntOrBee.c);
-<     printInsect(bee, AntOrBee.c);
----
->     printInsect(ant, AntOrBee.a);
->     printInsect(bee, AntOrBee.b);

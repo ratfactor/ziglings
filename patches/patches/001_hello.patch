@@ -1,4 +1,0 @@
-19c19
-< fn main() void {
----
-> pub fn main() void {

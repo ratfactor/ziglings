@@ -1,7 +1,0 @@
-44a45,50
->     chars[1] = Character{
->         .role = Role.bard,
->         .gold = 10,
->         .health = 100,
->         .experience = 20,
->     };
