@@ -1,4 +1,0 @@
-57c57
-<         e = if (e.hasTail()) e.??? else break;
----
->         e = if (e.hasTail()) e.getTail() else break;

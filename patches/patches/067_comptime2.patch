@@ -1,4 +1,0 @@
-38c38
-<     var count = 0;
----
->     comptime var count = 0;

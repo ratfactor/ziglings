@@ -1,8 +1,0 @@
-35c35
-<     const my_llama = getLlama(5);
----
->     const my_llama = getLlama(4);
-40c40
-< fn getLlama(i: usize) u32 {
----
-> fn getLlama(comptime i: usize) u32 {

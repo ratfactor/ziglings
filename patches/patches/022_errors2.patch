@@ -1,4 +1,0 @@
-22c22
-<     var my_number: ??? = 5;
----
->     var my_number: MyNumberError!u8 = 5;
