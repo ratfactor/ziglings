@@ -1,9 +1,0 @@
-# See https://git-scm.com/docs/gitattributes
-# See https://help.github.com/articles/dealing-with-line-endings/
-
-# Default behavior, if core.autocrlf is unset.
-* text=auto
-
-# Text files to always have LF (unix) line endings on checkout.
-*.sh text eol=lf
-*.zig text eol=lf
